@@ -1,0 +1,7 @@
+include ':architecture'
+include ':app'
+rootProject.name = "Hola"
+include ':lib_common'
+include ':lib_base'
+include ':lib_extends'
+include ':lib_network'

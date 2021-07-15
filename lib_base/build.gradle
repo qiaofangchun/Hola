@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdkVersion deps.build.compileSdk
+    buildToolsVersion deps.build.buildTools
+
+    defaultConfig {
+        minSdkVersion deps.build.minSdk
+        targetSdkVersion deps.build.targetSdk
+        versionCode 1
+        versionName "1.0"
+
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+}
+
+dependencies {
+    api project(path: ':lib_common')
+
+    api deps.kotlin.stdlib
+    api deps.androidx.core
+    api deps.androidx.activity
+    api deps.androidx.fragment
+    api deps.androidx.appcompat
+    api deps.lifecycle.livedata
+    api deps.lifecycle.viewmodel
+    api deps.lifecycle.common
+}
