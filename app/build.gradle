@@ -36,7 +36,7 @@ dependencies {
     implementation project(path: ':lib_base')
     implementation project(path: ':lib_common')
     implementation project(path: ':lib_network')
-    implementation project(path: ':architecture')
+    implementation project(path: ':lib_arch')
 
     implementation deps.google.material
     implementation deps.androidx.constraint

@@ -1,4 +1,4 @@
-include ':architecture'
+include ':lib_arch'
 include ':app'
 rootProject.name = "Hola"
 include ':lib_common'

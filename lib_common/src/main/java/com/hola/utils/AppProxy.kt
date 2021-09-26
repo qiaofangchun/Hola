@@ -1,5 +1,6 @@
 package com.hola.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.ContentResolver
@@ -11,6 +12,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.annotation.*
 
+@SuppressLint("StaticFieldLeak")
 object AppProxy {
     @Volatile
     private var impl: Context? = null

@@ -4,17 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 
-abstract class BaseFragment : Fragment() {
-    protected abstract val layoutResId: Int
+abstract class BaseFragment constructor(@LayoutRes private val resId: Int) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return if (layoutResId != 0) inflater.inflate(layoutResId, container, false) else null
+        return inflater.inflate(resId, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,7 +32,7 @@ abstract class BaseFragment : Fragment() {
 
     protected abstract fun initWithData()
 
-    protected fun registerListener(){}
+    protected fun registerListener() {}
 
-    protected fun unregisterListener(){}
+    protected fun unregisterListener() {}
 }
