@@ -33,13 +33,12 @@ android {
 
 dependencies {
     api project(path: ':lib_common')
-
-    api deps.kotlin.stdlib
     api deps.androidx.core
+    api deps.androidx.appcompat
     api deps.androidx.activity
     api deps.androidx.fragment
-    api deps.androidx.appcompat
+    api deps.androidx.recyclerview
+    api deps.lifecycle.common
     api deps.lifecycle.livedata
     api deps.lifecycle.viewmodel
-    api deps.lifecycle.common
 }

@@ -34,8 +34,8 @@ android {
 }
 
 dependencies {
-    api deps.kotlin.stdlib
-    api deps.retrofit.api
-    api deps.retrofit.gson_converter
-    api deps.retrofit.scalars_converter
+    implementation deps.kotlin.stdlib
+    implementation deps.retrofit.api
+    implementation deps.retrofit.gson_converter
+    implementation deps.retrofit.scalars_converter
 }

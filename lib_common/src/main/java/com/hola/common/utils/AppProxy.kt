@@ -1,4 +1,4 @@
-package com.hola.utils
+package com.hola.common.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,7 +15,7 @@ import androidx.annotation.*
 @SuppressLint("StaticFieldLeak")
 object AppProxy {
     @Volatile
-    private var impl: Context? = null
+    private var impl: Application? = null
 
     val context
         get() = impl ?: throw IllegalStateException("AppProxy should be initialized before get.")
@@ -29,22 +29,8 @@ object AppProxy {
         impl ?: synchronized(AppProxy::class.java) {
             impl ?: let {
                 impl = application
-                registerActivityLifecycleCallbacks(application)
             }
         }
-    }
-
-    private fun registerActivityLifecycleCallbacks(application: Application) {
-        application.registerActivityLifecycleCallbacks(object :
-            Application.ActivityLifecycleCallbacks {
-            override fun onActivityResumed(activity: Activity?) = Unit
-            override fun onActivityPaused(activity: Activity?) = Unit
-            override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) = Unit
-            override fun onActivityStarted(activity: Activity?) = Unit
-            override fun onActivityStopped(activity: Activity?) = Unit
-            override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) = Unit
-            override fun onActivityDestroyed(activity: Activity?) = Unit
-        })
     }
 
     fun getString(@StringRes resId: Int): String = context.getString(resId)
@@ -57,4 +43,7 @@ object AppProxy {
     fun getDimension(@DimenRes resId: Int): Float = resources.getDimension(resId)
     fun getDimensionPixelOffset(@DimenRes resId: Int): Int = resources.getDimensionPixelOffset(resId)
     fun getDimensionPixelSize(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
+    fun registerActivityLifecycleCallbacks(callback: Application.ActivityLifecycleCallbacks) {
+        context.registerActivityLifecycleCallbacks(callback)
+    }
 }

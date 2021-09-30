@@ -1,6 +1,8 @@
 package com.hola.ext
 
+import android.app.Activity
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.annotation.IdRes
 import androidx.annotation.RestrictTo
@@ -12,6 +14,19 @@ inline fun <V : ViewBinding> ComponentActivity.viewBinding(
     crossinline viewProvider: (ComponentActivity) -> View = ::findRootView
 ): ViewBindingProperty<ComponentActivity, V> = ActivityViewBindingProperty { activity: ComponentActivity ->
     viewBinder(viewProvider(activity))
+}
+
+/**
+ * Utility to find root view for ViewBinding in Activity
+ */
+fun findRootView(activity: Activity): View {
+    val contentView = activity.findViewById<ViewGroup>(android.R.id.content)
+    checkNotNull(contentView) { "Activity has no content view" }
+    return when (contentView.childCount) {
+        1 -> contentView.getChildAt(0)
+        0 -> error("Content view has no children. Provide root view explicitly")
+        else -> error("More than one child view found in Activity content view")
+    }
 }
 
 inline fun <V : ViewBinding> ComponentActivity.viewBinding(

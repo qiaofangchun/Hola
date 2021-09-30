@@ -20,6 +20,18 @@ inline fun <F : Fragment, V : ViewBinding> Fragment.viewBinding(
     }
 }
 
+fun DialogFragment.getRootView(viewBindingRootId: Int): View {
+    val dialog = checkNotNull(dialog) {
+        "DialogFragment doesn't have dialog. Use viewBinding delegate after onCreateDialog"
+    }
+    val window = checkNotNull(dialog.window) { "Fragment's Dialog has no window" }
+    return with(window.decorView) {
+        if (viewBindingRootId != 0) requireViewByIdCompat(
+            viewBindingRootId
+        ) else this
+    }
+}
+
 @Suppress("UNCHECKED_CAST")
 inline fun <F : Fragment, V : ViewBinding> Fragment.viewBinding(
     crossinline viewBinder: (View) -> V,

@@ -1,4 +1,4 @@
-package com.hola.utils.datastore
+package com.hola.common.datastore
 
 interface IDataSaver {
     fun <A> writeValue(key: String, value: A)

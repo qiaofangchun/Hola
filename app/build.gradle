@@ -16,6 +16,7 @@ android {
     }
 
     android.buildFeatures.viewBinding = true
+    android.buildFeatures.dataBinding = false
 
     buildTypes {
         release {
@@ -37,10 +38,5 @@ dependencies {
     implementation project(path: ':lib_common')
     implementation project(path: ':lib_network')
     implementation project(path: ':lib_arch')
-
-    implementation deps.google.material
-    implementation deps.androidx.constraint
-    implementation deps.retrofit.api
-    implementation deps.retrofit.gson_converter
-    implementation deps.retrofit.scalars_converter
+    implementation project(path: ':lib_extends')
 }

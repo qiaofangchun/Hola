@@ -1,4 +1,4 @@
-package com.hola.utils.datastore
+package com.hola.common.datastore
 
 import android.content.Context
 import java.io.*
