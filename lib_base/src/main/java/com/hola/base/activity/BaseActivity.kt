@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 
-abstract class BaseActivity constructor(@LayoutRes private val resId: Int) : FragmentActivity() {
+abstract class BaseActivity(@LayoutRes private val resId: Int) : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +24,7 @@ abstract class BaseActivity constructor(@LayoutRes private val resId: Int) : Fra
 
     protected abstract fun initWithData()
 
-    protected fun registerListener(){}
+    protected fun registerListener() {}
 
-    protected fun unregisterListener(){}
+    protected fun unregisterListener() {}
 }
