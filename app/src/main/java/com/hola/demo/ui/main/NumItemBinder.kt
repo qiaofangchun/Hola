@@ -5,13 +5,19 @@ import android.widget.TextView
 import com.hola.base.adapter.ItemBinder
 import com.hola.base.adapter.ViewHolder
 import com.hola.demo.R
+import com.hola.demo.databinding.ItemNumberViewBinding
+import com.hola.ext.viewBinding
 
-class NumItemBinder : ItemBinder<Int>(R.layout.item_number_view, Int::class.javaObjectType) {
-    override fun onCreateViewHolder(itemView: View): ViewHolder {
-        return ViewHolder(itemView)
+class NumItemBinder : ItemBinder<Int, NumItemBinder.Holder>(R.layout.item_number_view, Int::class.javaObjectType) {
+    override fun onCreateViewHolder(itemView: View): Holder {
+        return Holder(itemView)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, data: Int, position: Int) {
-        holder.itemView.findViewById<TextView>(R.id.content).text = "Num:$data"
+    override fun onBindViewHolder(holder: Holder, data: Int, position: Int) {
+        holder.viewBind.content.text = "Num:$data"
+    }
+
+    class Holder(view:View):ViewHolder(view){
+        val viewBind by viewBinding(ItemNumberViewBinding::bind)
     }
 }

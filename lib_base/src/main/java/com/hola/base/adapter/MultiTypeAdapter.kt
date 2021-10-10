@@ -6,12 +6,20 @@ import androidx.recyclerview.widget.RecyclerView
 class MultiTypeAdapter(var itemData: List<Any> = emptyList()) : RecyclerView.Adapter<ViewHolder>() {
     private val manager = ItemBinderManager()
 
-    fun addItemBinder(itemBinder: ItemBinder<*>) {
-        manager.register(itemBinder)
+    inline fun <reified T, VH : ViewHolder> addItemBinder(itemBinder: ItemBinder<T, VH>) {
+        registerType(T::class.java, itemBinder)
     }
 
-    fun removeItemBinder(dataClazz: Class<*>) {
-        manager.unregister(dataClazz)
+    fun <T, VH : ViewHolder> registerType(dataClz: Class<T>, itemBinder: ItemBinder<T, VH>) {
+        manager.register(dataClz, itemBinder)
+    }
+
+    inline fun <reified T, VH : ViewHolder> removeItemBinder(dataClz: Class<ItemBinder<T, VH>>) {
+        unregisterType(dataClz)
+    }
+
+    fun <T> unregisterType(dataClz: Class<T>) {
+        manager.unregister(dataClz)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -24,21 +32,19 @@ class MultiTypeAdapter(var itemData: List<Any> = emptyList()) : RecyclerView.Ada
 
     @Suppress("UNCHECKED_CAST")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val binder = manager.getItemBinder(holder.viewType) as ItemBinder<Any>
+        val binder = manager.getItemBinder(holder.viewType) as ItemBinder<Any, ViewHolder>
         binder.onBindViewHolder(holder, itemData[position], position)
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
         payloads.takeUnless { it.isEmpty() }?.let {
-            val binder = manager.getItemBinder(holder.viewType) as ItemBinder<Any>
+            val binder = manager.getItemBinder(holder.viewType) as ItemBinder<Any, ViewHolder>
             binder.onBindViewHolder(holder, itemData[position], position, payloads)
         } ?: let {
             super.onBindViewHolder(holder, position, payloads)
         }
     }
-
-
 
     override fun getItemCount(): Int {
         return itemData.size
