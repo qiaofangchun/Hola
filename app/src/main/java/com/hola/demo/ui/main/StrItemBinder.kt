@@ -2,7 +2,6 @@ package com.hola.demo.ui.main
 
 import android.view.View
 import android.widget.TextView
-import androidx.viewbinding.ViewBinding
 import com.hola.base.adapter.ItemBinder
 import com.hola.base.adapter.ViewHolder
 import com.hola.demo.R

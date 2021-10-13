@@ -6,16 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 class MultiTypeAdapter(var itemData: List<Any> = emptyList()) : RecyclerView.Adapter<ViewHolder>() {
     private val manager = ItemBinderManager()
 
-    inline fun <reified T, VH : ViewHolder> addItemBinder(itemBinder: ItemBinder<T, VH>) {
+    inline fun <reified T, VH : ViewHolder> registerType(itemBinder: ItemBinder<T, VH>): MultiTypeAdapter {
         registerType(T::class.java, itemBinder)
+        return this
     }
 
     fun <T, VH : ViewHolder> registerType(dataClz: Class<T>, itemBinder: ItemBinder<T, VH>) {
         manager.register(dataClz, itemBinder)
-    }
-
-    inline fun <reified T, VH : ViewHolder> removeItemBinder(dataClz: Class<ItemBinder<T, VH>>) {
-        unregisterType(dataClz)
     }
 
     fun <T> unregisterType(dataClz: Class<T>) {

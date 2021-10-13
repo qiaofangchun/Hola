@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import kotlin.reflect.KProperty
 
-fun <T : View?> View.findViewById(@IdRes id: Int): T = this.findViewById(id)
-
 inline fun <V : ViewBinding> ViewGroup.viewBinding(
     crossinline viewBinder: (View) -> V,
     crossinline viewProvider: (ViewGroup) -> View = { this }

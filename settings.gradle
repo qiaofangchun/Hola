@@ -1,6 +1,6 @@
+rootProject.name = "Hola"
 include ':lib_arch'
 include ':app'
-rootProject.name = "Hola"
 include ':lib_common'
 include ':lib_base'
 include ':lib_extends'

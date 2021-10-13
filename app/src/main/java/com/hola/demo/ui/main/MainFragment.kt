@@ -17,6 +17,32 @@ class MainFragment : BaseFragment(R.layout.main_fragment) {
 
     override fun initWithView() {
         binding.content.layoutManager = LinearLayoutManager(context)
+        val adapter = MultiTypeAdapter().also {
+            it.itemData
+        }
+
+        adapter.also {
+
+        }
+
+        adapter.apply {
+
+        }
+
+        var a:Int = adapter.run {
+
+            0
+        }
+
+        a = adapter.let {
+
+            0
+        }
+
+        val c = with(a){
+            ""
+        }
+
         binding.content.adapter = MultiTypeAdapter().apply {
             val itemData = ArrayList<Any>()
             itemData.add("String.1")
@@ -25,8 +51,8 @@ class MainFragment : BaseFragment(R.layout.main_fragment) {
             itemData.add(2)
             itemData.add("String.3")
             itemData.add(3)
-            addItemBinder(NumItemBinder())
-            addItemBinder(StrItemBinder())
+            registerType(NumItemBinder())
+            registerType(StrItemBinder())
             this.itemData = itemData
             notifyDataSetChanged()
         }
