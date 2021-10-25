@@ -1,9 +1,10 @@
 package com.hola.demo
 
 import android.os.Bundle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.hola.base.activity.BaseActivity
 import com.hola.demo.databinding.MainActivityBinding
-import com.hola.demo.databinding.MainFragmentBinding
 import com.hola.demo.ui.main.MainFragment
 import com.hola.ext.viewBinding
 
@@ -20,6 +21,13 @@ class MainActivity : BaseActivity(R.layout.main_activity) {
                     .replace(R.id.container, MainFragment())
                     .commitNow()
         }
+        val data = MutableLiveData<String>()
+
+        data.observe(this){
+
+        }
+
+        val viewModelFactory = viewModelStore.clear()
     }
 
     override fun initWithView() {

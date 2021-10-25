@@ -5,11 +5,10 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 
-abstract class BaseActivity(@LayoutRes private val resId: Int) : FragmentActivity() {
+abstract class BaseActivity(@LayoutRes resId: Int) : FragmentActivity(resId) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(resId)
         initWithView()
         registerListener()
         initWithData()

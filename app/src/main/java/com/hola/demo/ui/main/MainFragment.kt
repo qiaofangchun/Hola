@@ -1,5 +1,7 @@
 package com.hola.demo.ui.main
 
+import android.util.ArrayMap
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hola.base.adapter.MultiTypeAdapter
 import com.hola.base.fragment.BaseFragment
@@ -14,6 +16,10 @@ class MainFragment : BaseFragment(R.layout.main_fragment) {
     }
 
     private val binding by viewBinding(MainFragmentBinding::bind)
+
+    private val viewModel:MainViewModel by viewModels()
+
+    val map = ArrayMap<String,String>()
 
     override fun initWithView() {
         binding.content.layoutManager = LinearLayoutManager(context)
