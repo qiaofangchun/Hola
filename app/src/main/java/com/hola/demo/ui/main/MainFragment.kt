@@ -19,36 +19,8 @@ class MainFragment : BaseFragment(R.layout.main_fragment) {
 
     private val viewModel:MainViewModel by viewModels()
 
-    val map = ArrayMap<String,String>()
-
     override fun initWithView() {
         binding.content.layoutManager = LinearLayoutManager(context)
-        val adapter = MultiTypeAdapter().also {
-            it.itemData
-        }
-
-        adapter.also {
-
-        }
-
-        adapter.apply {
-
-        }
-
-        var a:Int = adapter.run {
-
-            0
-        }
-
-        a = adapter.let {
-
-            0
-        }
-
-        val c = with(a){
-            ""
-        }
-
         binding.content.adapter = MultiTypeAdapter().apply {
             val itemData = ArrayList<Any>()
             itemData.add("String.1")
