@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
         context: Context,
         attrs: AttributeSet
     ): View? {
-        Log.d(TAG, "viewName$name")
+        Log.d(TAG, "viewName--->$name")
         return skinDelegate.skinViewMatch(context, name, attrs)
     }
 
