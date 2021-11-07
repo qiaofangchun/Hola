@@ -4,10 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.LayoutInflaterCompat
 import androidx.lifecycle.MutableLiveData
 import com.hola.demo.databinding.MainActivityBinding
 import com.hola.demo.ui.main.MainFragment
@@ -19,7 +17,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
         private const val TAG = "MainActivity"
     }
 
-    private var skinDelegate = SkinDelegate(this, false)
+    private var skinDelegate = SkinDelegate(this, true)
     private val binding by viewBinding(MainActivityBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +45,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
         attrs: AttributeSet
     ): View? {
         Log.d(TAG, "viewName$name")
-        return skinDelegate.skinViewMatch(name, attrs)
+        return skinDelegate.skinViewMatch(context, name, attrs)
     }
 
     /* override fun initWithView() {

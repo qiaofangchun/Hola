@@ -1,5 +1,6 @@
 package com.hola.skin;
 
+import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -33,14 +34,12 @@ public class SkinDelegate {
         LayoutInflaterCompat.setFactory2(inflater, mActivity);
     }
 
-    public View skinViewMatch(@NonNull String name, @NonNull AttributeSet attrs) {
+    public View skinViewMatch(@NonNull Context context, @NonNull String name, @NonNull AttributeSet attrs) {
         if (!mCanChangeSkin) return null;
         if (mSkinViewInflater == null) {
-            mSkinViewInflater = new SkinViewInflater(mActivity);
+            mSkinViewInflater = new SkinViewInflater();
         }
-        mSkinViewInflater.setAttrs(attrs);
-        mSkinViewInflater.setName(name);
-        return mSkinViewInflater.autoMatch();
+        return mSkinViewInflater.createView(context, name, attrs);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

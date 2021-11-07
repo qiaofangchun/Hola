@@ -8,14 +8,14 @@ import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 
 import com.hola.skin.R;
 import com.hola.skin.core.ViewMatch;
 import com.hola.skin.model.AttrsBean;
 
-public class SkinButton extends AppCompatEditText implements ViewMatch {
+public class SkinButton extends AppCompatButton implements ViewMatch {
     private final AttrsBean attrsBean;
 
     public SkinButton(@NonNull Context context) {

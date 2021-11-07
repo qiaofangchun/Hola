@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatViewInflater;
 
 import com.hola.skin.view.SkinButton;
@@ -14,44 +15,30 @@ import com.hola.skin.view.SkinEditText;
 import com.hola.skin.view.SkinTextView;
 
 public class SkinViewInflater extends AppCompatViewInflater {
-    private String mName;
-    private Context mContext;
-    private AttributeSet mAttrs;
-
-    public SkinViewInflater(@NonNull Context context) {
-        mContext = context;
-    }
-
-    public void setName(String name) {
-        mName = name;
-    }
-
-    public void setAttrs(AttributeSet attrs) {
-        mAttrs = attrs;
-    }
-
-    public View autoMatch() {
+    @Nullable
+    @Override
+    public View createView(Context context, String name, AttributeSet attrs) {
         View view = null;
-        switch (mName) {
+        switch (name) {
             case "FrameLayout":
-                view = new FrameLayout(mContext);
-                verifyNotNull(view, mName);
+                view = new FrameLayout(context, attrs);
+                verifyNotNull(view, name);
                 break;
             case "RelativeLayout":
-                view = new RelativeLayout(mContext);
-                verifyNotNull(view, mName);
+                view = new RelativeLayout(context, attrs);
+                verifyNotNull(view, name);
                 break;
             case "TextView":
-                view = new SkinTextView(mContext);
-                verifyNotNull(view, mName);
+                view = new SkinTextView(context, attrs);
+                verifyNotNull(view, name);
                 break;
             case "Button":
-                view = new SkinButton(mContext);
-                verifyNotNull(view, mName);
+                view = new SkinButton(context, attrs);
+                verifyNotNull(view, name);
                 break;
             case "EditText":
-                view = new SkinEditText(mContext);
-                verifyNotNull(view, mName);
+                view = new SkinEditText(context, attrs);
+                verifyNotNull(view, name);
                 break;
             default:
                 break;
