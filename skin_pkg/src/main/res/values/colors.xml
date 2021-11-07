@@ -8,7 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="skin_text_color">#FFBB86FC</color>
-    <color name="skin_text_color_hint">#FF03DAC5</color>
-    <color name="skin_text_background">#FF6200EE</color>
+
+    <color name="skin_text_color">#FF000000</color>
+    <color name="skin_text_color_hint">#FF6200EE</color>
+    <color name="skin_text_background">#FFFFFFFF</color>
 </resources>

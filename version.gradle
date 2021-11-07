@@ -2,7 +2,7 @@ ext.deps = [:]
 def version = [:]
 
 def build = [:]
-build.minSdk = 24
+build.minSdk = 23
 build.compileSdk = 29
 build.targetSdk = 29
 build.buildTools = "30.0.2"

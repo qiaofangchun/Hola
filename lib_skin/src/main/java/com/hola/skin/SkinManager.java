@@ -10,8 +10,11 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
-import java.lang.reflect.InvocationTargetException;
+import com.hola.skin.model.SkinCache;
+
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SkinManager {
     private static final String ADD_ASSET_PATH = "addAssetPath";
@@ -22,11 +25,12 @@ public class SkinManager {
     private Resources mSkinResources;
     private String mSkinPackageName;
     private boolean isDefaultSkin = true;
-
+    private Map<String, SkinCache> mSkinCache;
 
     private SkinManager(Application application) {
         mApplication = application;
         mAppResources = mApplication.getResources();
+        mSkinCache = new HashMap<>();
     }
 
     public static SkinManager init(Application application) {
@@ -49,24 +53,66 @@ public class SkinManager {
     }
 
     public void loadSkinResources(String skinPath) {
-        PackageInfo packageInfo = mApplication.getPackageManager().getPackageArchiveInfo(skinPath, PackageManager.GET_ACTIVITIES);
-        if (packageInfo == null) {
+        if (TextUtils.isEmpty(skinPath)) {
+            isDefaultSkin = true;
             return;
         }
+        if (findSkinCache(skinPath)) {
+            isDefaultSkin = false;
+            return;
+        }
+        String skinPackageName = getSkinPackageName(skinPath);
+        if (TextUtils.isEmpty(skinPackageName)) {
+            isDefaultSkin = true;
+            return;
+        }
+        mSkinPackageName = skinPackageName;
+        Resources resources = getSkinResources(skinPath);
+        if (resources == null) {
+            isDefaultSkin = true;
+            return;
+        }
+        isDefaultSkin = false;
+        mSkinResources = resources;
+        mSkinCache.put(skinPath, new SkinCache(mSkinPackageName, mSkinResources));
+    }
+
+    private boolean findSkinCache(String skinPath) {
+        SkinCache skinCache = mSkinCache.get(skinPath);
+        if (skinCache == null) {
+            return false;
+        }
+        mSkinPackageName = skinCache.getSkinPackageName();
+        mSkinResources = skinCache.getSkinResources();
+        return true;
+    }
+
+    private String getSkinPackageName(String skinPath) {
+        try {
+            PackageInfo packageInfo = mApplication.getPackageManager().getPackageArchiveInfo(skinPath, PackageManager.GET_ACTIVITIES);
+            if (packageInfo == null) {
+                throw new IllegalArgumentException("This file is not Skin, Path:" + skinPath);
+            }
+            return packageInfo.packageName;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private Resources getSkinResources(String skinPath) {
+        Resources resources = null;
         try {
             AssetManager assetManager = AssetManager.class.newInstance();
             Method method = assetManager.getClass().getDeclaredMethod(ADD_ASSET_PATH, String.class);
             method.setAccessible(true);
             method.invoke(assetManager, skinPath);
-
-            mSkinPackageName = packageInfo.packageName;
-            mSkinResources = new Resources(assetManager,
+            resources = new Resources(assetManager,
                     mAppResources.getDisplayMetrics(), mAppResources.getConfiguration());
-            isDefaultSkin = TextUtils.isEmpty(mSkinPackageName);
         } catch (Exception e) {
-            isDefaultSkin = true;
             e.printStackTrace();
         }
+        return resources;
     }
 
     public int getColor(int resourceId) {
@@ -111,7 +157,7 @@ public class SkinManager {
     }
 
     private int getSkinResourceIds(int resourceId) {
-        if (mSkinResources == null) {
+        if (mSkinResources == null || isDefaultSkin) {
             return resourceId;
         }
         String resourceName = mAppResources.getResourceEntryName(resourceId);

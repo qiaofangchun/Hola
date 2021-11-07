@@ -3,14 +3,15 @@ package com.hola.skin.core;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatViewInflater;
+
+import com.hola.skin.view.SkinButton;
+import com.hola.skin.view.SkinEditText;
+import com.hola.skin.view.SkinTextView;
 
 public class SkinViewInflater extends AppCompatViewInflater {
     private String mName;
@@ -34,23 +35,27 @@ public class SkinViewInflater extends AppCompatViewInflater {
         switch (mName) {
             case "FrameLayout":
                 view = new FrameLayout(mContext);
+                verifyNotNull(view, mName);
                 break;
             case "RelativeLayout":
                 view = new RelativeLayout(mContext);
+                verifyNotNull(view, mName);
                 break;
             case "TextView":
-                view = new TextView(mContext);
+                view = new SkinTextView(mContext);
+                verifyNotNull(view, mName);
                 break;
             case "Button":
-                view = new Button(mContext);
+                view = new SkinButton(mContext);
+                verifyNotNull(view, mName);
                 break;
             case "EditText":
-                view = new EditText(mContext);
+                view = new SkinEditText(mContext);
+                verifyNotNull(view, mName);
                 break;
             default:
                 break;
         }
-        verifyNotNull(view, mName);
         return view;
     }
 

@@ -11,11 +11,15 @@ public class AttrsBean {
         resourcesMap = new SparseIntArray();
     }
 
-    public void saveResource(TypedArray typedArray, int[] styleable) {
+    public void saveViewResource(TypedArray typedArray, int[] styleable) {
         for (int i = 0; i < typedArray.length(); i++) {
-            int key = styleable[i];
+            int attrId = styleable[i];
             int resId = typedArray.getResourceId(i, DEFAULT_VALUE);
-            resourcesMap.put(key, resId);
+            resourcesMap.put(attrId, resId);
         }
+    }
+
+    public int getViewResource(int attrId) {
+        return resourcesMap.get(attrId);
     }
 }

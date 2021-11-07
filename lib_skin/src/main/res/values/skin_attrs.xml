@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SkinTextView">
+        <attr name="android:textColor" />
+        <attr name="android:textColorHint" />
+        <attr name="android:background" />
+    </declare-styleable>
+
+    <declare-styleable name="SkinEditText">
+        <attr name="android:textColor" />
+        <attr name="android:textColorHint" />
+        <attr name="android:background" />
+    </declare-styleable>
+
+    <declare-styleable name="SkinButton">
+        <attr name="android:textColor" />
+        <attr name="android:textColorHint" />
+        <attr name="android:background" />
+    </declare-styleable>
+</resources>

@@ -39,4 +39,5 @@ dependencies {
     implementation project(path: ':lib_network')
     implementation project(path: ':lib_arch')
     implementation project(path: ':lib_extends')
+    implementation project(path: ':lib_skin')
 }

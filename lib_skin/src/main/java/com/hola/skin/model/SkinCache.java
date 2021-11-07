@@ -6,6 +6,11 @@ public class SkinCache {
     private Resources mSkinResources;
     private String mSkinPackageName;
 
+    public SkinCache(String skinPackageName, Resources skinResources) {
+        mSkinResources = skinResources;
+        mSkinPackageName = skinPackageName;
+    }
+
     public Resources getSkinResources() {
         return mSkinResources;
     }

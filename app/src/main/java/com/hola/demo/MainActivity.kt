@@ -1,40 +1,60 @@
 package com.hola.demo
 
+import android.content.Context
 import android.os.Bundle
-import androidx.lifecycle.LiveData
+import android.util.AttributeSet
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.LayoutInflaterCompat
 import androidx.lifecycle.MutableLiveData
-import com.hola.base.activity.BaseActivity
 import com.hola.demo.databinding.MainActivityBinding
 import com.hola.demo.ui.main.MainFragment
 import com.hola.ext.viewBinding
+import com.hola.skin.SkinDelegate
 
-class MainActivity : BaseActivity(R.layout.main_activity) {
-    companion object{
+class MainActivity : AppCompatActivity(R.layout.main_activity) {
+    companion object {
         private const val TAG = "MainActivity"
     }
+
+    private var skinDelegate = SkinDelegate(this, false)
     private val binding by viewBinding(MainActivityBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        skinDelegate.changeInflaterFactory2()
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, MainFragment())
-                    .commitNow()
+                .replace(R.id.container, MainFragment())
+                .commitNow()
         }
         val data = MutableLiveData<String>()
 
-        data.observe(this){
+        data.observe(this) {
 
         }
-
-        val viewModelFactory = viewModelStore.clear()
+        binding.btnChange.setOnClickListener {
+            skinDelegate.useDynamicSkin(null, 0)
+        }
     }
 
-    override fun initWithView() {
-        binding.layName.text = TAG
+    override fun onCreateView(
+        parent: View?,
+        name: String,
+        context: Context,
+        attrs: AttributeSet
+    ): View? {
+        Log.d(TAG, "viewName$name")
+        return skinDelegate.skinViewMatch(name, attrs)
     }
 
-    override fun initWithData() {
+    /* override fun initWithView() {
+         binding.layName.text = TAG
+     }
 
-    }
+     override fun initWithData() {
+
+     }*/
 }

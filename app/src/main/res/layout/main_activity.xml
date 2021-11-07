@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
-    <TextView
+    <EditText
         android:id="@+id/layName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/skin_text_background"
+        android:gravity="center"
+        android:textColor="@color/skin_text_color"
+        android:textColorHint="@color/skin_text_color_hint"
+        android:textSize="20dp"
+        tools:text="我的顔色" />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/btn_change"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="切換皮肤" />
+
+</LinearLayout>
