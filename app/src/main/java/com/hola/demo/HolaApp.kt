@@ -9,6 +9,5 @@ class HolaApp : BaseApplication() {
         super.onCreate()
         SkinManager.init(this)
         SkinManager.getInstance().addSkinHelper(TextViewSkinHelper())
-        SkinManager.getInstance().addSkinHelper(RvSkinHelper())
     }
 }
