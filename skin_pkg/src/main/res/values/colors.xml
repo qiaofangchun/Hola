@@ -9,7 +9,7 @@
     <color name="white">#FFFFFFFF</color>
 
 
-    <color name="skin_text_color">#FF000000</color>
+    <color name="skin_text_color">#FF018786</color>
     <color name="skin_text_color_hint">#FF6200EE</color>
     <color name="skin_text_background">#FFFFFFFF</color>
 </resources>

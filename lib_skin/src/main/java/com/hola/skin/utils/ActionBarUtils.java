@@ -1,6 +1,7 @@
 package com.hola.skin.utils;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -13,8 +14,7 @@ public class ActionBarUtils {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void forActionBar(AppCompatActivity activity) {
+    public static void forActionBar(Activity activity) {
         TypedArray a = activity.getTheme().obtainStyledAttributes(0, new int[]{
                 android.R.attr.colorPrimary
         });
@@ -23,10 +23,16 @@ public class ActionBarUtils {
         forActionBar(activity, color);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void forActionBar(AppCompatActivity activity, int skinColor) {
+    public static void forActionBar(Activity activity, int skinColor) {
+        if (activity instanceof AppCompatActivity) {
+            androidx.appcompat.app.ActionBar actionBar = ((AppCompatActivity) activity).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setBackgroundDrawable(new ColorDrawable(skinColor));
+            }
+        }
         ActionBar actionBar = activity.getActionBar();
-
-        actionBar.setBackgroundDrawable(new ColorDrawable(skinColor));
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(new ColorDrawable(skinColor));
+        }
     }
 }

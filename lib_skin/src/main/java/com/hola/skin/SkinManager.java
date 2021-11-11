@@ -7,13 +7,19 @@ import android.content.res.AssetManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
+import androidx.core.content.res.ResourcesCompat;
+
+import com.hola.skin.helper.ISkinHelper;
 import com.hola.skin.model.SkinCache;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SkinManager {
@@ -26,11 +32,21 @@ public class SkinManager {
     private String mSkinPackageName;
     private boolean isDefaultSkin = true;
     private Map<String, SkinCache> mSkinCache;
+    private List<ISkinHelper> helpers;
 
     private SkinManager(Application application) {
         mApplication = application;
         mAppResources = mApplication.getResources();
         mSkinCache = new HashMap<>();
+        helpers = new ArrayList<>();
+    }
+
+    public void addSkinHelper(ISkinHelper skinHelper) {
+        helpers.add(skinHelper);
+    }
+
+    public List<ISkinHelper> getAllSkinHelper() {
+        return helpers;
     }
 
     public static SkinManager init(Application application) {
@@ -67,7 +83,7 @@ public class SkinManager {
             return;
         }
         mSkinPackageName = skinPackageName;
-        Resources resources = getSkinResources(skinPath);
+        Resources resources = createSkinResources(skinPath);
         if (resources == null) {
             isDefaultSkin = true;
             return;
@@ -100,7 +116,7 @@ public class SkinManager {
         return "";
     }
 
-    private Resources getSkinResources(String skinPath) {
+    private Resources createSkinResources(String skinPath) {
         Resources resources = null;
         try {
             AssetManager assetManager = AssetManager.class.newInstance();
@@ -115,48 +131,47 @@ public class SkinManager {
         return resources;
     }
 
+    private Resources getResources() {
+        return isDefaultSkin ? mAppResources : mSkinResources;
+    }
+
     public int getColor(int resourceId) {
-        int ids = getSkinResourceIds(resourceId);
-        return isDefaultSkin ? mAppResources.getColor(ids) : mSkinResources.getColor(ids);
+        int id = getSkinResourceId(resourceId);
+        return ResourcesCompat.getColor(getResources(), id, null);
     }
 
     public ColorStateList getColorStateList(int resourceId) {
-        int ids = getSkinResourceIds(resourceId);
-        return isDefaultSkin ? mAppResources.getColorStateList(ids) : mSkinResources.getColorStateList(ids);
+        int id = getSkinResourceId(resourceId);
+        return ResourcesCompat.getColorStateList(getResources(), id, null);
     }
 
-    public Drawable getDrawableOrMipMap(int resourceId) {
-        int ids = getSkinResourceIds(resourceId);
-        return isDefaultSkin ? mAppResources.getDrawable(ids) : mSkinResources.getDrawable(ids);
+    public Drawable getDrawable(int resourceId) {
+        int id = getSkinResourceId(resourceId);
+        return ResourcesCompat.getDrawable(getResources(), id, null);
     }
 
-    public String getString(int resourceId) {
-        int ids = getSkinResourceIds(resourceId);
-        return isDefaultSkin ? mAppResources.getString(ids) : mSkinResources.getString(ids);
-    }
-
-    public Object getBackgroundOrSrc(int resourceId) {
+    public Drawable getBackground(int resourceId) {
         String resourceTypeName = mAppResources.getResourceTypeName(resourceId);
         switch (resourceTypeName) {
             case "color":
-                return getColor(resourceId);
+                return new ColorDrawable(getColor(resourceId));
             case "drawable":
             case "mipmap":
-                return getDrawableOrMipMap(resourceId);
+                return getDrawable(resourceId);
         }
         return null;
     }
 
     public Typeface getTypeface(int resourceId) {
-        String skinTypefacePath = getString(resourceId);
+        int id = getSkinResourceId(resourceId);
+        String skinTypefacePath = getResources().getString(id);
         if (TextUtils.isEmpty(skinTypefacePath)) {
             return Typeface.DEFAULT;
         }
-        Resources resources = isDefaultSkin ? mAppResources : mSkinResources;
-        return Typeface.createFromAsset(resources.getAssets(), skinTypefacePath);
+        return Typeface.createFromAsset(getResources().getAssets(), skinTypefacePath);
     }
 
-    private int getSkinResourceIds(int resourceId) {
+    private int getSkinResourceId(int resourceId) {
         if (mSkinResources == null || isDefaultSkin) {
             return resourceId;
         }

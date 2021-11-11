@@ -6,8 +6,9 @@
 
     <TextView
         android:id="@+id/content"
-        android:text="aaaaadf"
-        android:textAlignment="textStart"
-        android:layout_width="30dp"
+        android:gravity="start"
+        android:textColor="@color/skin_text_color"
+        android:layout_width="match_parent"
+        android:paddingVertical="16dp"
         android:layout_height="wrap_content" />
 </FrameLayout>

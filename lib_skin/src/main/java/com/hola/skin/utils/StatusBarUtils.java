@@ -12,7 +12,6 @@ public class StatusBarUtils {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void forStatusBar(Activity activity) {
         TypedArray a = activity.getTheme().obtainStyledAttributes(0, new int[]{
                 android.R.attr.statusBarColor
@@ -22,7 +21,6 @@ public class StatusBarUtils {
         forStatusBar(activity, color);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void forStatusBar(Activity activity, int skinColor) {
         activity.getWindow().setStatusBarColor(skinColor);
     }

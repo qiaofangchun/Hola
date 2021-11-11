@@ -13,14 +13,17 @@
         android:layout_height="80dp"
         android:background="@color/skin_text_background"
         android:gravity="center"
+        android:hint="我的颜色"
+        android:text="我的顔色"
         android:textColor="@color/skin_text_color"
         android:textColorHint="@color/skin_text_color_hint"
-        android:textSize="20dp"
-        tools:text="我的顔色" />
+        android:textSize="20dp" />
 
     <Button
         android:id="@+id/btn_change"
         android:layout_width="match_parent"
+        android:textColor="@color/skin_text_color"
+        android:background="@mipmap/ic_launcher"
         android:layout_height="wrap_content"
         android:text="切換皮肤" />
 
