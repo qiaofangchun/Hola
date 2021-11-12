@@ -24,15 +24,13 @@ public class SkinCompatDelegate {
     private final Activity mActivity;
     private final SkinInflaterFactory mFactory;
     private Map<View, SkinViewBinder> mSkinViewBinderMap;
-    private List<ISkinHelper> helpers;
 
     public SkinCompatDelegate(Activity activity, boolean canChangeSkin) {
         mActivity = activity;
         mCanChangeSkin = canChangeSkin;
-        helpers = SkinCompatManager.getInstance().getAllSkinHelper();
         mFactory = new SkinInflaterFactory((view, attrs) -> {
             if (view == null) return;
-            for (ISkinHelper helper : helpers) {
+            for (ISkinHelper helper : SkinCompatManager.getInstance().getAllSkinHelper()) {
                 if (!helper.viewMatch(view)) {
                     continue;
                 }
