@@ -4,9 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ActionBarUtils {

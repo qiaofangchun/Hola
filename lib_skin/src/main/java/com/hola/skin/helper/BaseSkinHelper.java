@@ -5,7 +5,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
-import com.hola.skin.SkinManager;
+import com.hola.skin.SkinCompatManager;
 import com.hola.skin.model.ViewAttrs;
 
 public abstract class BaseSkinHelper<T extends View> implements ISkinHelper {
@@ -23,22 +23,22 @@ public abstract class BaseSkinHelper<T extends View> implements ISkinHelper {
     }
 
     public int getColor(int resourceId) {
-        return SkinManager.getInstance().getColor(resourceId);
+        return SkinCompatManager.getInstance().getColor(resourceId);
     }
 
     public ColorStateList getColorStateList(int resourceId) {
-        return SkinManager.getInstance().getColorStateList(resourceId);
+        return SkinCompatManager.getInstance().getColorStateList(resourceId);
     }
 
     public Drawable getDrawable(int resourceId) {
-        return SkinManager.getInstance().getDrawable(resourceId);
+        return SkinCompatManager.getInstance().getDrawable(resourceId);
     }
 
     public Drawable getBackground(int resourceId) {
-        return SkinManager.getInstance().getBackground(resourceId);
+        return SkinCompatManager.getInstance().getBackground(resourceId);
     }
 
     public Typeface getTypeface(int resourceId) {
-        return SkinManager.getInstance().getTypeface(resourceId);
+        return SkinCompatManager.getInstance().getTypeface(resourceId);
     }
 }

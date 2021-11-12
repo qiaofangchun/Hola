@@ -29,7 +29,7 @@ public class SkinCompatDelegate {
     public SkinCompatDelegate(Activity activity, boolean canChangeSkin) {
         mActivity = activity;
         mCanChangeSkin = canChangeSkin;
-        helpers = SkinManager.getInstance().getAllSkinHelper();
+        helpers = SkinCompatManager.getInstance().getAllSkinHelper();
         mFactory = new SkinInflaterFactory((view, attrs) -> {
             if (view == null) return;
             for (ISkinHelper helper : helpers) {
@@ -53,12 +53,12 @@ public class SkinCompatDelegate {
 
     public void useDynamicSkin(String path, int themeId) {
         if (themeId != 0) {
-            int themeColor = SkinManager.getInstance().getColor(themeId);
+            int themeColor = SkinCompatManager.getInstance().getColor(themeId);
             StatusBarUtils.forStatusBar(mActivity, themeColor);
             ActionBarUtils.forActionBar(mActivity, themeColor);
             NavigationBarUtils.forNavigationBar(mActivity, themeColor);
         }
-        SkinManager.getInstance().loadSkinResources(path);
+        SkinCompatManager.getInstance().loadSkinResources(path);
         applySkin(mActivity.getWindow().getDecorView());
     }
 

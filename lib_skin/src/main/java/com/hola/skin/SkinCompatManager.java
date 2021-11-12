@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SkinManager {
+public class SkinCompatManager {
     private static final String ADD_ASSET_PATH = "addAssetPath";
-    private static volatile SkinManager instance;
+    private static volatile SkinCompatManager instance;
 
     private Application mApplication;
     private Resources mAppResources;
@@ -34,7 +34,7 @@ public class SkinManager {
     private Map<String, SkinCache> mSkinCache;
     private List<ISkinHelper> helpers;
 
-    private SkinManager(Application application) {
+    private SkinCompatManager(Application application) {
         mApplication = application;
         mAppResources = mApplication.getResources();
         mSkinCache = new HashMap<>();
@@ -49,18 +49,18 @@ public class SkinManager {
         return helpers;
     }
 
-    public static SkinManager init(Application application) {
+    public static SkinCompatManager init(Application application) {
         if (instance == null) {
-            synchronized (SkinManager.class) {
+            synchronized (SkinCompatManager.class) {
                 if (instance == null) {
-                    instance = new SkinManager(application);
+                    instance = new SkinCompatManager(application);
                 }
             }
         }
         return instance;
     }
 
-    public static SkinManager getInstance() {
+    public static SkinCompatManager getInstance() {
         return instance;
     }
 
