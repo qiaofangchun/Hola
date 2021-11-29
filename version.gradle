@@ -6,13 +6,13 @@ build.minSdk = 23
 build.compileSdk = 29
 build.targetSdk = 29
 build.buildTools = "30.0.2"
-build.buildGradle = "com.android.tools.build:gradle:7.0.2"
+build.gradle = "com.android.tools.build:gradle:7.0.2"
 deps.build = build
 
 version.kotlin = "1.5.31"
 def kotlin = [:]
 kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$version.kotlin"
-kotlin.kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
+kotlin.gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
 deps.kotlin = kotlin
 
 version.coroutines = "1.4.1"

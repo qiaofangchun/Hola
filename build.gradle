@@ -7,10 +7,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath deps.build.buildGradle
-        classpath deps.kotlin.kotlinGradlePlugin
-        classpath deps.kotlin.kotlinGradlePlugin
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31'
+        classpath deps.build.gradle
+        classpath deps.kotlin.gradle
     }
 }
 
