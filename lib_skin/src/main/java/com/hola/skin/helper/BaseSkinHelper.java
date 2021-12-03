@@ -1,25 +1,40 @@
 package com.hola.skin.helper;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
 import android.view.View;
 
 import com.hola.skin.SkinCompatManager;
-import com.hola.skin.model.ViewAttrs;
+import com.hola.skin.model.ViewWrapper;
 
 public abstract class BaseSkinHelper<T extends View> implements ISkinHelper {
-
     @Override
-    public final void applySkin(View view, ViewAttrs attrs) {
-        applyView((T) view, attrs);
+    public ViewWrapper createViewWrapper(View view, AttributeSet attrs) {
+        ViewWrapper wrapper = new ViewWrapper.Builder().view(view).skinHelper(this).build();
+        int[] skinAttrs = getSkinAttrs();
+        Context context = view.getContext();
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, skinAttrs, 0, 0);
+        wrapper.setResource(typedArray, skinAttrs);
+        typedArray.recycle();
+        return wrapper;
     }
 
-    public abstract void applyView(T view, ViewAttrs attrs);
+    @Override
+    public final void applySkin(ViewWrapper wrapper) {
+        applyView((T) wrapper.getView(), wrapper);
+    }
 
-    protected final int getResourceId(ViewAttrs attrs, int skinAttr) {
+    protected abstract int[] getSkinAttrs();
+
+    public abstract void applyView(T view, ViewWrapper wrapper);
+
+    protected final int getResourceId(ViewWrapper wrapper, int skinAttr) {
         int attrId = getSkinAttrs()[skinAttr];
-        return attrs.getResource(attrId);
+        return wrapper.getResource(attrId);
     }
 
     public int getColor(int resourceId) {

@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.hola.skin.R;
-import com.hola.skin.model.ViewAttrs;
+import com.hola.skin.model.ViewWrapper;
 
 public class TextViewSkinHelper extends BaseSkinHelper<TextView> {
     @Override
@@ -18,12 +18,12 @@ public class TextViewSkinHelper extends BaseSkinHelper<TextView> {
     }
 
     @Override
-    public void applyView(TextView view, ViewAttrs attrs) {
-        int resId = getResourceId(attrs, R.styleable.SkinTextView_android_textColor);
+    public void applyView(TextView view, ViewWrapper wrapper) {
+        int resId = getResourceId(wrapper, R.styleable.SkinTextView_android_textColor);
         if (resId > 0) {
             view.setTextColor(getColor(resId));
         }
-        resId = getResourceId(attrs, R.styleable.SkinTextView_android_background);
+        resId = getResourceId(wrapper, R.styleable.SkinTextView_android_background);
         if (resId > 0) {
             view.setBackground(getDrawable(resId));
         }

@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import kotlin.reflect.KProperty
 
+
+@MainThread
 inline fun <V : ViewBinding> ViewGroup.viewBinding(
     crossinline viewBinder: (View) -> V,
     crossinline viewProvider: (ViewGroup) -> View = { this }
@@ -15,6 +17,8 @@ inline fun <V : ViewBinding> ViewGroup.viewBinding(
     viewBinder(viewProvider(viewGroup))
 }
 
+
+@MainThread
 inline fun <V : ViewBinding> ViewGroup.viewBinding(
     crossinline viewBinder: (View) -> V,
     @IdRes viewBindingRootId: Int
@@ -23,6 +27,7 @@ inline fun <V : ViewBinding> ViewGroup.viewBinding(
 }
 
 
+@MainThread
 inline fun <V : ViewBinding> RecyclerView.ViewHolder.viewBinding(
     crossinline viewBinder: (View) -> V,
     crossinline viewProvider: (RecyclerView.ViewHolder) -> View = RecyclerView.ViewHolder::itemView
@@ -31,6 +36,8 @@ inline fun <V : ViewBinding> RecyclerView.ViewHolder.viewBinding(
         viewBinder(viewProvider(holder))
     }
 
+
+@MainThread
 inline fun <V : ViewBinding> RecyclerView.ViewHolder.viewBinding(
     crossinline viewBinder: (View) -> V,
     @IdRes viewBindingRootId: Int

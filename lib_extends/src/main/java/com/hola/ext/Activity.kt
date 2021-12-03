@@ -5,16 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.annotation.IdRes
+import androidx.annotation.MainThread
 import androidx.annotation.RestrictTo
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
-
-inline fun <V : ViewBinding> ComponentActivity.viewBinding(
-    crossinline viewBinder: (View) -> V,
-    crossinline viewProvider: (ComponentActivity) -> View = ::findRootView
-): ViewBindingProperty<ComponentActivity, V> = ActivityViewBindingProperty { activity: ComponentActivity ->
-    viewBinder(viewProvider(activity))
-}
 
 /**
  * Utility to find root view for ViewBinding in Activity
@@ -29,12 +23,23 @@ fun findRootView(activity: Activity): View {
     }
 }
 
+@MainThread
+inline fun <V : ViewBinding> ComponentActivity.viewBinding(
+    crossinline viewBinder: (View) -> V,
+    crossinline viewProvider: (ComponentActivity) -> View = ::findRootView
+): ViewBindingProperty<ComponentActivity, V> =
+    ActivityViewBindingProperty { activity: ComponentActivity ->
+        viewBinder(viewProvider(activity))
+    }
+
+@MainThread
 inline fun <V : ViewBinding> ComponentActivity.viewBinding(
     crossinline viewBinder: (View) -> V,
     @IdRes resId: Int
-): ViewBindingProperty<ComponentActivity, V> = ActivityViewBindingProperty { activity: ComponentActivity ->
-    viewBinder(activity.requireViewByIdCompat(resId))
-}
+): ViewBindingProperty<ComponentActivity, V> =
+    ActivityViewBindingProperty { activity: ComponentActivity ->
+        viewBinder(activity.requireViewByIdCompat(resId))
+    }
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 class ActivityViewBindingProperty<in A : ComponentActivity, out V : ViewBinding>(

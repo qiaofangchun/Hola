@@ -2,11 +2,14 @@ package com.hola.ext
 
 import android.view.View
 import androidx.annotation.IdRes
+import androidx.annotation.MainThread
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 
+
+@MainThread
 @Suppress("UNCHECKED_CAST")
 inline fun <F : Fragment, V : ViewBinding> Fragment.viewBinding(
     crossinline viewBinder: (View) -> V,
@@ -32,6 +35,8 @@ fun DialogFragment.getRootView(viewBindingRootId: Int): View {
     }
 }
 
+
+@MainThread
 @Suppress("UNCHECKED_CAST")
 inline fun <F : Fragment, V : ViewBinding> Fragment.viewBinding(
     crossinline viewBinder: (View) -> V,

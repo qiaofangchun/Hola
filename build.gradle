@@ -9,6 +9,8 @@ buildscript {
     dependencies {
         classpath deps.build.gradle
         classpath deps.kotlin.gradle
+        classpath deps.navigation.gradle
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31'
     }
 }
 

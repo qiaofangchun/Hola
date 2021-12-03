@@ -1,13 +1,14 @@
 package com.hola.skin.helper;
 
+import android.util.AttributeSet;
 import android.view.View;
 
-import com.hola.skin.model.ViewAttrs;
+import com.hola.skin.model.ViewWrapper;
 
 public interface ISkinHelper {
     boolean viewMatch(View view);
 
-    int[] getSkinAttrs();
+    ViewWrapper createViewWrapper(View view, AttributeSet attrs);
 
-    void applySkin(View view, ViewAttrs attrs);
+    void applySkin(ViewWrapper viewWrapper);
 }

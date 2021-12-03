@@ -1,9 +1,9 @@
 package com.hola.skin;
 
 import android.app.Application;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Typeface;
@@ -16,16 +16,12 @@ import androidx.core.content.res.ResourcesCompat;
 import com.hola.skin.helper.ISkinHelper;
 import com.hola.skin.model.SkinCache;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class SkinCompatManager {
-    private static final String ADD_ASSET_PATH = "addAssetPath";
-    private static volatile SkinCompatManager instance;
-
     private Application mApplication;
     private Resources mAppResources;
     private Resources mSkinResources;
@@ -34,34 +30,32 @@ public class SkinCompatManager {
     private Map<String, SkinCache> mSkinCache;
     private List<ISkinHelper> helpers;
 
-    private SkinCompatManager(Application application) {
+    public static class InnerHolder {
+        public static final SkinCompatManager instance = new SkinCompatManager();
+    }
+
+    public static SkinCompatManager getInstance() {
+        return InnerHolder.instance;
+    }
+
+    private SkinCompatManager() {
+    }
+
+    public SkinCompatManager init(Application application) {
         mApplication = application;
         mAppResources = mApplication.getResources();
         mSkinCache = new HashMap<>();
         helpers = new ArrayList<>();
+        return this;
     }
 
-    public void addSkinHelper(ISkinHelper skinHelper) {
+    public SkinCompatManager addSkinHelper(ISkinHelper skinHelper) {
         helpers.add(skinHelper);
+        return this;
     }
 
     public List<ISkinHelper> getAllSkinHelper() {
         return helpers;
-    }
-
-    public static SkinCompatManager init(Application application) {
-        if (instance == null) {
-            synchronized (SkinCompatManager.class) {
-                if (instance == null) {
-                    instance = new SkinCompatManager(application);
-                }
-            }
-        }
-        return instance;
-    }
-
-    public static SkinCompatManager getInstance() {
-        return instance;
     }
 
     public boolean isDefaultSkin() {
@@ -90,7 +84,7 @@ public class SkinCompatManager {
         }
         isDefaultSkin = false;
         mSkinResources = resources;
-        mSkinCache.put(skinPath, new SkinCache(mSkinPackageName, mSkinResources));
+        mSkinCache.put(skinPath, new SkinCache.Builder().skinPkgName(skinPackageName).skinRes(resources).build());
     }
 
     private boolean findSkinCache(String skinPath) {
@@ -98,8 +92,8 @@ public class SkinCompatManager {
         if (skinCache == null) {
             return false;
         }
-        mSkinPackageName = skinCache.getSkinPackageName();
-        mSkinResources = skinCache.getSkinResources();
+        mSkinPackageName = skinCache.getSkinPkgName();
+        mSkinResources = skinCache.getSkinRes();
         return true;
     }
 
@@ -117,18 +111,21 @@ public class SkinCompatManager {
     }
 
     private Resources createSkinResources(String skinPath) {
-        Resources resources = null;
         try {
-            AssetManager assetManager = AssetManager.class.newInstance();
-            Method method = assetManager.getClass().getDeclaredMethod(ADD_ASSET_PATH, String.class);
-            method.setAccessible(true);
-            method.invoke(assetManager, skinPath);
-            resources = new Resources(assetManager,
-                    mAppResources.getDisplayMetrics(), mAppResources.getConfiguration());
+            PackageInfo pkgInfo = mApplication.getPackageManager().getPackageArchiveInfo(skinPath, PackageManager.GET_ACTIVITIES);
+            if (pkgInfo == null) {
+                return null;
+            }
+            ApplicationInfo appInfo = pkgInfo.applicationInfo;
+            appInfo.sourceDir = skinPath;
+            appInfo.publicSourceDir = skinPath;
+            Resources res = mApplication.getPackageManager().getResourcesForApplication(appInfo);
+            Resources superRes = mApplication.getResources();
+            return new Resources(res.getAssets(), superRes.getDisplayMetrics(), superRes.getConfiguration());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return resources;
+        return null;
     }
 
     private Resources getResources() {

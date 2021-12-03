@@ -13,7 +13,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':lib_common')
     implementation deps.androidx.activity
     implementation deps.androidx.appcompat
+    implementation deps.androidx.annotation
 }
