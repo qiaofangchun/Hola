@@ -1,11 +1,11 @@
-package com.hola.arch
+package com.hola.network
 
 interface IApiResponse<T> {
     fun isSuccess(): Boolean
 
     fun getResult(): T
 
-    fun getErrorCode(): Int
+    fun getResultCode(): Int
 
-    fun getErrorMessage(): String
+    fun getResultMsg(): String
 }

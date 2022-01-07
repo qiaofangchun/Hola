@@ -1,19 +1,16 @@
 package com.hola.common.utils
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Application
 import android.content.ContentResolver
-import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
-import android.os.Bundle
 import androidx.annotation.*
 
 @SuppressLint("StaticFieldLeak")
-object AppProxy {
+object AppHelper {
     @Volatile
     private var impl: Application? = null
 
@@ -26,7 +23,7 @@ object AppProxy {
     val packageManager: PackageManager get() = context.packageManager
 
     fun init(application: Application) {
-        impl ?: synchronized(AppProxy::class.java) {
+        impl ?: synchronized(AppHelper::class.java) {
             impl ?: let {
                 impl = application
             }

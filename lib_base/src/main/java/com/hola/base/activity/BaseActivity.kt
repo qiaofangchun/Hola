@@ -13,11 +13,6 @@ abstract class BaseActivity(@LayoutRes resId: Int) : AppCompatActivity(resId) {
         initWithData()
     }
 
-    override fun onDestroy() {
-        unregisterListener()
-        super.onDestroy()
-    }
-
     protected abstract fun initWithView()
 
     protected abstract fun initWithData()
@@ -25,4 +20,9 @@ abstract class BaseActivity(@LayoutRes resId: Int) : AppCompatActivity(resId) {
     protected fun registerListener() {}
 
     protected fun unregisterListener() {}
+
+    override fun onDestroy() {
+        unregisterListener()
+        super.onDestroy()
+    }
 }

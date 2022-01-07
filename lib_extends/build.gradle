@@ -15,7 +15,6 @@ android {
 }
 
 dependencies {
-    implementation deps.kotlin.stdlib
     implementation deps.androidx.annotation
     implementation deps.androidx.activity
     implementation deps.androidx.appcompat

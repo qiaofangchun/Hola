@@ -13,7 +13,6 @@ android {
 }
 
 dependencies {
-    api deps.kotlin.stdlib
     api deps.androidx.annotation
     api deps.log.logger
 }

@@ -1,10 +1,9 @@
 package com.hola.arch.usecase
 
-import com.hola.arch.IApiResponse
-import com.hola.arch.exception.IException
+import com.hola.arch.exception.ApiException
 
 interface UseCaseHandler {
-    fun <T> handResponse(result: IApiResponse<T>): T?
+    fun <T> handResponse(result: Result<T>): T?
 
-    fun handException(throwable: Throwable): IException
+    fun handException(throwable: Throwable): ApiException
 }

@@ -13,8 +13,9 @@ android {
 }
 
 dependencies {
-    implementation deps.kotlin.stdlib
-    implementation deps.retrofit.api
-    implementation deps.retrofit.gson_converter
-    implementation deps.retrofit.scalars_converter
+    api deps.retrofit.api
+    api deps.retrofit.gson_converter
+    api deps.retrofit.scalars_converter
+    //implementation "org.paradisehell.convex:convex:1.0.0"
+    api ("com.squareup.okhttp3:logging-interceptor:4.9.1")
 }

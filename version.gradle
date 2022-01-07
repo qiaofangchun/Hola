@@ -75,6 +75,7 @@ def retrofit = [:]
 retrofit.api = "com.squareup.retrofit2:retrofit:$version.retrofit"
 retrofit.gson_converter = "com.squareup.retrofit2:converter-gson:$version.retrofit"
 retrofit.scalars_converter = "com.squareup.retrofit2:converter-scalars:$version.retrofit"
+retrofit.protobuf_converter = "com.squareup.retrofit2:converter-protobuf:$version.retrofit"
 deps.retrofit = retrofit
 
 def log = [:]
