@@ -11,12 +11,12 @@ object ActivityManager {
 
     fun init(app: Application) {
         app.registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks() {
-            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                activity?.let { addActivity(it) }
+            override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
+                addActivity(activity)
             }
 
             override fun onActivityDestroyed(activity: Activity) {
-                activity?.let { removeActivity(it) }
+                removeActivity(activity)
             }
         })
     }

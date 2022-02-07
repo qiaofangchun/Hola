@@ -1,0 +1,24 @@
+apply from: "${project.rootDir}/config.gradle"
+android {
+    defaultConfig {
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+        resConfigs("zh-rCN", "en-rUS")
+    }
+    android.buildFeatures.viewBinding = true
+    buildTypes {
+        release {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}

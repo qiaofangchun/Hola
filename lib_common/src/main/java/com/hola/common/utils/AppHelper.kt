@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
-import androidx.annotation.*
 
 @SuppressLint("StaticFieldLeak")
 object AppHelper {
@@ -30,16 +29,16 @@ object AppHelper {
         }
     }
 
-    fun getString(@StringRes resId: Int): String = context.getString(resId)
-    fun getString(@StringRes resId: Int, vararg args: Any): String = context.getString(resId, *args)
-    fun getStringArray(@ArrayRes resId: Int): Array<String> = resources.getStringArray(resId)
+    fun getString(resId: Int): String = context.getString(resId)
+    fun getString(resId: Int, vararg args: Any): String = context.getString(resId, *args)
+    fun getStringArray(resId: Int): Array<String> = resources.getStringArray(resId)
     fun getSystemService(name: String): Any? = context.getSystemService(name)
     fun getSharedPreferences(name: String, mode: Int): SharedPreferences = context.getSharedPreferences(name, mode)
-    fun getColor(@ColorRes resId: Int): Int = context.getColor(resId)
-    fun getDrawable(@DrawableRes resId: Int): Drawable? = context.getDrawable(resId)
-    fun getDimension(@DimenRes resId: Int): Float = resources.getDimension(resId)
-    fun getDimensionPixelOffset(@DimenRes resId: Int): Int = resources.getDimensionPixelOffset(resId)
-    fun getDimensionPixelSize(@DimenRes resId: Int): Int = resources.getDimensionPixelSize(resId)
+    fun getColor(resId: Int): Int = context.getColor(resId)
+    fun getDrawable(resId: Int): Drawable? = context.getDrawable(resId)
+    fun getDimension(resId: Int): Float = resources.getDimension(resId)
+    fun getDimensionPixelOffset(resId: Int): Int = resources.getDimensionPixelOffset(resId)
+    fun getDimensionPixelSize(resId: Int): Int = resources.getDimensionPixelSize(resId)
     fun registerActivityLifecycleCallbacks(callback: Application.ActivityLifecycleCallbacks) {
         context.registerActivityLifecycleCallbacks(callback)
     }

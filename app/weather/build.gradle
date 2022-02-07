@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
 }
-apply from: "${project.rootDir}/config.gradle"
+apply from: "${project.rootDir}/config_app.gradle"
 
 android {
     defaultConfig {
@@ -10,7 +10,6 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    android.buildFeatures.viewBinding = true
 }
 
 dependencies {
@@ -20,6 +19,5 @@ dependencies {
     implementation project(path: ':lib_network')
     implementation project(path: ':lib_database')
     implementation project(path: ':lib_common')
-
-    implementation deps.google.material
+    implementation deps.amap.location
 }

@@ -1,14 +1,13 @@
 package com.hola.app.weather.repository
 
-import android.util.Log
-import com.hola.app.weather.repository.remote.WeatherNet
+import com.hola.arch.exception.ApiException
 import com.hola.arch.usecase.UseCase
 import kotlinx.coroutines.CoroutineScope
 
-class WeatherUseCase(scope: CoroutineScope) : UseCase(scope, WeatherUseCaseHandler) {
-    fun searchPlace(placeName: String, lang: String) {
+class WeatherUseCase(scope: CoroutineScope) : UseCase(scope) {
+    /*fun searchPlace(placeName: String, lang: String) {
         doRequest {
-            WeatherNet.api.searchPlace(placeName, lang)
+            sync { WeatherNet.api.searchPlace(placeName, lang) }
         }.onStart {
             Log.d("qfc", "------>onStart, Thread->${Thread.currentThread().name}")
         }.onSuccess { result ->
@@ -16,5 +15,11 @@ class WeatherUseCase(scope: CoroutineScope) : UseCase(scope, WeatherUseCaseHandl
         }.onFailure {
             Log.d("qfc", "------>Thread->${Thread.currentThread().name}\n error:${it.message}")
         }.execute()
+    }*/
+
+    override fun handException(throwable: Throwable): ApiException {
+        return object : ApiException(0, throwable) {
+            override fun getMessage(throwable: Throwable): String = "this is error"
+        }
     }
 }

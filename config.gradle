@@ -5,12 +5,6 @@ android {
         minSdkVersion deps.build.minSdk
         targetSdkVersion deps.build.targetSdk
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -18,8 +12,13 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+    lintOptions {
+        abortOnError true
+    }
 }
 
 dependencies {
-    api deps.kotlin.stdlib
+    implementation deps.kotlin.stdlib
+    implementation deps.coroutines.core
+    implementation deps.coroutines.android
 }

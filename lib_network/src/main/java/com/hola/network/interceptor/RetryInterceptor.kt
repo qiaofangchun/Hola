@@ -8,14 +8,14 @@ import java.io.IOException
 /**
  * 重试拦截器
  */
-class RetryInterceptor(private val mMaxRetry: Int) : Interceptor {
+class RetryInterceptor(private val mMaxRetryNum: Int) : Interceptor {
     private var mRetryNum = 0
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         var response = chain.proceed(request)
-        while ((!response.isSuccessful) && (mRetryNum < mMaxRetry)) {
+        while ((!response.isSuccessful) && (mRetryNum < mMaxRetryNum)) {
             mRetryNum++
             println("retryNum=$mRetryNum")
             response = chain.proceed(request)

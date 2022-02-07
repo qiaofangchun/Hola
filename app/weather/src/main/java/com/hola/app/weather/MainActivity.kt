@@ -16,9 +16,9 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     }
 
     override fun initWithView() {
-        viewBinding.text.setOnClickListener {
+        /*viewBinding.text.setOnClickListener {
             viewModel.searchPlace("北京", "zh_CN")
-        }
+        }*/
     }
 
     override fun initWithData() {

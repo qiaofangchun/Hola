@@ -1,0 +1,24 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+apply from: "${project.rootDir}/config_app.gradle"
+
+android {
+    defaultConfig {
+        applicationId "com.hola.app.weather"
+        versionCode 1
+        versionName "1.0"
+    }
+}
+
+dependencies {
+    implementation project(path: ':lib_extends')
+    implementation project(path: ':lib_arch')
+    implementation project(path: ':lib_base')
+    implementation project(path: ':lib_network')
+    implementation project(path: ':lib_database')
+    implementation project(path: ':lib_common')
+
+    implementation deps.google.material
+}

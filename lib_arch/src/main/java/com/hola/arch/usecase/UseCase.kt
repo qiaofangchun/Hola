@@ -1,12 +1,71 @@
 package com.hola.arch.usecase
 
-import kotlinx.coroutines.CoroutineScope
+import com.hola.arch.exception.ApiException
+import kotlinx.coroutines.*
 
-open class UseCase(
-    private val mScope: CoroutineScope,
-    private val mHandler: UseCaseHandler
-) {
+abstract class UseCase(private val mScope: CoroutineScope) {
     fun <T> doRequest(request: (suspend () -> T?)): UseCaseExecutor<T> {
-        return UseCaseExecutor(mScope, mHandler, request)
+        return UseCaseExecutor(mScope, this::handException, request)
+    }
+
+    protected suspend fun <T> sync(block: suspend () -> T): Result<T> {
+        return try {
+            Result.success(block.invoke())
+        } catch (throwable: Throwable) {
+            Result.failure(throwable)
+        }
+    }
+
+    protected suspend fun <T> async(block: suspend () -> T): Deferred<Result<T>> {
+        val deferred = mScope.async(start = CoroutineStart.LAZY) {
+            try {
+                Result.success(block.invoke())
+            } catch (throwable: Throwable) {
+                Result.failure(throwable)
+            }
+        }
+        deferred.start()
+        return deferred
+    }
+
+    abstract fun handException(throwable: Throwable): ApiException
+
+    class UseCaseExecutor<T>(
+        private val mScope: CoroutineScope,
+        private val mHandler: ((Throwable) -> ApiException),
+        private val mRequest: (suspend () -> T?)? = null
+    ) {
+        private var mOnStart: (() -> Unit)? = null
+        private var mOnSuccess: ((T) -> Unit)? = null
+        private var mOnFailure: ((ApiException) -> Unit)? = null
+
+        fun onStart(onStart: (() -> Unit)?): UseCaseExecutor<T> {
+            this.mOnStart = onStart
+            return this
+        }
+
+        fun onSuccess(onSuccess: ((T) -> Unit)?): UseCaseExecutor<T> {
+            this.mOnSuccess = onSuccess
+            return this
+        }
+
+        fun onFailure(onFailure: ((ApiException) -> Unit)?): UseCaseExecutor<T> {
+            this.mOnFailure = onFailure
+            return this
+        }
+
+        fun execute() {
+            mOnStart?.invoke()
+            val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+                mOnFailure?.invoke(mHandler.invoke(exception))
+            }
+            mScope.launch(exceptionHandler) {
+                mRequest?.invoke()?.let {
+                    mOnSuccess?.invoke(it as T)
+                } ?: let {
+                    mOnFailure?.invoke(mHandler.invoke(NullPointerException("Request result is null")))
+                }
+            }
+        }
     }
 }

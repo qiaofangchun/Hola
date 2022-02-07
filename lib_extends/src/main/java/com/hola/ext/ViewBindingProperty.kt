@@ -8,10 +8,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.MainThread
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
 import androidx.viewbinding.ViewBinding
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -37,7 +34,7 @@ abstract class LifecycleViewBindingProperty<in R : Any, out V : ViewBinding>(
 
     @MainThread
     override fun getValue(thisRef: R, property: KProperty<*>): V {
-        return viewBinding?:let {
+        return viewBinding ?: let {
             getLifecycleOwner(thisRef).lifecycle.takeIf { it.currentState != Lifecycle.State.DESTROYED }
                 ?.addObserver(ClearOnDestroyLifecycleObserver(this))
             viewBinder(thisRef)
@@ -51,16 +48,15 @@ abstract class LifecycleViewBindingProperty<in R : Any, out V : ViewBinding>(
 
     private class ClearOnDestroyLifecycleObserver(
         private val property: LifecycleViewBindingProperty<*, *>
-    ) : LifecycleObserver {
+    ) : LifecycleEventObserver {
 
         private companion object {
             private val mainHandler = Handler(Looper.getMainLooper())
         }
 
-        @MainThread
-        @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        fun onDestroy(owner: LifecycleOwner) {
-            mainHandler.post { property.clear() }
+        override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+            event.takeIf { it == Lifecycle.Event.ON_DESTROY }
+                ?.let { mainHandler.post { property.clear() } }
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.hola.arch.exception
 
-abstract class ApiException(val code: Int, val throwable: Throwable) {
+abstract class ApiException(val code: Int, private val throwable: Throwable) {
     val message: String
         get() {
             return getMessage(throwable)
