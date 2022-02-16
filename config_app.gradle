@@ -9,15 +9,17 @@ android {
     android.buildFeatures.viewBinding = true
     buildTypes {
         release {
+            debuggable false
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            minifyEnabled true
-            zipAlignEnabled true
-            shrinkResources true
+            debuggable true
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

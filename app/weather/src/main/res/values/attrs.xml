@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PagerTitleStrip">
+        <attr name="pts_radius" format="dimension" />
+        <attr name="pts_margin" format="dimension" />
+        <attr name="pts_background" format="color|integer" />
+        <attr name="pts_selected_background" format="color|integer" />
+        <attr name="pts_gravity">
+            <enum name="left" value="0" />
+            <enum name="center" value="1" />
+            <enum name="right" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <!-- Fit system bar. -->
+    <declare-styleable name="FitSystemBarRecyclerView">
+        <attr name="rv_side">
+            <flag name="none" value="0" />
+            <flag name="top" value="1" />
+            <flag name="bottom" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>

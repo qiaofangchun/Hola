@@ -9,7 +9,7 @@ build.buildTools = "30.0.2"
 build.gradle = "com.android.tools.build:gradle:7.0.4"
 deps.build = build
 
-version.kotlin = "1.6.0"
+version.kotlin = "1.6.10"
 def kotlin = [:]
 kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$version.kotlin"
 kotlin.gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"

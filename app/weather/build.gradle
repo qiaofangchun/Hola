@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 apply from: "${project.rootDir}/config_app.gradle"
 
@@ -19,5 +20,9 @@ dependencies {
     implementation project(path: ':lib_network')
     implementation project(path: ':lib_database')
     implementation project(path: ':lib_common')
+
     implementation deps.amap.location
+    implementation deps.navigation.ui
+    implementation deps.navigation.dynamic
+    implementation deps.navigation.fragment
 }

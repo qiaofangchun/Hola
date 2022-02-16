@@ -1,5 +1,6 @@
 package com.hola.base.activity
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,8 @@ abstract class BaseActivity(@LayoutRes resId: Int) : AppCompatActivity(resId) {
         registerListener()
         initWithData()
     }
+
+    protected open fun requestedOrientation():Int = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
     protected abstract fun initWithView()
 

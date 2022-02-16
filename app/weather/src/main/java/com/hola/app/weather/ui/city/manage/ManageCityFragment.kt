@@ -1,9 +1,9 @@
-package com.hola.app.weather.ui
+package com.hola.app.weather.ui.city.manage
 
 import com.hola.app.weather.R
 import com.hola.base.fragment.BaseFragment
 
-class MainFragment : BaseFragment(R.layout.fragment_main) {
+class ManageCityFragment : BaseFragment(R.layout.fragment_manage_city) {
     override fun initWithView() {
 
     }
