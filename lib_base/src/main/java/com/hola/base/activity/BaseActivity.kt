@@ -5,7 +5,11 @@ import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 
-abstract class BaseActivity(@LayoutRes resId: Int) : AppCompatActivity(resId) {
+abstract class BaseActivity : AppCompatActivity {
+
+    constructor() : super()
+
+    constructor(@LayoutRes resId: Int) : super(resId)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -14,7 +18,7 @@ abstract class BaseActivity(@LayoutRes resId: Int) : AppCompatActivity(resId) {
         initWithData()
     }
 
-    protected open fun requestedOrientation():Int = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+    protected open fun requestedOrientation(): Int = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
     protected abstract fun initWithView()
 
