@@ -30,16 +30,17 @@ interface ApiService {
      */
     @GET("v2.5/$WEATHER_TOKEN/{lng},{lat}/weather.json?$WEATHER_STATIC_PARAM")
     suspend fun getWeatherByLocation(
-        @Path("lng") lng: String,
-        @Path("lat") lat: String,
-        @Query("lang") lang: String
+        @Path("lng") lng: Double,
+        @Path("lat") lat: Double,
+        @Query("lang") lang: String,
+        @Query("unit") unit: String
     ): WeatherResult
 
     companion object {
         /**
          * 彩云天气api访问Token
          */
-        const val WEATHER_TOKEN = "FYYORZSlNVBnBx20"
+        private const val WEATHER_TOKEN = "FYYORZSlNVBnBx20"
 
         /**
          * 彩云天气域名
@@ -64,7 +65,7 @@ interface ApiService {
         /**
          * 天气固定参数
          */
-        const val WEATHER_STATIC_PARAM =
+        private const val WEATHER_STATIC_PARAM =
             "dailysteps=$WEATHER_DAILY_STEP&hourlysteps=$WEATHER_HOURLY_STEP&alert=$WEATHER_ALERT_INFO"
     }
 }

@@ -8,14 +8,12 @@ import java.util.*
 class AlertTab {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
-    var cityId: String? = null
+    var adcode: String? = null
     var alertId: Long = 0
     var date: Date? = null
     var time: Long = 0
-
     var description: String? = null
     var content: String? = null
-
     var type: String? = null
     var priority = 0
     var color = 0

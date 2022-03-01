@@ -11,8 +11,8 @@ android {
 }
 
 dependencies {
+    api deps.google.gson
     api deps.retrofit.api
-    api deps.retrofit.gson_converter
     api deps.retrofit.scalars_converter
     api("com.squareup.okhttp3:logging-interceptor:4.9.1")
 }

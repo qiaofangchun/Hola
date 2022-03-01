@@ -1,6 +1,7 @@
 package com.hola.arch.usecase
 
 import com.hola.arch.exception.ApiException
+import com.hola.arch.exception.DataNullException
 import kotlinx.coroutines.*
 
 abstract class UseCase(private val mScope: CoroutineScope) {
@@ -63,7 +64,7 @@ abstract class UseCase(private val mScope: CoroutineScope) {
                 mRequest?.invoke()?.let {
                     mOnSuccess?.invoke(it as T)
                 } ?: let {
-                    mOnFailure?.invoke(mHandler.invoke(NullPointerException("Request result is null")))
+                    mOnFailure?.invoke(mHandler.invoke(DataNullException()))
                 }
             }
         }

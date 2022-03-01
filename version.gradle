@@ -60,7 +60,7 @@ room.compiler = "androidx.room:room-compiler:$version.room"
 deps.room = room
 
 def google = [:]
-google.gson = 'com.google.code.gson:gson:2.8.5'
+google.gson = 'com.google.code.gson:gson:2.9.0'
 google.material = 'com.google.android.material:material:1.4.0'
 deps.google = google
 

@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.hola.app.weather.repository.WeatherUseCase
 
 class MainViewModel : ViewModel() {
-    private val mUseCase by lazy { WeatherUseCase(viewModelScope) }
+    private val mUseCase by lazy { MainUseCase(viewModelScope) }
 
-    fun searchPlace(placeName: String, lang: String) {
-        //mUseCase.searchPlace(placeName, lang)
+    fun searchPlace() {
+        mUseCase.update()
     }
 }

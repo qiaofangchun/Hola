@@ -1,15 +1,17 @@
 package com.hola.network
 
+import com.hola.network.converter.JsonConverterFactory
+import com.hola.network.interceptor.RetryInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.lang.reflect.ParameterizedType
 import java.util.concurrent.TimeUnit
 
-open class BaseNetwork<I>(private val mBaseUrl: String) {
+abstract class BaseNetwork<I>(private val mBaseUrl: String) {
     companion object {
         private const val TIME_OUT = 10L
+        private const val RETRY_NUM = 3
     }
 
     val api: I by lazy { getRetrofit().create(getServiceClass()) }
@@ -23,23 +25,21 @@ open class BaseNetwork<I>(private val mBaseUrl: String) {
         return Retrofit.Builder()
             .baseUrl(mBaseUrl)
             .client(getOkHttpClient())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(JsonConverterFactory.create(::parserResponseStatus))
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
     }
 
-    private fun getOkHttpClient(): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-            .retryOnConnectionFailure(true)
+    protected open fun getOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
             .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
             .callTimeout(TIME_OUT, TimeUnit.SECONDS)
             .readTimeout(TIME_OUT, TimeUnit.SECONDS)
             .writeTimeout(TIME_OUT, TimeUnit.SECONDS)
-        configOkHttpClient(builder)
-        return builder.build()
+            .retryOnConnectionFailure(true)
+            .addInterceptor(RetryInterceptor(RETRY_NUM))
+            .build()
     }
 
-    protected open fun configOkHttpClient(builder: OkHttpClient.Builder) {
-
-    }
+    protected open fun parserResponseStatus(result: Any) = Unit
 }
