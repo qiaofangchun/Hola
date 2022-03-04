@@ -1,13 +1,18 @@
 package com.hola.app.weather
 
+import android.Manifest
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Bundle
+import android.util.Log
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.hola.app.weather.databinding.ActivityMainBinding.bind
+import com.hola.app.weather.location.AMapLocationClient
+import com.hola.app.weather.location.Location
+import com.hola.app.weather.location.LocationListener
 import com.hola.app.weather.ui.main.MainViewModel
 import com.hola.app.weather.widget.weather.WeatherType
 import com.hola.base.activity.BaseActivity
@@ -55,7 +60,31 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     }
 
     override fun initWithData() {
+        val permission =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { map ->
+                //val coarse = map[Manifest.permission.ACCESS_COARSE_LOCATION]
+                //val fine = map[Manifest.permission.ACCESS_FINE_LOCATION]
+                if (map) {
+                    startLocation()
+                }
+            }
+        permission.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+    }
 
+    private fun startLocation() {
+        val client = AMapLocationClient().apply {
+            //onceLocation(true)
+            setLocationListener(object : LocationListener {
+                override fun onSuccess(loc: Location) {
+                    Log.d("qfc", "------->$loc")
+                }
+
+                override fun onFailure(exception: Exception) {
+                    Log.d("qfc", "------->${exception.message}")
+                }
+            })
+        }
+        client.startLocation()
     }
 
     override fun onResume() {

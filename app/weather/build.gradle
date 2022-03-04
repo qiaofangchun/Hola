@@ -6,6 +6,20 @@ plugins {
 apply from: "${project.rootDir}/config_app.gradle"
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('./keystore')
+            storePassword 'weather'
+            keyPassword 'weather'
+            keyAlias 'weather'
+        }
+        release {
+            storeFile file('./keystore')
+            storePassword 'weather'
+            keyPassword 'weather'
+            keyAlias 'weather'
+        }
+    }
     defaultConfig {
         applicationId "com.hola.app.weather"
         versionCode 1
@@ -21,6 +35,7 @@ dependencies {
     implementation project(path: ':lib_database')
     implementation project(path: ':lib_common')
 
+    implementation deps.amap.search
     implementation deps.amap.location
     implementation deps.navigation.ui
     implementation deps.navigation.dynamic

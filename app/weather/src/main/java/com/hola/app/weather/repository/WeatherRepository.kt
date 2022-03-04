@@ -1,34 +1,47 @@
 package com.hola.app.weather.repository
 
 import android.util.Log
+import com.amap.api.location.AMapLocation
+import com.amap.api.location.AMapLocationClient
+import com.amap.api.location.AMapLocationClientOption
+import com.amap.api.location.AMapLocationClientOption.*
 import com.hola.app.weather.repository.locale.WeatherDb
-import com.hola.app.weather.repository.locale.model.AlertTab
 import com.hola.app.weather.repository.remote.WeatherNet
 import com.hola.app.weather.repository.remote.dao.ApiService
-import com.hola.app.weather.repository.remote.model.Alert
 import com.hola.common.utils.AppHelper
+import java.util.*
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 object WeatherRepository {
-    private val remoteApi by lazy { WeatherNet.api }
-    private val localeApi by lazy { WeatherDb.getInstance(AppHelper.context) }
+    private val remoteApi = WeatherNet.api
+    private val localeApi = WeatherDb.getInstance(AppHelper.context)
+    private val language = Locale.getDefault().displayLanguage
+    private val tempUnit = ApiService.UNIT_METRIC
 
-    suspend fun getWeatherByAdCode(adCode: String, lang: String) {
-        val weather = remoteApi.getWeatherByAdCode(adCode, lang)
-        val alerts = ArrayList<Alert>()
-        weather.result.alert.content.asSequence().map {
-            AlertTab().apply {
-                alertId = it.alertId
-                adcode = it.adcode
-                time = it.pubtimestamp
-                description = it.description
-                type = it.type
-            }
-        }
+    suspend fun getWeatherByLoc(): AMapLocation? {
+        return null
+    }
+
+    suspend fun searchPlace(place: String) = remoteApi.searchPlace(place, language)
+
+    suspend fun getWeatherByAdCode(
+        adCode: String,
+        lang: String = language,
+        unit: String = tempUnit
+    ) {
+        val weather = remoteApi.getWeatherByAdCode(adCode, lang, unit)
         Log.d("WeatherRepository", weather.toString())
     }
 
-    suspend fun getWeatherByLocation(lng: Double, lat: Double, lang: String) {
-        val weather = remoteApi.getWeatherByLocation(lng, lat, lang)
+    suspend fun getWeatherByLocation(
+        lng: Double, lat: Double,
+        lang: String = language,
+        unit: String = tempUnit
+    ) {
+
+        val weather = remoteApi.getWeatherByLocation(lng, lat, lang, unit)
         Log.d("WeatherRepository", weather.toString())
     }
 }

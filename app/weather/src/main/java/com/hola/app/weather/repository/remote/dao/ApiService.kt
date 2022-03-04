@@ -22,7 +22,8 @@ interface ApiService {
     @GET("v2.5/$WEATHER_TOKEN/weather.json?$WEATHER_STATIC_PARAM")
     suspend fun getWeatherByAdCode(
         @Query("adcode") adCode: String,
-        @Query("lang") lang: String
+        @Query("lang") lang: String,
+        @Query("unit") unit: String
     ): WeatherResult
 
     /**
@@ -46,6 +47,10 @@ interface ApiService {
          * 彩云天气域名
          */
         const val WEATHER_BASE_URL = "https://api.caiyunapp.com/"
+
+        const val UNIT_SI = "SI"
+        const val UNIT_METRIC = "metric"
+        const val UNIT_IMPERIAL = "imperial"
 
         /**
          * 未来多少天数据
