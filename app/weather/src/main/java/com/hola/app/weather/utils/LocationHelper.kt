@@ -1,64 +1,96 @@
 package com.hola.app.weather.utils
 
-import com.amap.api.location.AMapLocation
-import com.amap.api.location.AMapLocationClient
-import com.amap.api.location.AMapLocationClientOption
+import android.util.Log
+import com.hola.app.weather.location.*
+import com.hola.app.weather.location.exception.LocNotPermissionException
 import com.hola.common.utils.AppHelper
-import java.lang.NullPointerException
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
-/*
 object LocationHelper {
+    private const val TAG = "LocationHelper"
     private const val LOC_TIME_OUT = 5000L
     private const val LOC_INTERVAL = 2000L
 
-    private val amapClient by lazy {
-        val option = AMapLocationClientOption().apply {
-            //可选，设置网络请求超时时间。默认为30秒。在仅设备模式下无效
-            httpTimeOut = AMAP_HTTP_TIME_OUT
-            //可选，设置定位间隔。默认为2秒
-            interval = AMAP_LOC_INTERVAL
-            //可选，设置定位模式，可选的模式有高精度、仅设备、仅网络。默认为高精度模式
-            locationMode = AMapLocationClientOption.AMapLocationMode.Battery_Saving
-            //可选，设置是否gps优先，只在高精度模式下有效。默认关闭
-            isGpsFirst = false
-            //可选，设置是否返回逆地理地址信息。默认是true
-            isNeedAddress = true
-            //可选，设置是否单次定位。默认是false
-            isOnceLocation = false
-            //可选，设置是否等待wifi刷新，默认为false.如果设置为true,会自动变为单次定位，持续定位时不要使用
-            isOnceLocationLatest = false
-            //可选，设置是否使用传感器。默认是false
-            isSensorEnable = false
-            //可选，设置是否开启wifi扫描。默认为true，如果设置为false会同时停止主动刷新，停止以后完全依赖于系统刷新，定位位置可能存在误差
-            isWifiScan = false
-            //可选，设置是否使用缓存定位，默认为true
-            isLocationCacheEnable = false
-        }
-        AMapLocationClient(AppHelper.context).apply {
-            //可选， 设置网络请求的协议。可选HTTP或者HTTPS。默认为HTTP
-            AMapLocationClientOption.setLocationProtocol(AMapLocationClientOption.AMapLocationProtocol.HTTPS)
-            setLocationOption(option)
-        }
-    }
-
-    val isStarted = amapClient.isStarted
+    private val callback = ArrayList<LocationListener>()
 
     private val sysClient by lazy {
-
+        SystemLocationClient(AppHelper.context).apply { configClient(this) }
+    }
+    private val amapClient by lazy {
+        AMapLocationClient(AppHelper.context).apply { configClient(this) }
     }
 
-    suspend fun getLocation(): Array<Double> {
-        return suspendCoroutine { continuation ->
-            amapClient.startLocation()
-            amapClient.setLocationListener { result ->
-                result?.takeIf { it.errorCode == AMapLocation.LOCATION_SUCCESS }
-                    ?.let {
-                        continuation.resume(arrayOf(it.latitude, it.longitude))
-                    } ?: continuation.resumeWithException(NullPointerException())
+    fun startLocation() {
+        /*if (amapClient.isStarted()) {
+            Log.d(TAG, "amap started!")
+            return
+        }*/
+        if (sysClient.isStarted()) {
+            Log.d(TAG, "system started!")
+            return
+        }
+        sysClient.startLocation()
+    }
+
+    fun stopLocation() {
+        amapClient.stopLocation()
+        sysClient.stopLocation()
+    }
+
+    fun getPermissions(): Array<String> {
+        val all = sysClient.getPermissions()/* + amapClient.getPermissions()*/
+        return all.distinct().toTypedArray()
+    }
+
+    fun regLocationListener(listener: LocationListener) {
+        callback += listener
+    }
+
+    fun unRegLocationListener(listener: LocationListener) {
+        callback -= listener
+    }
+
+    private fun configClient(client: ILocationClient) {
+        client.timeOut(LOC_TIME_OUT)
+        client.interval(LOC_INTERVAL)
+        client.needAddress(true)
+        client.onceLocation(true)
+        client.locationMode(LocationMode.MODE_NETWORK)
+        client.setLocationListener(if (client is AMapLocationClient) {
+            object : LocationListener {
+                override fun onSuccess(loc: Location) {
+                    handSuccess(loc)
+                }
+
+                override fun onFailure(e: Exception) {
+                    if (e is LocNotPermissionException) {
+                        handFailure(e)
+                        return
+                    }
+                    sysClient.startLocation()
+                }
             }
+        } else {
+            object : LocationListener {
+                override fun onSuccess(loc: Location) {
+                    handSuccess(loc)
+                }
+
+                override fun onFailure(e: Exception) {
+                    handFailure(e)
+                }
+            }
+        })
+    }
+
+    private fun handSuccess(loc: Location) {
+        callback.forEach {
+            it.onSuccess(loc)
         }
     }
-}*/
+
+    private fun handFailure(e: Exception) {
+        callback.forEach {
+            it.onFailure(e)
+        }
+    }
+}

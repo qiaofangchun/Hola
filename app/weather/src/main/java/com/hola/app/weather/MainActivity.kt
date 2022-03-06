@@ -7,13 +7,13 @@ import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.hola.app.weather.databinding.ActivityMainBinding.bind
-import com.hola.app.weather.location.AMapLocationClient
-import com.hola.app.weather.location.Location
-import com.hola.app.weather.location.LocationListener
+import com.hola.app.weather.location.*
 import com.hola.app.weather.ui.main.MainViewModel
+import com.hola.app.weather.utils.LocationHelper
 import com.hola.app.weather.widget.weather.WeatherType
 import com.hola.base.activity.BaseActivity
 import com.hola.common.utils.AppHelper
@@ -23,6 +23,19 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     private val view by viewBinding(::bind)
     private val model: MainViewModel by viewModels()
     private var type = WeatherType.DEFAULT
+
+    fun startLocation(){
+        LocationHelper.regLocationListener(object :LocationListener{
+            override fun onSuccess(loc: Location) {
+                Log.d("qfc","------->$loc")
+            }
+
+            override fun onFailure(e: Exception) {
+                Log.d("qfc","------->${e.message}")
+            }
+        })
+        LocationHelper.startLocation()
+    }
 
     override fun requestedOrientation() = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
@@ -41,7 +54,6 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
             })
         }
         view.change.setOnClickListener {
-            model.searchPlace()
             type = when (type) {
                 WeatherType.DEFAULT -> WeatherType.CLEAR_D
                 WeatherType.CLEAR_D -> WeatherType.RAIN_D
@@ -61,30 +73,13 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
 
     override fun initWithData() {
         val permission =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { map ->
-                //val coarse = map[Manifest.permission.ACCESS_COARSE_LOCATION]
-                //val fine = map[Manifest.permission.ACCESS_FINE_LOCATION]
-                if (map) {
-                    startLocation()
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { map ->
+                if (map.containsValue(false) || map.containsValue(null)) {
+                    return@registerForActivityResult
                 }
+                startLocation()
             }
-        permission.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-    }
-
-    private fun startLocation() {
-        val client = AMapLocationClient().apply {
-            //onceLocation(true)
-            setLocationListener(object : LocationListener {
-                override fun onSuccess(loc: Location) {
-                    Log.d("qfc", "------->$loc")
-                }
-
-                override fun onFailure(exception: Exception) {
-                    Log.d("qfc", "------->${exception.message}")
-                }
-            })
-        }
-        client.startLocation()
+        permission.launch(LocationHelper.getPermissions())
     }
 
     override fun onResume() {
@@ -93,12 +88,12 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     }
 
     override fun onPause() {
-        super.onPause()
         view.weatherView.onPause()
+        super.onPause()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         view.weatherView.onDestroy()
+        super.onDestroy()
     }
 }

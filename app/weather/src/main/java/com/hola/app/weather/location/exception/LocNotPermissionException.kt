@@ -3,7 +3,9 @@ package com.hola.app.weather.location.exception
 import com.hola.arch.exception.BaseException
 
 class LocNotPermissionException : BaseException {
-    constructor() : this("")
+    constructor() : this("No permissions")
 
-    constructor(msg: String) : super(msg)
+    constructor(msg: String) : this(0,msg)
+
+    constructor(code: Int, msg: String) : super(code,msg)
 }
