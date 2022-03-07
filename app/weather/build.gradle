@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
 }
 apply from: "${project.rootDir}/config_app.gradle"
@@ -40,4 +41,6 @@ dependencies {
     implementation deps.navigation.ui
     implementation deps.navigation.dynamic
     implementation deps.navigation.fragment
+
+    //annotationProcessor deps.room.compiler
 }

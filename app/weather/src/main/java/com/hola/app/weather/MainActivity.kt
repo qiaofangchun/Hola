@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.hola.app.weather.databinding.ActivityMainBinding.bind
 import com.hola.app.weather.location.*
+import com.hola.app.weather.repository.locale.WeatherDb
 import com.hola.app.weather.ui.main.MainViewModel
 import com.hola.app.weather.utils.LocationHelper
 import com.hola.app.weather.widget.weather.WeatherType
@@ -23,19 +24,6 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     private val view by viewBinding(::bind)
     private val model: MainViewModel by viewModels()
     private var type = WeatherType.DEFAULT
-
-    fun startLocation(){
-        LocationHelper.regLocationListener(object :LocationListener{
-            override fun onSuccess(loc: Location) {
-                Log.d("qfc","------->$loc")
-            }
-
-            override fun onFailure(e: Exception) {
-                Log.d("qfc","------->${e.message}")
-            }
-        })
-        LocationHelper.startLocation()
-    }
 
     override fun requestedOrientation() = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
@@ -54,6 +42,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
             })
         }
         view.change.setOnClickListener {
+            model.getLocation()
             type = when (type) {
                 WeatherType.DEFAULT -> WeatherType.CLEAR_D
                 WeatherType.CLEAR_D -> WeatherType.RAIN_D
@@ -77,7 +66,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
                 if (map.containsValue(false) || map.containsValue(null)) {
                     return@registerForActivityResult
                 }
-                startLocation()
+                model.searchPlace()
             }
         permission.launch(LocationHelper.getPermissions())
     }

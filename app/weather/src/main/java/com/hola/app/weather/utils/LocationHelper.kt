@@ -20,15 +20,15 @@ object LocationHelper {
     }
 
     fun startLocation() {
-        /*if (amapClient.isStarted()) {
+        if (amapClient.isStarted()) {
             Log.d(TAG, "amap started!")
             return
-        }*/
+        }
         if (sysClient.isStarted()) {
             Log.d(TAG, "system started!")
             return
         }
-        sysClient.startLocation()
+        amapClient.startLocation()
     }
 
     fun stopLocation() {
