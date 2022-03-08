@@ -10,7 +10,6 @@ buildscript {
         classpath deps.build.gradle
         classpath deps.kotlin.gradle
         classpath deps.navigation.gradle
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10'
     }
 }
 

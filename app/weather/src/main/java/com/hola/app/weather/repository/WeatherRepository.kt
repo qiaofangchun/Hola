@@ -17,7 +17,7 @@ import kotlin.coroutines.resumeWithException
 object WeatherRepository {
     private const val TAG = "WeatherRepository"
     private val remoteApi = WeatherNet.api
-    //private val localeApi = WeatherDb.getInstance(AppHelper.context)
+    private val localeApi = WeatherDb.getInstance(AppHelper.context)
     private val language = "zh_CN"
     private val tempUnit = ApiService.UNIT_METRIC
 
@@ -28,7 +28,7 @@ object WeatherRepository {
             val place = searchPlace(address)
             place.places.takeIf { it.isNotEmpty() }?.let { places ->
                 val location = places[0].location
-
+                localeApi.placeDao()
                 return getWeatherByLoc(true, location.lat, location.lng)
             }
         } ?: let {

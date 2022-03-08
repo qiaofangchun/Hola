@@ -15,4 +15,5 @@ dependencies {
     api deps.room.api
     api deps.room.ktx
     kapt deps.room.compiler
+    annotationProcessor deps.room.compiler
 }
