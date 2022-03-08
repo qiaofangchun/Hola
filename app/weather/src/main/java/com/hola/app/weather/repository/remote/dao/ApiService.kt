@@ -31,8 +31,8 @@ interface ApiService {
      */
     @GET("v2.5/$WEATHER_TOKEN/{lng},{lat}/weather.json?$WEATHER_STATIC_PARAM")
     suspend fun getWeatherByLocation(
-        @Path("lng") lng: Double,
         @Path("lat") lat: Double,
+        @Path("lng") lng: Double,
         @Query("lang") lang: String,
         @Query("unit") unit: String
     ): WeatherResult

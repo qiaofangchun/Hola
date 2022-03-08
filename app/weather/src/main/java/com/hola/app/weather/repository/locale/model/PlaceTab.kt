@@ -4,16 +4,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "place")
-class PlaceTab {
+data class PlaceTab(
     @PrimaryKey
-    var cityId: String? = null
-    var timeZone: String? = null
-    var latitude = 0f
-    var longitude = 0f
-    var country: String? = null
-    var province: String? = null
-    var city: String? = null
-    var district: String? = null
-    var currentPosition = false
-    var residentPosition = false
-}
+    val cityId: String,
+    val timeZone: String,
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val country: String? = null,
+    val province: String? = null,
+    val city: String? = null,
+    val district: String? = null,
+    val isLocation: Boolean = false
+)

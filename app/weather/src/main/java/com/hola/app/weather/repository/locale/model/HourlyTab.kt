@@ -9,8 +9,6 @@ class HourlyTab {
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null
     var cityId: String? = null
-    var weatherSource: String? = null
-
     var date: Date? = null
     var time: Long = 0
     var daylight = false

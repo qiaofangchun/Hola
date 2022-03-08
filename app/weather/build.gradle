@@ -33,7 +33,6 @@ dependencies {
     implementation project(path: ':lib_arch')
     implementation project(path: ':lib_base')
     implementation project(path: ':lib_network')
-    implementation project(path: ':lib_database')
     implementation project(path: ':lib_common')
 
     implementation deps.amap.search
@@ -42,5 +41,7 @@ dependencies {
     implementation deps.navigation.dynamic
     implementation deps.navigation.fragment
 
-    //annotationProcessor deps.room.compiler
+    api deps.room.api
+    api deps.room.ktx
+    kapt(deps.room.compiler)
 }

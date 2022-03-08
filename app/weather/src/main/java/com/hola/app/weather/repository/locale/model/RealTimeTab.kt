@@ -7,7 +7,6 @@ import java.util.*
 class RealTimeTab {
     // base.
     var cityId: String? = null
-    var weatherSource: String? = null
     var timeStamp: Long = 0
     var publishDate: Date? = null
     var publishTime: Long = 0

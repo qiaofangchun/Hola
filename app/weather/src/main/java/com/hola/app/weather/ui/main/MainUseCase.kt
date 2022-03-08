@@ -21,8 +21,8 @@ class MainUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
     fun update() {
         doRequest {
             //WeatherRepository.getWeatherByLocation(-74.0060, 40.7128, "zh_CN")
-            WeatherRepository.searchPlace("北京")
-            //WeatherRepository.getWeatherByLoc()
+            //WeatherRepository.searchPlace("北京")
+            WeatherRepository.getWeatherByLoc()
             //WeatherRepository.getLocation()
         }.onStart {
 

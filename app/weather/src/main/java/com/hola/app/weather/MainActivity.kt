@@ -42,7 +42,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
             })
         }
         view.change.setOnClickListener {
-            model.getLocation()
+            model.searchPlace()
             type = when (type) {
                 WeatherType.DEFAULT -> WeatherType.CLEAR_D
                 WeatherType.CLEAR_D -> WeatherType.RAIN_D
@@ -66,7 +66,6 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
                 if (map.containsValue(false) || map.containsValue(null)) {
                     return@registerForActivityResult
                 }
-                model.searchPlace()
             }
         permission.launch(LocationHelper.getPermissions())
     }

@@ -7,8 +7,10 @@ import com.hola.arch.exception.DataFailedException
 
 object WeatherNet : BaseNetwork<ApiService>(ApiService.WEATHER_BASE_URL) {
     override fun parserResponseStatus(result: Any) {
-        val apiResult = result as ApiResult
-        if (apiResult.status != "ok") {
+        if(result !is ApiResult){
+            return
+        }
+        if (result.status != "ok") {
             throw DataFailedException()
         }
     }
