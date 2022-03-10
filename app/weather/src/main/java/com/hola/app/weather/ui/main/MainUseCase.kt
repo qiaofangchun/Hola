@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 class MainUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
     fun location() {
         doRequest {
-            WeatherRepository.getWeatherByLoc()
+            WeatherRepository.updateWeatherByLoc()
         }.onStart {
 
         }.onSuccess {
@@ -22,7 +22,7 @@ class MainUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
         doRequest {
             //WeatherRepository.getWeatherByLocation(-74.0060, 40.7128, "zh_CN")
             //WeatherRepository.searchPlace("北京")
-            WeatherRepository.getWeatherByLoc()
+            WeatherRepository.updateWeatherByLoc()
             //WeatherRepository.getLocation()
         }.onStart {
 

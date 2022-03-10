@@ -1,18 +1,17 @@
 package com.hola.app.weather.repository.locale.model
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.Ignore
+import com.hola.app.weather.repository.locale.dao.PlaceDao
 
-@Entity(tableName = "place")
+@Entity(tableName = PlaceDao.TAB_NAME, primaryKeys = ["lat", "lng"])
 data class PlaceTab(
-    @PrimaryKey
-    val cityId: String,
-    val timeZone: String,
-    val latitude: Double = 0.0,
-    val longitude: Double = 0.0,
-    val country: String? = null,
-    val province: String? = null,
-    val city: String? = null,
-    val district: String? = null,
-    val isLocation: Boolean = false
-)
+    val lat: Double = 0.0,
+    val lng: Double = 0.0,
+    val name: String? = null,
+    val timeZone: String? = null,
+    val isLocation: Boolean = false,
+){
+    @Ignore
+    constructor() : this(0.0, 0.0)
+}

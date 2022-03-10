@@ -25,6 +25,11 @@ android {
         applicationId "com.hola.app.weather"
         versionCode 1
         versionName "1.0"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 }
 
@@ -35,13 +40,16 @@ dependencies {
     implementation project(path: ':lib_network')
     implementation project(path: ':lib_common')
 
-    implementation deps.amap.search
-    implementation deps.amap.location
     implementation deps.navigation.ui
     implementation deps.navigation.dynamic
     implementation deps.navigation.fragment
 
-    api deps.room.api
-    api deps.room.ktx
+    // 高德地图
+    implementation deps.amap.location
+
+    // room数据库
+    implementation deps.room.api
+    implementation deps.room.ktx
+    kapt deps.room.compiler
     annotationProcessor deps.room.compiler
 }

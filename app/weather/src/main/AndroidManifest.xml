@@ -9,10 +9,11 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:name=".WeatherApp"
@@ -28,7 +29,7 @@
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="f1dd64f72fe95824d31b62fc41f43384"/>
+            android:value="f1dd64f72fe95824d31b62fc41f43384" />
         <service
             android:name="com.amap.api.location.APSService"
             android:foregroundServiceType="location" />

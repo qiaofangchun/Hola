@@ -5,7 +5,7 @@ def build = [:]
 build.minSdk = 23
 build.compileSdk = 31
 build.targetSdk = 31
-build.buildTools = "30.0.2"
+build.buildTools = "30.0.3"
 build.gradle = "com.android.tools.build:gradle:7.1.2"
 deps.build = build
 
@@ -52,7 +52,7 @@ navigation.dynamic = "androidx.navigation:navigation-dynamic-features-fragment:$
 navigation.gradle = "androidx.navigation:navigation-safe-args-gradle-plugin:$version.navigation"
 deps.navigation = navigation
 
-version.room = '2.3.0'
+version.room = '2.4.2'
 def room = [:]
 room.api = "androidx.room:room-runtime:$version.room"
 room.ktx = "androidx.room:room-ktx:$version.room"
