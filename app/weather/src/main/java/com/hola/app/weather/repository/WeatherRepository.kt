@@ -1,6 +1,7 @@
 package com.hola.app.weather.repository
 
 import android.util.Log
+import androidx.room.withTransaction
 import com.hola.app.weather.location.Location
 import com.hola.app.weather.location.LocationListener
 import com.hola.app.weather.location.exception.LocFailureException
@@ -9,7 +10,6 @@ import com.hola.app.weather.repository.locale.model.PlaceTab
 import com.hola.app.weather.repository.remote.WeatherNet
 import com.hola.app.weather.repository.remote.dao.ApiService
 import com.hola.app.weather.repository.remote.model.Place
-import com.hola.app.weather.repository.remote.model.SearchResult
 import com.hola.app.weather.utils.LocationHelper
 import com.hola.common.utils.AppHelper
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -27,19 +27,23 @@ object WeatherRepository {
 
     }
 
-    suspend fun getPlace(lat: Double, lng: Double): PlaceTab? =
-        localeApi.placeDao().queryPlace(lat, lng)
-
+    /**
+     * 获取地方列表
+     */
     suspend fun getPlaces(): List<PlaceTab> = localeApi.placeDao().queryPlaces()
 
-    suspend fun insertPlace(lat: Double, lng: Double, name: String, isLocation: Boolean = false) {
-        val place = PlaceTab(
-            lat = lat,
-            lng = lng,
-            name = name,
-            isLocation = isLocation
-        )
-        localeApi.placeDao().insertPlace(place)
+    /**
+     * 插入或更新地方信息
+     */
+    suspend fun insertOrUpdatePlace(lat: Double, lng: Double, name: String, isLocation: Boolean = false) {
+        val place = PlaceTab(lat = lat, lng = lng, name = name, isLocation = isLocation)
+        localeApi.withTransaction {
+            localeApi.placeDao().run {
+                queryPlace(lat, lng)?.let {
+                    updatePlace(place)
+                } ?: insertPlace(place)
+            }
+        }
     }
 
     /**
@@ -52,13 +56,13 @@ object WeatherRepository {
     /**
      * 获取当前位置的天气信息
      */
-    suspend fun updateWeatherByLoc(): String {
+    suspend fun updateWeatherByLoc() {
         getLocation().address?.takeIf { it.isNotBlank() }?.let { address ->
             searchPlace(address).takeIf { it.isNotEmpty() }?.let { it ->
                 val result = it[0]
                 val loc = result.location
-                insertPlace(loc.lat, loc.lng, result.name, true)
-                return updateWeatherByLoc(loc.lat, loc.lng)
+                insertOrUpdatePlace(loc.lat, loc.lng, result.name, true)
+                updateWeatherByLoc(loc.lat, loc.lng)
             }
         } ?: let {
             Log.d(TAG, "city code parser failure")
@@ -76,6 +80,7 @@ object WeatherRepository {
         unit: String = tempUnit
     ): String {
         val weather = remoteApi.getWeatherByLocation(lat, lng, lang, unit)
+
         return weather.toString()
     }
 

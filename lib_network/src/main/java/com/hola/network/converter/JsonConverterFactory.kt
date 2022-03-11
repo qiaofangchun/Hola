@@ -31,12 +31,15 @@ class JsonConverterFactory private constructor(
     }
 
     companion object {
-        fun create(function: ((Any) -> Unit)?): JsonConverterFactory {
-            return create(Gson(), function)
+        fun create(): JsonConverterFactory {
+            return create(Gson(), null)
         }
 
-        fun create(gson: Gson? = Gson(), function: ((Any) -> Unit)?): JsonConverterFactory {
-            if (gson == null) throw NullPointerException("gson == null")
+        fun create(function: ((Any) -> Unit)?): JsonConverterFactory {
+            return JsonConverterFactory(Gson(), function)
+        }
+
+        fun create(gson: Gson, function: ((Any) -> Unit)?): JsonConverterFactory {
             return JsonConverterFactory(gson, function)
         }
     }
