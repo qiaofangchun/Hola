@@ -1,103 +1,30 @@
 package com.hola.app.weather.repository.locale.model
 
 import androidx.room.Entity
-import java.util.*
+import com.hola.app.weather.repository.locale.dao.RealTimeDao
 
-@Entity(tableName = "current")
-class RealTimeTab {
-    // base.
-    var cityId: String? = null
-    var timeStamp: Long = 0
-    var publishDate: Date? = null
-    var publishTime: Long = 0
-    var updateDate: Date? = null
-    var updateTime: Long = 0
-
-    // current.
-    var weatherText: String? = null
-    var weatherCode: String? = null
-    var temperature = 0
-    var realFeelTemperature: Int? = null
-    var realFeelShaderTemperature: Int? = null
-    var apparentTemperature: Int? = null
-    var windChillTemperature: Int? = null
-    var wetBulbTemperature: Int? = null
-    var degreeDayTemperature: Int? = null
-
-    var totalPrecipitation: Float? = null
-    var thunderstormPrecipitation: Float? = null
-    var rainPrecipitation: Float? = null
-    var snowPrecipitation: Float? = null
-    var icePrecipitation: Float? = null
-
-    var totalPrecipitationProbability: Float? = null
-    var thunderstormPrecipitationProbability: Float? = null
-    var rainPrecipitationProbability: Float? = null
-    var snowPrecipitationProbability: Float? = null
-    var icePrecipitationProbability: Float? = null
-
-    var windDirection: String? = null
-
-    var windDegree: Float? = null
-    var windSpeed: Float? = null
-    var windLevel: String? = null
-
-    var uvIndex: Int? = null
-    var uvLevel: String? = null
-    var uvDescription: String? = null
-
-    var aqiText: String? = null
-    var aqiIndex: Int? = null
-    var pm25: Float? = null
-    var pm10: Float? = null
-    var so2: Float? = null
-    var no2: Float? = null
-    var o3: Float? = null
-    var co: Float? = null
-
-    var relativeHumidity: Float? = null
-    var pressure: Float? = null
-    var visibility: Float? = null
-    var dewPoint: Int? = null
-    var cloudCover: Int? = null
-    var ceiling: Float? = null
-
-    var dailyForecast: String? = null
-    var hourlyForecast: String? = null
-
-    /*@ToMany(
-        joinProperties = [JoinProperty(
-            name = "cityId",
-            referencedName = "cityId"
-        ), JoinProperty(name = "weatherSource", referencedName = "weatherSource")]
-    )
-    @OrderBy("date ASC")*/
-    var daily: List<DailyTab>? = null
-
-    /*@ToMany(
-        joinProperties = [JoinProperty(
-            name = "cityId",
-            referencedName = "cityId"
-        ), JoinProperty(name = "weatherSource", referencedName = "weatherSource")]
-    )
-    @OrderBy("date ASC")*/
-    var hourly: List<HourlyTab>? = null
-
-    /*@ToMany(
-        joinProperties = [JoinProperty(
-            name = "cityId",
-            referencedName = "cityId"
-        ), JoinProperty(name = "weatherSource", referencedName = "weatherSource")]
-    )
-    @OrderBy("date ASC")*/
-    var minutely: List<MinutelyTab>? = null
-
-    /*@ToMany(
-        joinProperties = [JoinProperty(
-            name = "cityId",
-            referencedName = "cityId"
-        ), JoinProperty(name = "weatherSource", referencedName = "weatherSource")]
-    )
-    @OrderBy("date ASC")*/
-    var alert: List<AlertTab>? = null
-}
+@Entity(tableName = RealTimeDao.TAB_NAME, primaryKeys = ["lat", "lng"])
+data class RealTimeTab(
+    val lat: Double = 0.0,
+    val lng: Double = 0.0,
+    val weatherMain: Int = 0,
+    val temp: Int = 0,
+    val apparentTemp: Int = 0,
+    val pressure: Int = 0,
+    val humidity: Double = 0.0,
+    val cloudRate: Double = 0.0,
+    val dswrfval: Double = 0.0,
+    val visibility: Int = 0,
+    val windDirection: Int = 0,
+    val windSpeed: Int = 0,
+    val precipitation: Double = 0.0,
+    val uvLevel: Int = 0,
+    val comfortLevel: Int = 0,
+    val airQualityPM25: Double? = 0.0,
+    val airQualityPM10: Double? = 0.0,
+    val airQualityO3: Double? = 0.0,
+    val airQualityNO2: Double? = 0.0,
+    val airQualitySO2: Double? = 0.0,
+    val airQualityCO: Double? = 0.0,
+    val airQualityAQI: Double? = 0.0,
+)

@@ -2,38 +2,23 @@ package com.hola.app.weather.repository.locale.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.hola.app.weather.repository.locale.dao.HourlyDao
 import java.util.*
 
-@Entity(tableName = "hourly")
-class HourlyTab {
+@Entity(tableName = HourlyDao.TAB_NAME)
+data class HourlyTab(
     @PrimaryKey(autoGenerate = true)
-    var id: Long? = null
-    var cityId: String? = null
-    var date: Date? = null
-    var time: Long = 0
-    var daylight = false
-
-    var weatherText: String? = null
-
-    var weatherCode: String? = null
-
-    var temperature = 0
-    var realFeelTemperature: Int? = null
-    var realFeelShaderTemperature: Int? = null
-    var apparentTemperature: Int? = null
-    var windChillTemperature: Int? = null
-    var wetBulbTemperature: Int? = null
-    var degreeDayTemperature: Int? = null
-
-    var totalPrecipitation: Float? = null
-    var thunderstormPrecipitation: Float? = null
-    var rainPrecipitation: Float? = null
-    var snowPrecipitation: Float? = null
-    var icePrecipitation: Float? = null
-
-    var totalPrecipitationProbability: Float? = null
-    var thunderstormPrecipitationProbability: Float? = null
-    var rainPrecipitationProbability: Float? = null
-    var snowPrecipitationProbability: Float? = null
-    var icePrecipitationProbability: Float? = null
-}
+    var id: Long = 0,
+    val lat: Double = 0.0,
+    val lng: Double = 0.0,
+    val weatherMain: Int = 0,
+    val temp: Double = 0.0,
+    val pressure: Double = 0.0,
+    val humidity: Double = 0.0,
+    val cloudRate: Double = 0.0,
+    val dswrfval: Double = 0.0,
+    val visibility: Double = 0.0,
+    val windDirection: Int = 0,
+    val windSpeed: Int = 0,
+    val precipitation: Double = 0.0,
+)

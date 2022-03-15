@@ -2,137 +2,55 @@ package com.hola.app.weather.repository.locale.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.hola.app.weather.repository.locale.dao.DailyDao
 import java.util.*
 
-@Entity(tableName = "daily")
-class DailyTab {
+@Entity(tableName = DailyDao.TAB_NAME)
+data class DailyTab(
     @PrimaryKey(autoGenerate = true)
-    var id: Long? = null
-    var cityId: String? = null
-
-    var date: Date? = null
-    var time: Long = 0
-
-    // daytime.
-    var daytimeWeatherText: String? = null
-    var daytimeWeatherPhase: String? = null
-
-    var daytimeWeatherCode: String? = null
-
-    var daytimeTemperature = 0
-    var daytimeRealFeelTemperature: Int? = null
-    var daytimeRealFeelShaderTemperature: Int? = null
-    var daytimeApparentTemperature: Int? = null
-    var daytimeWindChillTemperature: Int? = null
-    var daytimeWetBulbTemperature: Int? = null
-    var daytimeDegreeDayTemperature: Int? = null
-
-    var daytimeTotalPrecipitation: Float? = null
-    var daytimeThunderstormPrecipitation: Float? = null
-    var daytimeRainPrecipitation: Float? = null
-    var daytimeSnowPrecipitation: Float? = null
-    var daytimeIcePrecipitation: Float? = null
-
-    var daytimeTotalPrecipitationProbability: Float? = null
-    var daytimeThunderstormPrecipitationProbability: Float? = null
-    var daytimeRainPrecipitationProbability: Float? = null
-    var daytimeSnowPrecipitationProbability: Float? = null
-    var daytimeIcePrecipitationProbability: Float? = null
-
-    var daytimeTotalPrecipitationDuration: Float? = null
-    var daytimeThunderstormPrecipitationDuration: Float? = null
-    var daytimeRainPrecipitationDuration: Float? = null
-    var daytimeSnowPrecipitationDuration: Float? = null
-    var daytimeIcePrecipitationDuration: Float? = null
-
-    var daytimeWindDirection: String? = null
-
-    var daytimeWindDegree: Float? = null
-    var daytimeWindSpeed: Float? = null
-    var daytimeWindLevel: String? = null
-
-    var daytimeCloudCover: Int? = null
-
-    // nighttime.
-    var nighttimeWeatherText: String? = null
-    var nighttimeWeatherPhase: String? = null
-
-    var nighttimeWeatherCode: String? = null
-
-    var nighttimeTemperature = 0
-    var nighttimeRealFeelTemperature: Int? = null
-    var nighttimeRealFeelShaderTemperature: Int? = null
-    var nighttimeApparentTemperature: Int? = null
-    var nighttimeWindChillTemperature: Int? = null
-    var nighttimeWetBulbTemperature: Int? = null
-    var nighttimeDegreeDayTemperature: Int? = null
-
-    var nighttimeTotalPrecipitation: Float? = null
-    var nighttimeThunderstormPrecipitation: Float? = null
-    var nighttimeRainPrecipitation: Float? = null
-    var nighttimeSnowPrecipitation: Float? = null
-    var nighttimeIcePrecipitation: Float? = null
-
-    var nighttimeTotalPrecipitationProbability: Float? = null
-    var nighttimeThunderstormPrecipitationProbability: Float? = null
-    var nighttimeRainPrecipitationProbability: Float? = null
-    var nighttimeSnowPrecipitationProbability: Float? = null
-    var nighttimeIcePrecipitationProbability: Float? = null
-
-    var nighttimeTotalPrecipitationDuration: Float? = null
-    var nighttimeThunderstormPrecipitationDuration: Float? = null
-    var nighttimeRainPrecipitationDuration: Float? = null
-    var nighttimeSnowPrecipitationDuration: Float? = null
-    var nighttimeIcePrecipitationDuration: Float? = null
-
-    var nighttimeWindDirection: String? = null
-
-    var nighttimeWindDegree: Float? = null
-    var nighttimeWindSpeed: Float? = null
-    var nighttimeWindLevel: String? = null
-
-    var nighttimeCloudCover: Int? = null
-
-    // sun.
-    var sunRiseDate: Date? = null
-    var sunSetDate: Date? = null
-
-    // moon.
-    var moonRiseDate: Date? = null
-    var moonSetDate: Date? = null
-
-    // moon phase.
-    var moonPhaseAngle: Int? = null
-    var moonPhaseDescription: String? = null
-
-    // aqi.
-    var aqiText: String? = null
-    var aqiIndex: Int? = null
-    var pm25: Float? = null
-    var pm10: Float? = null
-    var so2: Float? = null
-    var no2: Float? = null
-    var o3: Float? = null
-    var co: Float? = null
-
-    // pollen.
-    var grassIndex: Int? = null
-    var grassLevel: Int? = null
-    var grassDescription: String? = null
-    var moldIndex: Int? = null
-    var moldLevel: Int? = null
-    var moldDescription: String? = null
-    var ragweedIndex: Int? = null
-    var ragweedLevel: Int? = null
-    var ragweedDescription: String? = null
-    var treeIndex: Int? = null
-    var treeLevel: Int? = null
-    var treeDescription: String? = null
-
-    // uv.
-    var uvIndex: Int? = null
-    var uvLevel: String? = null
-    var uvDescription: String? = null
-
-    var hoursOfSun = 0f
-}
+    var id: Long = 0,
+    val lat: Double = 0.0,
+    val lng: Double = 0.0,
+    val weatherMain: Int = 0, // 主要天气现象
+    val weatherDay: Int = 0, // 主要白天天气现象
+    val weatherNight: Int = 0, // 主要夜晚天气现象
+    val visibilityMax: Double = 0.0, //白天可见度
+    val visibilityAvg: Double = 0.0, //主要可见度
+    val visibilityMin: Double = 0.0, //夜晚可见度
+    val tempMax: Double = 0.0, //白天温度
+    val tempAvg: Double = 0.0, //主要温度
+    val tempMin: Double = 0.0, //夜晚温度
+    val humidityMax: Double = 0.0, //最大湿度
+    val humidityAvg: Double = 0.0, //平均湿度
+    val humidityMin: Double = 0.0, //最小湿度
+    val windSpeedMax: Double = 0.0, //最大风速
+    val windSpeedAvg: Double = 0.0, //平均风速
+    val windSpeedMin: Double = 0.0, //最小风速
+    val pressureMax: Double = 0.0, //最大气压
+    val pressureAvg: Double = 0.0, //平均气压
+    val pressureMin: Double = 0.0, //最小气压
+    val precipitationMax: Double = 0.0, //最大降水量
+    val precipitationAvg: Double = 0.0, //平均降水量
+    val precipitationMin: Double = 0.0, //最小降水量
+    val cloudRateMax: Double = 0.0, //最大降云量
+    val cloudRateAvg: Double = 0.0, //平均降云量
+    val cloudRateMin: Double = 0.0, //最小降云量
+    val dswrfMax: Double = 0.0, //最大降辐射
+    val dswrfAvg: Double = 0.0, //平均降辐射
+    val dswrfMin: Double = 0.0, //最小降辐射
+    //紫外线
+    val uvLevel: Int = 0,
+    val uvDesc: String = "",
+    //洗车指数
+    val carWashLevel: Int = 0,
+    val carWashDesc: String = "",
+    //舒适度
+    val comfortLevel: Int = 0,
+    val comfortDesc: String = "",
+    //感冒指数
+    val coldRiskLevel: Int = 0,
+    val coldRiskDesc: String = "",
+    //穿衣指数
+    val dressingLevel: Int = 0,
+    val dressingDesc: String = "",
+)

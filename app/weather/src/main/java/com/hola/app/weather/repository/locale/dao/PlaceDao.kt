@@ -4,6 +4,9 @@ import androidx.room.*
 import com.hola.app.weather.repository.locale.model.PlaceTab
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * 位置信息Dao
+ */
 @Dao
 interface PlaceDao {
     companion object {

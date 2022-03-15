@@ -35,14 +35,17 @@ object WeatherRepository {
     /**
      * 插入或更新地方信息
      */
-    suspend fun insertOrUpdatePlace(lat: Double, lng: Double, name: String, isLocation: Boolean = false) {
-        val place = PlaceTab(lat = lat, lng = lng, name = name, isLocation = isLocation)
+    suspend fun insert(place: PlaceTab) {
         localeApi.withTransaction {
-            localeApi.placeDao().run {
-                queryPlace(lat, lng)?.let {
-                    updatePlace(place)
-                } ?: insertPlace(place)
-            }
+            insertOrUpdatePlace(place)
+        }
+    }
+
+    private suspend fun insertOrUpdatePlace(place: PlaceTab){
+        localeApi.placeDao().run {
+            queryPlace(place.lat, place.lng)?.let {
+                updatePlace(place)
+            } ?: insertPlace(place)
         }
     }
 
@@ -61,8 +64,7 @@ object WeatherRepository {
             searchPlace(address).takeIf { it.isNotEmpty() }?.let { it ->
                 val result = it[0]
                 val loc = result.location
-                insertOrUpdatePlace(loc.lat, loc.lng, result.name, true)
-                updateWeatherByLoc(loc.lat, loc.lng)
+                updateWeatherByLoc(PlaceTab(loc.lat, loc.lng, result.name, isLocation = true))
             }
         } ?: let {
             Log.d(TAG, "city code parser failure")
@@ -73,14 +75,12 @@ object WeatherRepository {
     /**
      * 根据经纬度获取天气信息
      */
-    suspend fun updateWeatherByLoc(
-        lat: Double,
-        lng: Double,
-        lang: String = language,
-        unit: String = tempUnit
-    ): String {
-        val weather = remoteApi.getWeatherByLocation(lat, lng, lang, unit)
+    suspend fun updateWeatherByLoc(place: PlaceTab): String {
+        val weather = remoteApi.getWeatherByLocation(place.lat, place.lng, language, tempUnit)
+        localeApi.withTransaction{
+            insertOrUpdatePlace(place)
 
+        }
         return weather.toString()
     }
 

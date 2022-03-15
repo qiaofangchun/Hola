@@ -4,13 +4,14 @@ import android.util.Log
 import com.hola.app.weather.location.*
 import com.hola.app.weather.location.exception.LocNotPermissionException
 import com.hola.common.utils.AppHelper
+import java.util.concurrent.CopyOnWriteArrayList
 
 object LocationHelper {
     private const val TAG = "LocationHelper"
     private const val LOC_TIME_OUT = 5000L
     private const val LOC_INTERVAL = 2000L
 
-    private val callback = ArrayList<LocationListener>()
+    private val callback = CopyOnWriteArrayList<LocationListener>()
 
     private val sysClient by lazy {
         SystemLocationClient(AppHelper.context).apply { configClient(this) }
