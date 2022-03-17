@@ -71,16 +71,17 @@ object WeatherRepository {
      */
     suspend fun updateWeatherByLoc(place: PlaceTab): String {
         val weather = remoteApi.getWeatherByLocation(place.lat, place.lng, language, tempUnit)
-        val current = weather.result.realtime
-        val alert = weather.result.alert
-        val hourly = weather.result.hourly
-        val daily = weather.result.daily
+        val realtime = weather.result.realtime.toRealTimeTab(place, weather.server_time)
+        val alert = weather.result.alert.toAlertTab(place.lat, place.lng)
+        val hourly = weather.result.hourly.toHourlyTab(place.lat, place.lng)
+        val daily = weather.result.daily.toDailyTab(place.lat, place.lng)
         localeApi.withTransaction {
             insertOrUpdatePlace(place)
-            insertOrUpdateRealTime(current.toRealTimeTab(place, weather.server_time))
-            insertOrUpdateAlerts(place, alert.toAlertTab(place.lat, place.lng))
-            insertOrUpdateHourly(place, hourly.toHourlyTab(place.lat, place.lng))
-            insertOrUpdateDaily(place, daily.toDailyTab(place.lat, place.lng))
+            insertOrUpdateRealTime(realtime)
+            insertOrUpdateAlerts(place, alert)
+            insertOrUpdateHourly(place, hourly)
+            insertOrUpdateDaily(place, daily)
+            0
         }
         return weather.toString()
     }

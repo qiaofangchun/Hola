@@ -51,7 +51,7 @@ fun Hourly.toHourlyTab(lat: Double, lng: Double): List<HourlyTab> {
             HourlyTab(
                 lat = lat,
                 lng = lng,
-                time = skycon.date,
+                time = skycon.datetime,
                 weatherMain = skycon.value,
                 temp = this.temperature[index].value?.roundToInt() ?: 0,
                 visibility = this.visibility[index].value?.roundToInt() ?: 0,

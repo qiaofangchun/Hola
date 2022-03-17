@@ -1,18 +1,14 @@
 package com.hola.app.weather
 
-import android.Manifest
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.fragment.app.DialogFragment
 import com.hola.app.weather.databinding.ActivityMainBinding.bind
-import com.hola.app.weather.location.*
-import com.hola.app.weather.repository.locale.WeatherDb
 import com.hola.app.weather.ui.main.MainViewModel
 import com.hola.app.weather.utils.LocationHelper
 import com.hola.app.weather.widget.weather.WeatherType
@@ -68,6 +64,14 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
                 }
             }
         permission.launch(LocationHelper.getPermissions())
+    }
+
+    private fun closeDialog() {
+        supportFragmentManager.fragments.forEach {
+            if (it is DialogFragment) {
+                it.dismiss()
+            }
+        }
     }
 
     override fun onResume() {

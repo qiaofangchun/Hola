@@ -49,4 +49,9 @@ data class Daily(
     data class Time(
         val time: String
     )
+
+    data class SkyCon(
+        val date: String,
+        val value: String
+    )
 }

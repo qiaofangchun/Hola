@@ -3,7 +3,6 @@ package com.hola.app.weather.repository.remote.model
 data class Hourly(
     val air_quality: AirQuality,
     val cloudrate: List<Counts>,
-    val description: String,
     val dswrf: List<Counts>,
     val humidity: List<Counts>,
     val precipitation: List<Counts>,
@@ -13,6 +12,11 @@ data class Hourly(
     val visibility: List<Counts>,
     val wind: List<Wind>
 ) {
+    data class SkyCon(
+        val datetime: String,
+        val value: String
+    )
+
     data class AirQuality(
         val aqi: List<AqiX>,
         val pm25: List<Counts>
