@@ -6,15 +6,17 @@ import com.hola.app.weather.location.Location
 import com.hola.app.weather.location.LocationListener
 import com.hola.app.weather.location.exception.LocFailureException
 import com.hola.app.weather.repository.locale.WeatherDb
-import com.hola.app.weather.repository.locale.model.PlaceTab
+import com.hola.app.weather.repository.locale.model.*
 import com.hola.app.weather.repository.remote.WeatherNet
 import com.hola.app.weather.repository.remote.dao.ApiService
 import com.hola.app.weather.repository.remote.model.Place
+import com.hola.app.weather.repository.remote.model.Realtime
 import com.hola.app.weather.utils.LocationHelper
 import com.hola.common.utils.AppHelper
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.math.roundToInt
 
 object WeatherRepository {
     private const val TAG = "WeatherRepository"
@@ -38,14 +40,6 @@ object WeatherRepository {
     suspend fun insert(place: PlaceTab) {
         localeApi.withTransaction {
             insertOrUpdatePlace(place)
-        }
-    }
-
-    private suspend fun insertOrUpdatePlace(place: PlaceTab){
-        localeApi.placeDao().run {
-            queryPlace(place.lat, place.lng)?.let {
-                updatePlace(place)
-            } ?: insertPlace(place)
         }
     }
 
@@ -77,11 +71,55 @@ object WeatherRepository {
      */
     suspend fun updateWeatherByLoc(place: PlaceTab): String {
         val weather = remoteApi.getWeatherByLocation(place.lat, place.lng, language, tempUnit)
-        localeApi.withTransaction{
+        val current = weather.result.realtime
+        val alert = weather.result.alert
+        val hourly = weather.result.hourly
+        val daily = weather.result.daily
+        localeApi.withTransaction {
             insertOrUpdatePlace(place)
-
+            insertOrUpdateRealTime(current.toRealTimeTab(place, weather.server_time))
+            insertOrUpdateAlerts(place, alert.toAlertTab(place.lat, place.lng))
+            insertOrUpdateHourly(place, hourly.toHourlyTab(place.lat, place.lng))
+            insertOrUpdateDaily(place, daily.toDailyTab(place.lat, place.lng))
         }
         return weather.toString()
+    }
+
+    private suspend fun insertOrUpdatePlace(place: PlaceTab) {
+        localeApi.placeDao().run {
+            queryPlace(place.lat, place.lng)?.let {
+                updatePlace(place)
+            } ?: insertPlace(place)
+        }
+    }
+
+    private suspend fun insertOrUpdateRealTime(realTime: RealTimeTab) {
+        localeApi.realTimeDao().run {
+            queryRealTime(realTime.lat, realTime.lng)?.let {
+                updateRealTime(realTime)
+            } ?: insertRealTime(realTime)
+        }
+    }
+
+    private suspend fun insertOrUpdateAlerts(place: PlaceTab, alerts: List<AlertTab>) {
+        localeApi.alertDao().run {
+            deleteAlert(place.lat, place.lng)
+            insertAlert(alerts)
+        }
+    }
+
+    private suspend fun insertOrUpdateHourly(place: PlaceTab, hourly: List<HourlyTab>) {
+        localeApi.hourlyTimeDao().run {
+            deleteHourly(place.lat, place.lng)
+            insertHourly(hourly)
+        }
+    }
+
+    private suspend fun insertOrUpdateDaily(place: PlaceTab, daily: List<DailyTab>) {
+        localeApi.dailyDao().run {
+            deleteDaily(place.lat, place.lng)
+            insertDaily(daily)
+        }
     }
 
     /**

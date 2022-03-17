@@ -1,7 +1,7 @@
 package com.hola.app.weather.repository.remote.model
 
 data class Realtime(
-    val air_quality: AirQuality,
+    val air_quality: AirQuality?,
     val apparent_temperature: Double,
     val cloudrate: Double,
     val dswrf: Double,

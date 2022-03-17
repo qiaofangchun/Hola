@@ -8,7 +8,6 @@ data class Weather(
 ) {
     data class Alerts(
         val content: List<Alert>,
-        val status: String
     )
 }
 

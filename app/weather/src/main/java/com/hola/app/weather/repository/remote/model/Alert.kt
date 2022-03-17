@@ -10,9 +10,8 @@ data class Alert(
     val latlon: List<Double>,
     val location: String,
     val province: String,
-    val pubtimestamp: Int,
+    val pubtimestamp: Long,
     val regionId: String,
-    val request_status: String,
     val source: String,
     val status: String,
     val title: String

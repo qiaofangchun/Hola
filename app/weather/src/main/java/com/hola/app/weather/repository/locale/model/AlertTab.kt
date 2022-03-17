@@ -10,10 +10,9 @@ data class AlertTab(
     val id: Long = 0,
     val lat: Double = 0.0,
     val lng: Double = 0.0,
-    val time: Long = 0,
+    val time: String = "",
     val type: Int = 0,
     val level: Int = 0,
     val title: String = "",
     val description: String = "",
-    val content: String = ""
 )
