@@ -9,6 +9,7 @@ fun Realtime.toRealTimeTab(place: PlaceTab, time: String): RealTimeTab = RealTim
     lat = place.lat,
     lng = place.lng,
     time = time,
+    weatherMain = this.skycon,
     temp = this.temperature.roundToInt(),
     apparentTemp = this.apparent_temperature.roundToInt(),
     pressure = this.pressure.roundToInt(),
@@ -135,6 +136,8 @@ fun Daily.toDailyTab(lat: Double, lng: Double): List<DailyTab> {
     }
     return daily
 }
+
+fun String?.safe(): String = this ?: ""
 
 fun String.toWeather(isNight: Boolean): Int {
     return when (this) {

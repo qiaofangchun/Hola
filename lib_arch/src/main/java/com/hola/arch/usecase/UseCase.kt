@@ -9,21 +9,13 @@ abstract class UseCase(private val mScope: CoroutineScope) {
         return UseCaseExecutor(mScope, this::handException, request)
     }
 
-    protected suspend fun <T> sync(block: suspend () -> T): Result<T> {
-        return try {
-            Result.success(block.invoke())
-        } catch (throwable: Throwable) {
-            Result.failure(throwable)
-        }
+    protected suspend fun <T> sync(block: suspend () -> T): T {
+        return block.invoke()
     }
 
-    protected suspend fun <T> async(block: suspend () -> T): Deferred<Result<T>> {
+    protected suspend fun <T> async(block: suspend () -> T): Deferred<T> {
         val deferred = mScope.async(start = CoroutineStart.LAZY) {
-            try {
-                Result.success(block.invoke())
-            } catch (throwable: Throwable) {
-                Result.failure(throwable)
-            }
+            block.invoke()
         }
         deferred.start()
         return deferred

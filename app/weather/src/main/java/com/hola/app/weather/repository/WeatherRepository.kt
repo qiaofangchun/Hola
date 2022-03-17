@@ -10,13 +10,11 @@ import com.hola.app.weather.repository.locale.model.*
 import com.hola.app.weather.repository.remote.WeatherNet
 import com.hola.app.weather.repository.remote.dao.ApiService
 import com.hola.app.weather.repository.remote.model.Place
-import com.hola.app.weather.repository.remote.model.Realtime
 import com.hola.app.weather.utils.LocationHelper
 import com.hola.common.utils.AppHelper
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.math.roundToInt
 
 object WeatherRepository {
     private const val TAG = "WeatherRepository"
@@ -33,6 +31,10 @@ object WeatherRepository {
      * 获取地方列表
      */
     suspend fun getPlaces(): List<PlaceTab> = localeApi.placeDao().queryPlaces()
+
+    /**
+     * todo 刪除地方
+     */
 
     /**
      * 插入或更新地方信息
@@ -54,7 +56,11 @@ object WeatherRepository {
      * 获取当前位置的天气信息
      */
     suspend fun updateWeatherByLoc() {
-        getLocation().address?.takeIf { it.isNotBlank() }?.let { address ->
+        val location = getLocation()
+        StringBuffer().append()
+        val key = StringBuilder().append(location.province.safe()).append(location.city.safe())
+            .append(location.district.safe()).append(location.street.safe()).toString()
+        key.takeIf { it.isNotBlank() }?.let { address ->
             searchPlace(address).takeIf { it.isNotEmpty() }?.let { it ->
                 val result = it[0]
                 val loc = result.location
@@ -69,21 +75,20 @@ object WeatherRepository {
     /**
      * 根据经纬度获取天气信息
      */
-    suspend fun updateWeatherByLoc(place: PlaceTab): String {
+    suspend fun updateWeatherByLoc(place: PlaceTab) {
         val weather = remoteApi.getWeatherByLocation(place.lat, place.lng, language, tempUnit)
         val realtime = weather.result.realtime.toRealTimeTab(place, weather.server_time)
         val alert = weather.result.alert.toAlertTab(place.lat, place.lng)
         val hourly = weather.result.hourly.toHourlyTab(place.lat, place.lng)
         val daily = weather.result.daily.toDailyTab(place.lat, place.lng)
+        val city = place.copy(timeZone = weather.timezone, tzshift = weather.tzshift)
         localeApi.withTransaction {
-            insertOrUpdatePlace(place)
+            insertOrUpdatePlace(city)
             insertOrUpdateRealTime(realtime)
             insertOrUpdateAlerts(place, alert)
             insertOrUpdateHourly(place, hourly)
             insertOrUpdateDaily(place, daily)
-            0
         }
-        return weather.toString()
     }
 
     private suspend fun insertOrUpdatePlace(place: PlaceTab) {
