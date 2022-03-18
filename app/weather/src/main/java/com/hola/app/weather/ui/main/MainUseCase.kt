@@ -12,21 +12,24 @@ class MainUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
         }.onStart {
 
         }.onSuccess {
-            Log.d("qfc","onSuccess")
+            Log.d("abcde","onSuccess $it")
         }.onFailure {
-            Log.d("qfc", "onFailure ${it.message}")
+            Log.d("abcde","onFailure ${it.message}")
         }.execute()
     }
 
     fun update() {
         doRequest {
-            WeatherRepository.searchPlace("四川省达州市宣汉县芭蕉镇")
+            //WeatherRepository.getWeatherByLocation(-74.0060, 40.7128, "zh_CN")
+            //WeatherRepository.searchPlace("北京")
+            WeatherRepository.updateWeatherByLoc()
+            //WeatherRepository.getLocation()
         }.onStart {
 
         }.onSuccess {
-            Log.d("qfc","onSuccess $it")
+            Log.d("abcde","onSuccess $it")
         }.onFailure {
-            Log.d("qfc", "onFailure ${it.message}")
+            Log.d("abcde","onFailure ${it.message}")
         }.execute()
     }
 }
