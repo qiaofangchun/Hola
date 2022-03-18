@@ -33,8 +33,9 @@ object WeatherRepository {
     suspend fun getPlaces(): List<PlaceTab> = localeApi.placeDao().queryPlaces()
 
     /**
-     * todo 刪除地方
+     * 刪除地方
      */
+    suspend fun deletePlace() = localeApi.placeDao().queryPlaces()
 
     /**
      * 插入或更新地方信息

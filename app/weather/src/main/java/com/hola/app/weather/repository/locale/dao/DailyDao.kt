@@ -18,9 +18,9 @@ interface DailyDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertDaily(hourly: List<DailyTab>)
 
-    @Query("DELETE FROM $TAB_NAME WHERE lat=:lat AND lng=:lng")
+    @Query("DELETE FROM $TAB_NAME WHERE place_lat=:lat AND place_lng=:lng")
     suspend fun deleteDaily(lat: Double, lng: Double)
 
-    @Query("SELECT * FROM $TAB_NAME WHERE lat=:lat AND lng=:lng")
+    @Query("SELECT * FROM $TAB_NAME WHERE place_lat=:lat AND place_lng=:lng")
     suspend fun queryDaily(lat: Double, lng: Double): List<DailyTab>
 }

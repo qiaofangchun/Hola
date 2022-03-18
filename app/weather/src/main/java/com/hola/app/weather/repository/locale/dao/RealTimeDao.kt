@@ -18,6 +18,6 @@ interface RealTimeDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateRealTime(realTime: RealTimeTab)
 
-    @Query("SELECT * FROM $TAB_NAME WHERE lat=:lat AND lng=:lng")
+    @Query("SELECT * FROM $TAB_NAME WHERE place_lat=:lat AND place_lng=:lng")
     suspend fun queryRealTime(lat: Double, lng: Double): RealTimeTab?
 }

@@ -2,9 +2,14 @@ package com.hola.app.weather.repository.locale.model
 
 import androidx.room.Entity
 import androidx.room.Ignore
+import androidx.room.Index
 import com.hola.app.weather.repository.locale.dao.PlaceDao
 
-@Entity(tableName = PlaceDao.TAB_NAME, primaryKeys = ["lat", "lng"])
+@Entity(
+    tableName = PlaceDao.TAB_NAME,
+    primaryKeys = ["lat", "lng"],
+    indices = [Index(value = ["lat", "lng"], unique = true)],
+)
 data class PlaceTab(
     val lat: Double = 0.0,
     val lng: Double = 0.0,

@@ -18,9 +18,9 @@ interface HourlyDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertHourly(hourly: List<HourlyTab>)
 
-    @Query("DELETE FROM $TAB_NAME WHERE lat=:lat AND lng=:lng")
+    @Query("DELETE FROM $TAB_NAME WHERE place_lat=:lat AND place_lng=:lng")
     suspend fun deleteHourly(lat: Double, lng: Double)
 
-    @Query("SELECT * FROM $TAB_NAME WHERE lat=:lat AND lng=:lng")
+    @Query("SELECT * FROM $TAB_NAME WHERE place_lat=:lat AND place_lng=:lng")
     suspend fun queryHourly(lat: Double, lng: Double): List<HourlyTab>
 }
