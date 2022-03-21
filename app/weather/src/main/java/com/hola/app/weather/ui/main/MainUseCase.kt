@@ -3,33 +3,49 @@ package com.hola.app.weather.ui.main
 import android.util.Log
 import com.hola.app.weather.repository.WeatherRepository
 import com.hola.app.weather.repository.WeatherUseCase
+import com.hola.app.weather.repository.locale.model.PlaceTab
 import kotlinx.coroutines.CoroutineScope
 
 class MainUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
-    fun location() {
-        doRequest {
-            WeatherRepository.updateWeatherByLoc()
-        }.onStart {
+    companion object {
+        private const val TAG = "MainUseCase"
+    }
 
+    fun getWeather() {
+
+    }
+
+    fun deletePlace() {
+        doRequest {
+            WeatherRepository.deletePlace(PlaceTab(lat = 23.103174, lng = 113.336746))
+        }.onStart {
+            // todo start UI state
+            Log.d(TAG, "onStart---->")
         }.onSuccess {
-            Log.d("abcde","onSuccess $it")
+            // todo end UI state
+            Log.d(TAG, "onSuccess---->$it")
         }.onFailure {
-            Log.d("abcde","onFailure ${it.message}")
+            // todo show error msg
+            Log.d(TAG, "onFailure---->${it.message}")
         }.execute()
     }
 
-    fun update() {
+    fun update(placeTab: PlaceTab) {
         doRequest {
-            //WeatherRepository.getWeatherByLocation(-74.0060, 40.7128, "zh_CN")
-            //WeatherRepository.searchPlace("北京")
-            WeatherRepository.updateWeatherByLoc()
-            //WeatherRepository.getLocation()
+            if (placeTab.isLocation) {
+                WeatherRepository.updateWeatherByLoc()
+            } else {
+                WeatherRepository.updateWeatherByPlace(placeTab)
+            }
         }.onStart {
-
+            // todo start UI state
+            Log.d(TAG, "onStart---->")
         }.onSuccess {
-            Log.d("abcde","onSuccess $it")
+            // todo end UI state
+            Log.d(TAG, "onSuccess---->$it")
         }.onFailure {
-            Log.d("abcde","onFailure ${it.message}")
+            // todo show error msg
+            Log.d(TAG, "onFailure---->${it.message}")
         }.execute()
     }
 }
