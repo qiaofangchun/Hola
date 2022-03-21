@@ -7,8 +7,8 @@ import com.hola.app.weather.repository.locale.dao.PlaceDao
 
 @Entity(
     tableName = PlaceDao.TAB_NAME,
-    primaryKeys = ["lat", "lng"],
-    indices = [Index(value = ["lat", "lng"], unique = true)],
+    primaryKeys = [PlaceDao.COLUMN_LAT, PlaceDao.COLUMN_LNG],
+    indices = [Index(value = [PlaceDao.COLUMN_LAT, PlaceDao.COLUMN_LNG], unique = true)],
 )
 data class PlaceTab(
     val lat: Double = 0.0,

@@ -15,21 +15,6 @@ class MainUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
 
     }
 
-    fun deletePlace() {
-        doRequest {
-            WeatherRepository.deletePlace(PlaceTab(lat = 23.103174, lng = 113.336746))
-        }.onStart {
-            // todo start UI state
-            Log.d(TAG, "onStart---->")
-        }.onSuccess {
-            // todo end UI state
-            Log.d(TAG, "onSuccess---->$it")
-        }.onFailure {
-            // todo show error msg
-            Log.d(TAG, "onFailure---->${it.message}")
-        }.execute()
-    }
-
     fun update(placeTab: PlaceTab) {
         doRequest {
             if (placeTab.isLocation) {
@@ -39,13 +24,13 @@ class MainUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
             }
         }.onStart {
             // todo start UI state
-            Log.d(TAG, "onStart---->")
+            Log.d(TAG, "update onStart---->")
         }.onSuccess {
             // todo end UI state
-            Log.d(TAG, "onSuccess---->$it")
+            Log.d(TAG, "update onSuccess---->$it")
         }.onFailure {
             // todo show error msg
-            Log.d(TAG, "onFailure---->${it.message}")
+            Log.d(TAG, "update onFailure---->${it.message}")
         }.execute()
     }
 }

@@ -8,7 +8,6 @@ class MainViewModel : ViewModel() {
     private val mUseCase by lazy { MainUseCase(viewModelScope) }
 
     fun searchPlace() {
-        //mUseCase.update(PlaceTab(isLocation = true))
-        mUseCase.deletePlace()
+        mUseCase.update(PlaceTab(isLocation = true))
     }
 }

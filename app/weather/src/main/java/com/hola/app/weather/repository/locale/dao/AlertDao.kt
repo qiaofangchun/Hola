@@ -10,6 +10,8 @@ import com.hola.app.weather.repository.locale.model.AlertTab
 interface AlertDao {
     companion object {
         const val TAB_NAME = "alert"
+        const val COLUMN_LAT = "place_lat"
+        const val COLUMN_LNG = "place_lng"
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

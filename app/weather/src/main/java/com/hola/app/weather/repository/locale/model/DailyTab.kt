@@ -2,23 +2,24 @@ package com.hola.app.weather.repository.locale.model
 
 import androidx.room.*
 import com.hola.app.weather.repository.locale.dao.DailyDao
+import com.hola.app.weather.repository.locale.dao.PlaceDao
 
 @Entity(
     tableName = DailyDao.TAB_NAME,
-    indices = [Index(value = ["place_lat", "place_lng"], unique = true)],
+    indices = [Index(value = [DailyDao.COLUMN_LAT, DailyDao.COLUMN_LNG], unique = true)],
     foreignKeys = [ForeignKey(
         entity = PlaceTab::class,
-        parentColumns = ["lat", "lng"],
-        childColumns = ["place_lat", "place_lng"],
+        parentColumns = [PlaceDao.COLUMN_LAT, PlaceDao.COLUMN_LNG],
+        childColumns = [DailyDao.COLUMN_LAT, DailyDao.COLUMN_LNG],
         onDelete = ForeignKey.CASCADE
     )]
 )
 data class DailyTab(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
-    @ColumnInfo(name = "place_lat")
+    @ColumnInfo(name = DailyDao.COLUMN_LAT)
     val lat: Double = 0.0,
-    @ColumnInfo(name = "place_lng")
+    @ColumnInfo(name = DailyDao.COLUMN_LNG)
     val lng: Double = 0.0,
     val time: String = "",
     val weatherMain: String = "", // 主要天气现象

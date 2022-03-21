@@ -10,6 +10,8 @@ import com.hola.app.weather.repository.locale.model.PlaceTab
 interface PlaceDao {
     companion object {
         const val TAB_NAME = "place"
+        const val COLUMN_LAT = "lat"
+        const val COLUMN_LNG = "lng"
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

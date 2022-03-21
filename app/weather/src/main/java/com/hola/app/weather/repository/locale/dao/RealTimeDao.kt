@@ -10,6 +10,8 @@ import com.hola.app.weather.repository.locale.model.RealTimeTab
 interface RealTimeDao {
     companion object {
         const val TAB_NAME = "real_time"
+        const val COLUMN_LAT = "place_lat"
+        const val COLUMN_LNG = "place_lng"
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

@@ -3,22 +3,23 @@ package com.hola.app.weather.repository.locale.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import com.hola.app.weather.repository.locale.dao.PlaceDao
 import com.hola.app.weather.repository.locale.dao.RealTimeDao
 
 @Entity(
     tableName = RealTimeDao.TAB_NAME,
-    primaryKeys = ["place_lat", "place_lng"],
+    primaryKeys = [RealTimeDao.COLUMN_LAT, RealTimeDao.COLUMN_LNG],
     foreignKeys = [ForeignKey(
         entity = PlaceTab::class,
-        parentColumns = ["lat", "lng"],
-        childColumns = ["place_lat", "place_lng"],
+        parentColumns = [PlaceDao.COLUMN_LAT, PlaceDao.COLUMN_LNG],
+        childColumns = [RealTimeDao.COLUMN_LAT, RealTimeDao.COLUMN_LNG],
         onDelete = ForeignKey.CASCADE
     )]
 )
 data class RealTimeTab(
-    @ColumnInfo(name = "place_lat")
+    @ColumnInfo(name = RealTimeDao.COLUMN_LAT)
     val lat: Double = 0.0,
-    @ColumnInfo(name = "place_lng")
+    @ColumnInfo(name = RealTimeDao.COLUMN_LNG)
     val lng: Double = 0.0,
     val time: String = "",
     val weatherMain: String = "", // 主要天气现象

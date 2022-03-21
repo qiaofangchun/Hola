@@ -45,7 +45,7 @@ object WeatherRepository {
     /**
      * 插入或更新地方信息
      */
-    suspend fun insert(place: PlaceTab) {
+    suspend fun insertPlace(place: PlaceTab) {
         localeApi.withTransaction {
             insertOrUpdatePlace(place)
         }
@@ -54,9 +54,8 @@ object WeatherRepository {
     /**
      * 搜索城市
      */
-    suspend fun searchPlace(place: String): List<Place> {
-        return remoteApi.searchPlace(place, language).places
-    }
+    suspend fun searchPlace(place: String): List<Place> =
+        remoteApi.searchPlace(place, language).places
 
     /**
      * 获取当前位置的天气信息

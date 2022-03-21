@@ -18,7 +18,7 @@ import com.hola.ext.viewBinding
 
 class MainActivity : BaseActivity(R.layout.activity_main) {
     private val view by viewBinding(::bind)
-    private val model: MainViewModel by viewModels()
+    private val model by viewModels<MainViewModel>()
     private var type = WeatherType.DEFAULT
 
     override fun requestedOrientation() = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
