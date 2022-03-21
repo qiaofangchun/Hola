@@ -9,7 +9,7 @@ import com.hola.app.weather.repository.locale.dao.PlaceDao
     indices = [Index(value = [AlertDao.COLUMN_LAT, AlertDao.COLUMN_LNG], unique = true)],
     foreignKeys = [ForeignKey(
         entity = PlaceTab::class,
-        parentColumns = [PlaceDao.COLUMN_LAT, PlaceDao.COLUMN_LAT],
+        parentColumns = [PlaceDao.COLUMN_LAT, PlaceDao.COLUMN_LNG],
         childColumns = [AlertDao.COLUMN_LAT, AlertDao.COLUMN_LNG],
         onDelete = ForeignKey.CASCADE,
     )]

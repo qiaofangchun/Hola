@@ -2,6 +2,7 @@ package com.hola.app.weather.repository.locale.dao
 
 import androidx.room.*
 import com.hola.app.weather.repository.locale.model.PlaceTab
+import kotlinx.coroutines.flow.Flow
 
 /**
  * 位置信息Dao
@@ -20,11 +21,11 @@ interface PlaceDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlace(place: PlaceTab)
 
-    @Query("SELECT * FROM $TAB_NAME WHERE lat=:lat AND lng=:lng")
+    @Query("SELECT * FROM $TAB_NAME WHERE $COLUMN_LAT=:lat AND $COLUMN_LNG=:lng")
     suspend fun queryPlace(lat: Double, lng: Double): PlaceTab?
 
     @Query("SELECT * FROM $TAB_NAME")
-    suspend fun queryPlaces(): List<PlaceTab>
+    fun queryPlacesFlow(): Flow<List<PlaceTab>>
 
     @Delete
     suspend fun deletePlace(place: PlaceTab)

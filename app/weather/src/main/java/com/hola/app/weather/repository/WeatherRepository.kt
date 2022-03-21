@@ -12,6 +12,7 @@ import com.hola.app.weather.repository.remote.dao.ApiService
 import com.hola.app.weather.repository.remote.model.Place
 import com.hola.app.weather.utils.LocationHelper
 import com.hola.common.utils.AppHelper
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -30,7 +31,7 @@ object WeatherRepository {
     /**
      * 获取地方列表
      */
-    suspend fun getPlaces(): List<PlaceTab> = localeApi.placeDao().queryPlaces()
+    fun getPlaces(): Flow<List<PlaceTab>> = localeApi.placeDao().queryPlacesFlow()
 
     /**
      * 删除地方

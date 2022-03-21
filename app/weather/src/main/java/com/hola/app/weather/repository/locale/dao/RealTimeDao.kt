@@ -2,6 +2,7 @@ package com.hola.app.weather.repository.locale.dao
 
 import androidx.room.*
 import com.hola.app.weather.repository.locale.model.RealTimeTab
+import kotlinx.coroutines.flow.Flow
 
 /**
  * 当前天气Dao
@@ -20,6 +21,9 @@ interface RealTimeDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateRealTime(realTime: RealTimeTab)
 
-    @Query("SELECT * FROM $TAB_NAME WHERE place_lat=:lat AND place_lng=:lng")
-    suspend fun queryRealTime(lat: Double, lng: Double): RealTimeTab?
+    @Query("SELECT * FROM $TAB_NAME WHERE $COLUMN_LAT=:lat AND $COLUMN_LNG=:lng")
+    fun queryRealTimeFlow(lat: Double, lng: Double): Flow<RealTimeTab?>
+
+    @Query("SELECT * FROM $TAB_NAME WHERE $COLUMN_LAT=:lat AND $COLUMN_LNG=:lng")
+    fun queryRealTime(lat: Double, lng: Double): RealTimeTab?
 }
