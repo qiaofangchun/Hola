@@ -53,7 +53,9 @@ abstract class UseCase(private val mScope: CoroutineScope) {
                 mOnFailure?.invoke(mHandler.invoke(exception))
             }
             mScope.launch(exceptionHandler) {
-                mRequest?.invoke()?.let {
+                withContext(Dispatchers.IO) {
+                    mRequest?.invoke()
+                }?.let {
                     mOnSuccess?.invoke(it as T)
                 } ?: let {
                     mOnFailure?.invoke(mHandler.invoke(DataNullException()))
