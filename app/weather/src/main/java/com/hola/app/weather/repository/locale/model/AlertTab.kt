@@ -6,7 +6,7 @@ import com.hola.app.weather.repository.locale.dao.PlaceDao
 
 @Entity(
     tableName = AlertDao.TAB_NAME,
-    indices = [Index(value = [AlertDao.COLUMN_LAT, AlertDao.COLUMN_LNG], unique = true)],
+    indices = [Index(value = [AlertDao.COLUMN_LAT, AlertDao.COLUMN_LNG])],
     foreignKeys = [ForeignKey(
         entity = PlaceTab::class,
         parentColumns = [PlaceDao.COLUMN_LAT, PlaceDao.COLUMN_LNG],
@@ -16,7 +16,7 @@ import com.hola.app.weather.repository.locale.dao.PlaceDao
 )
 data class AlertTab(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    var id: Long = 0,
     @ColumnInfo(name = AlertDao.COLUMN_LAT)
     val lat: Double = 0.0,
     @ColumnInfo(name = AlertDao.COLUMN_LNG)

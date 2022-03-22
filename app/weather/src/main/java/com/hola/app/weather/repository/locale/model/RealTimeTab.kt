@@ -3,12 +3,14 @@ package com.hola.app.weather.repository.locale.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import com.hola.app.weather.repository.locale.dao.PlaceDao
 import com.hola.app.weather.repository.locale.dao.RealTimeDao
 
 @Entity(
     tableName = RealTimeDao.TAB_NAME,
     primaryKeys = [RealTimeDao.COLUMN_LAT, RealTimeDao.COLUMN_LNG],
+    indices = [Index(value = [RealTimeDao.COLUMN_LAT, RealTimeDao.COLUMN_LNG])],
     foreignKeys = [ForeignKey(
         entity = PlaceTab::class,
         parentColumns = [PlaceDao.COLUMN_LAT, PlaceDao.COLUMN_LNG],

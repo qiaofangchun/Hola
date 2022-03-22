@@ -6,7 +6,7 @@ import com.hola.app.weather.repository.locale.dao.PlaceDao
 
 @Entity(
     tableName = DailyDao.TAB_NAME,
-    indices = [Index(value = [DailyDao.COLUMN_LAT, DailyDao.COLUMN_LNG], unique = true)],
+    indices = [Index(value = [DailyDao.COLUMN_LAT, DailyDao.COLUMN_LNG])],
     foreignKeys = [ForeignKey(
         entity = PlaceTab::class,
         parentColumns = [PlaceDao.COLUMN_LAT, PlaceDao.COLUMN_LNG],
