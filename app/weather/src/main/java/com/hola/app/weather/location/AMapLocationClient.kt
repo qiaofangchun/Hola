@@ -51,7 +51,6 @@ class AMapLocationClient(override val context: Context) : ILocationClient {
                     this@AMapLocationClient.stopLocation()
                 }
                 it?.let {
-                    Log.d(TAG, "errorCode=${it.errorCode},bean=$it")
                     when (it.errorCode) {
                         AMapLocation.LOCATION_SUCCESS -> listener?.onSuccess(
                             Location(

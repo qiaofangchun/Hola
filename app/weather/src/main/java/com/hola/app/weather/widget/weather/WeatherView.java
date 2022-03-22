@@ -14,19 +14,17 @@ import android.view.animation.AnimationUtils;
 import com.hola.app.weather.widget.weather.drawer.BaseDrawer;
 
 public class WeatherView extends SurfaceView implements SurfaceHolder.Callback {
-
-    static final String TAG = WeatherView.class.getSimpleName();
+    private static final String TAG = WeatherView.class.getSimpleName();
     private DrawThread mDrawThread;
+    private BaseDrawer preDrawer, curDrawer;
+    private float curDrawerAlpha = 0f;
+    private int curType = WeatherType.DEFAULT;
+    private int mWidth, mHeight;
 
     public WeatherView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
-
-    private BaseDrawer preDrawer, curDrawer;
-    private float curDrawerAlpha = 0f;
-    private int curType = WeatherType.DEFAULT;
-    private int mWidth, mHeight;
 
     private void init(Context context) {
         curDrawerAlpha = 0f;
@@ -54,6 +52,11 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback {
             setDrawer(BaseDrawer.Companion.makeDrawerByType(getContext(), curType));
         }
 
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
     }
 
     @Override

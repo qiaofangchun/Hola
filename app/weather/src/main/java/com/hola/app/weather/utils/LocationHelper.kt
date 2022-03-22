@@ -38,7 +38,7 @@ object LocationHelper {
     }
 
     fun getPermissions(): Array<String> {
-        val all = sysClient.getPermissions()/* + amapClient.getPermissions()*/
+        val all = sysClient.getPermissions() + amapClient.getPermissions()
         return all.distinct().toTypedArray()
     }
 

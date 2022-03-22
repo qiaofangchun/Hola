@@ -17,6 +17,7 @@ class MainUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
 
     fun update(placeTab: PlaceTab) {
         doRequest {
+            Log.d(TAG, "doRequest---->thread:${Thread.currentThread().name}")
             if (placeTab.isLocation) {
                 WeatherRepository.updateWeatherByLoc()
             } else {
@@ -24,13 +25,13 @@ class MainUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
             }
         }.onStart {
             // todo start UI state
-            Log.d(TAG, "update onStart---->")
+            Log.d(TAG, "update onStart---->thread:${Thread.currentThread().name}")
         }.onSuccess {
             // todo end UI state
-            Log.d(TAG, "update onSuccess---->$it")
+            Log.d(TAG, "update onSuccess---->$it,thread:${Thread.currentThread().name}")
         }.onFailure {
             // todo show error msg
-            Log.d(TAG, "update onFailure---->${it.message}")
+            Log.d(TAG, "update onFailure---->${it.message},thread:${Thread.currentThread().name}")
         }.execute()
     }
 }

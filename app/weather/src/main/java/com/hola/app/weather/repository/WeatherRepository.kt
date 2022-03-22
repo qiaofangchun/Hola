@@ -63,9 +63,9 @@ object WeatherRepository {
      */
     suspend fun updateWeatherByLoc() {
         val location = getLocation()
-        StringBuffer().append()
+        Log.d(TAG, "location---->$location")
         val key = StringBuilder().append(location.province.safe()).append(location.city.safe())
-            .append(location.district.safe()).append(location.street.safe()).toString()
+            .append(location.district.safe()).toString()
         key.takeIf { it.isNotBlank() }?.let { address ->
             searchPlace(address).takeIf { it.isNotEmpty() }?.let { it ->
                 val result = it[0]
