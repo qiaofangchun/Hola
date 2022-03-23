@@ -67,8 +67,7 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
 
     override fun getPermissions(): Array<String> = arrayOf(
         permission.ACCESS_COARSE_LOCATION,
-        permission.ACCESS_FINE_LOCATION,
-        permission.READ_PHONE_STATE
+        permission.ACCESS_FINE_LOCATION
     )
 
     override fun timeOut(timeOut: Long) {

@@ -29,7 +29,8 @@ object LocationHelper {
             Log.d(TAG, "system started!")
             return
         }
-        amapClient.startLocation()
+        sysClient.startLocation()
+        //amapClient.startLocation()
     }
 
     fun stopLocation() {
