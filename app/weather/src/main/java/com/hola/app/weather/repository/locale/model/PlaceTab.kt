@@ -17,6 +17,7 @@ data class PlaceTab(
     val timeZone: String? = null,
     val tzshift: Int? = null,
     val isLocation: Boolean = false,
+    val updateTime: Long = 0
 ) {
     @Ignore
     constructor() : this(0.0, 0.0)

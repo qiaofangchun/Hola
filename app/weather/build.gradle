@@ -40,9 +40,14 @@ dependencies {
     implementation project(path: ':lib_network')
     implementation project(path: ':lib_common')
 
+    // Navigation
     implementation deps.navigation.ui
     implementation deps.navigation.dynamic
     implementation deps.navigation.fragment
+
+    // WorkManager
+    implementation deps.work.api
+    implementation deps.work.ktx
 
     // 高德地图
     implementation deps.amap.location

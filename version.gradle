@@ -59,6 +59,12 @@ room.api = "androidx.room:room-runtime:$version.room"
 room.compiler = "androidx.room:room-compiler:$version.room"
 deps.room = room
 
+version.work = "2.7.1"
+def work = [:]
+work.api = "androidx.work:work-runtime:$version.work"
+work.ktx = "androidx.work:work-runtime-ktx:$version.work"
+deps.work = work
+
 def google = [:]
 google.gson = 'com.google.code.gson:gson:2.9.0'
 google.material = 'com.google.android.material:material:1.4.0'

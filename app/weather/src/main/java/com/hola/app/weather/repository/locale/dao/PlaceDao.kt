@@ -24,7 +24,7 @@ interface PlaceDao {
     @Query("SELECT * FROM $TAB_NAME WHERE $COLUMN_LAT=:lat AND $COLUMN_LNG=:lng")
     suspend fun queryPlace(lat: Double, lng: Double): PlaceTab?
 
-    @Query("SELECT * FROM $TAB_NAME")
+    @Query("SELECT * FROM $TAB_NAME ORDER BY isLocation, updateTime ASC")
     fun queryPlacesFlow(): Flow<List<PlaceTab>>
 
     @Delete
