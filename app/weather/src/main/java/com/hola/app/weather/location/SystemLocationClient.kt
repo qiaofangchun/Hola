@@ -65,9 +65,16 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
         }
     }
 
-    override fun getPermissions(): Array<String> = arrayOf(
-        permission.ACCESS_COARSE_LOCATION,
-        permission.ACCESS_FINE_LOCATION
+    override fun getPermissions(): Array<String> {
+        var permissions = getCheckPermissions()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissions += permission.ACCESS_BACKGROUND_LOCATION
+        }
+        return permissions
+    }
+
+    private fun getCheckPermissions(): Array<String> = arrayOf(
+        permission.ACCESS_COARSE_LOCATION
     )
 
     override fun timeOut(timeOut: Long) {
@@ -96,7 +103,7 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
             listener?.onFailure(LocNotDeviceException())
             return
         }
-        getPermissions().forEach {
+        getCheckPermissions().forEach {
             if (ActivityCompat.checkSelfPermission(context, it) != PERMISSION_GRANTED) {
                 listener?.onFailure(LocNotPermissionException())
                 return@forEach

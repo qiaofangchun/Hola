@@ -6,7 +6,7 @@ import com.hola.base.application.BaseApplication
 class WeatherApp : BaseApplication() {
     override fun onCreate() {
         super.onCreate()
-        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+        /*StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
             .detectDiskReads()
             .detectDiskWrites()
             .detectNetwork()   // or .detectAll() for all detectable problems
@@ -17,6 +17,6 @@ class WeatherApp : BaseApplication() {
             .detectLeakedClosableObjects()
             .penaltyLog()
             .penaltyDeath()
-            .build());
+            .build());*/
     }
 }

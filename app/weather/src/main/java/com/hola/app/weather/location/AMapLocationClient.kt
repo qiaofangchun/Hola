@@ -17,9 +17,11 @@ class AMapLocationClient(override val context: Context) : ILocationClient {
         private const val LOC_TIME_OUT = 5000L
         private const val LOC_INTERVAL = 2000L
     }
+
     private var isStarted = false
     private var listener: LocationListener? = null
-    private val option by lazy { AMapLocationClientOption().apply {
+    private val option by lazy {
+        AMapLocationClientOption().apply {
             //可选， 设置网络请求的协议。可选HTTP或者HTTPS。默认为HTTP
             AMapLocationClientOption.setLocationProtocol(AMapLocationClientOption.AMapLocationProtocol.HTTPS)
             //可选，设置网络请求超时时间。默认为30秒。在仅设备模式下无效
@@ -47,7 +49,7 @@ class AMapLocationClient(override val context: Context) : ILocationClient {
     private val amapClient by lazy {
         AMapLocationClient(context).apply {
             setLocationListener {
-                if (option.isOnceLocation){
+                if (option.isOnceLocation) {
                     this@AMapLocationClient.stopLocation()
                 }
                 it?.let {
@@ -81,10 +83,16 @@ class AMapLocationClient(override val context: Context) : ILocationClient {
         AMapLocationClient.updatePrivacyAgree(context, true);
     }
 
-    override fun getPermissions(): Array<String> = arrayOf(
-        permission.ACCESS_COARSE_LOCATION,
-        permission.ACCESS_FINE_LOCATION
-    )
+    override fun getPermissions(): Array<String> {
+        var permissions = arrayOf(
+            permission.ACCESS_COARSE_LOCATION
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissions += permission.ACCESS_BACKGROUND_LOCATION
+        }
+        return permissions
+    }
+
 
     override fun timeOut(timeOut: Long) {
         option.httpTimeOut = timeOut
@@ -111,7 +119,7 @@ class AMapLocationClient(override val context: Context) : ILocationClient {
 
     override fun isStarted(): Boolean = isStarted
 
-    override fun stopLocation(){
+    override fun stopLocation() {
         isStarted = false
         amapClient.stopLocation()
     }
