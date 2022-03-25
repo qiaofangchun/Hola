@@ -1,4 +1,4 @@
-package com.hola.app.weather.ui.city
+package com.hola.app.weather.ui.city.manage
 
 import androidx.fragment.app.viewModels
 import com.hola.app.weather.R
@@ -17,6 +17,6 @@ class ManageCityFragment : BaseFragment(R.layout.fragment_manage_city) {
     }
 
     override fun initWithData() {
-
+        model.getPlaces()
     }
 }

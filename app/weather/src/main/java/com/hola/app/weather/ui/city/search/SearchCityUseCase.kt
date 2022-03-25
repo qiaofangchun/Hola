@@ -1,15 +1,29 @@
-package com.hola.app.weather.ui.city
+package com.hola.app.weather.ui.city.search
 
 import android.util.Log
 import com.hola.app.weather.repository.WeatherRepository
 import com.hola.app.weather.repository.WeatherUseCase
 import com.hola.app.weather.repository.locale.model.PlaceTab
-import com.hola.app.weather.ui.main.MainUseCase
 import kotlinx.coroutines.CoroutineScope
 
-class ManageCityUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
+class SearchCityUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
     companion object {
         private const val TAG = "ManageCityUseCase"
+    }
+
+    fun getPlaces(){
+        doRequest {
+            WeatherRepository.getPlaces()
+        }.onStart {
+            // todo start UI state
+            Log.d(TAG, "search onStart---->")
+        }.onSuccess {
+            // todo end UI state
+            Log.d(TAG, "search onSuccess---->$it")
+        }.onFailure {
+            // todo show error msg
+            Log.d(TAG, "search onFailure---->${it.message}")
+        }.execute()
     }
 
     fun searchPlace(address:String){

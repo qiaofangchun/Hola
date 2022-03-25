@@ -87,7 +87,7 @@ object WeatherRepository {
         val alert = weather.result.alert.toAlertTab(place.lat, place.lng)
         val hourly = weather.result.hourly.toHourlyTab(place.lat, place.lng)
         val daily = weather.result.daily.toDailyTab(place.lat, place.lng)
-        val city = place.copy(timeZone = weather.timezone, tzshift = weather.tzshift)
+        val city = place.copy(timeZone = weather.timezone, tzshift = weather.tzshift, updateTime = weather.server_time)
         localeApi.withTransaction {
             insertOrUpdatePlace(city)
             insertOrUpdateRealTime(realtime)
