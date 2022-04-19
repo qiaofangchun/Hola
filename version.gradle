@@ -15,7 +15,7 @@ kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$version.kotlin"
 kotlin.gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
 deps.kotlin = kotlin
 
-version.coroutines = "1.4.1"
+version.coroutines = "1.5.2"
 def coroutines = [:]
 coroutines.core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version.coroutines"
 coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version.coroutines"

@@ -6,27 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!--<com.hola.app.weather.widget.weather.WeatherView
-        android:id="@+id/weatherView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />-->
-
-    <!--<com.hola.app.weather.widget.insets.FitSystemBarAppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:orientation="vertical"
-        app:elevation="0dp">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/transparent" />
-
-    </com.hola.app.weather.widget.insets.FitSystemBarAppBarLayout>-->
-
     <Button
         android:id="@+id/change"
         android:layout_width="wrap_content"

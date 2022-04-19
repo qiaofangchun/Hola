@@ -11,9 +11,7 @@ class ManageCityFragment : BaseFragment(R.layout.fragment_manage_city) {
     private val model by viewModels<ManageCityViewModel>()
 
     override fun initWithView() {
-        view.btnSearch.setOnClickListener {
-            model.searchPlace(view.address.toString())
-        }
+
     }
 
     override fun initWithData() {

@@ -15,7 +15,7 @@ class MainFragment : BaseFragment(R.layout.fragment_main) {
     private val view by viewBinding(::bind)
 
     override fun initWithView() {
-        view.recyclerView.layoutManager = MainLayoutManager()
+        //view.recyclerView.layoutManager = MainLayoutManager()
         //view.recyclerView.addOnScrollListener(mScrollListener)
         //view.recyclerView.setOnTouchListener(indicatorStateListener)
     }
