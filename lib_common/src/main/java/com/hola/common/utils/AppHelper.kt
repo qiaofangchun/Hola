@@ -1,6 +1,5 @@
 package com.hola.common.utils
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ContentResolver
 import android.content.SharedPreferences
@@ -8,7 +7,6 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 
-@SuppressLint("StaticFieldLeak")
 object AppHelper {
     @Volatile
     private var impl: Application? = null

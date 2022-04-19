@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'androidx.navigation.safeargs.kotlin'
+    //id 'androidx.navigation.safeargs.kotlin'
 }
 apply from: "${project.rootDir}/config_app.gradle"
 
@@ -41,11 +41,11 @@ dependencies {
     implementation project(path: ':lib_common')
 
     // Navigation
-    implementation deps.navigation.ui
-    implementation deps.navigation.dynamic
-    implementation deps.navigation.fragment
+    //implementation deps.navigation.ui
+    //implementation deps.navigation.dynamic
+    //implementation deps.navigation.fragment
 
-    // WorkManager
+    // work manager
     implementation deps.work.api
     implementation deps.work.ktx
 
