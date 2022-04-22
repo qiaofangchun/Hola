@@ -1,10 +1,15 @@
-package com.hola.common.datastore
+package com.hola.datastore
 
 import android.content.Context
 import java.io.*
 
-class DefaultDataSaver(context: Context) : IDataSaver {
-    private val prefs by lazy { context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE) }
+class SPDataSaver(context: Context) : IDataSaver {
+    private val prefs by lazy {
+        context.getSharedPreferences(
+            context.packageName,
+            Context.MODE_PRIVATE
+        )
+    }
 
     override fun <A> readValue(key: String, defaultValue: A): A = with(prefs) {
         val res: Any? = when (defaultValue) {
@@ -31,7 +36,7 @@ class DefaultDataSaver(context: Context) : IDataSaver {
 
     override fun deleteAllData() = prefs.edit().clear().apply()
 
-    override fun deleteDataByKey(key: String) = prefs.edit().remove(key).apply()
+    override fun deleteData(key: String) = prefs.edit().remove(key).apply()
 
     @Throws(IOException::class)
     private fun <A> serialize(obj: A): String {

@@ -1,4 +1,4 @@
-package com.hola.ext
+package com.hola.viewbind
 
 import android.view.View
 import androidx.annotation.IdRes

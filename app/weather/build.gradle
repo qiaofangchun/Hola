@@ -39,6 +39,7 @@ dependencies {
     implementation project(path: ':lib_base')
     implementation project(path: ':lib_network')
     implementation project(path: ':lib_common')
+    implementation project(path: ':lib_viewbind')
 
     // Navigation
     //implementation deps.navigation.ui

@@ -1,6 +1,6 @@
 package com.hola.app.weather.location.exception
 
-import com.hola.arch.exception.BaseException
+import com.hola.common.exception.BaseException
 
 class LocNotPermissionException : BaseException {
     constructor() : this("No permissions")

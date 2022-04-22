@@ -1,0 +1,21 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+apply from: "${project.rootDir}/config_lib.gradle"
+android {
+    defaultConfig {
+        versionCode 1
+        versionName "1.0"
+    }
+
+    android.buildFeatures.viewBinding = true
+}
+
+dependencies {
+    implementation deps.androidx.annotation
+    implementation deps.androidx.activity
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.annotation
+    implementation deps.androidx.recyclerview
+}

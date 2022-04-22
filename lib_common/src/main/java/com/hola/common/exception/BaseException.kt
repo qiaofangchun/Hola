@@ -1,4 +1,4 @@
-package com.hola.arch.exception
+package com.hola.common.exception
 
 open class BaseException : Exception {
     private var errorCode = 0

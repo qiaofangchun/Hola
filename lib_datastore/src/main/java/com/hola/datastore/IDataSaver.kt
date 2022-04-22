@@ -1,11 +1,11 @@
-package com.hola.common.datastore
+package com.hola.datastore
 
 interface IDataSaver {
     fun <A> writeValue(key: String, value: A)
 
     fun <A> readValue(key: String, defaultValue: A): A
 
-    fun deleteAllData()
+    fun deleteData(key: String)
 
-    fun deleteDataByKey(key: String)
+    fun deleteAllData()
 }

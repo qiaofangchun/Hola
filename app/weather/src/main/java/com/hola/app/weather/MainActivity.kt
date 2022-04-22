@@ -7,13 +7,11 @@ import com.hola.app.weather.databinding.ActivityMainBinding.bind
 import com.hola.app.weather.ui.main.MainViewModel
 import com.hola.app.weather.utils.LocationHelper
 import com.hola.base.activity.BaseActivity
-import com.hola.ext.viewBinding
+import com.hola.viewbind.viewBinding
 
 class MainActivity : BaseActivity(R.layout.activity_main) {
     private val view by viewBinding(::bind)
     private val model by viewModels<MainViewModel>()
-
-    override fun requestedOrientation() = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     override fun initWithView() {
         view.change.setOnClickListener {

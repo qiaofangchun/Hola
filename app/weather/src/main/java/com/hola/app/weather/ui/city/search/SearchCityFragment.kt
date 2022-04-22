@@ -4,7 +4,7 @@ import androidx.fragment.app.viewModels
 import com.hola.app.weather.R
 import com.hola.app.weather.databinding.FragmentSearchCityBinding.bind
 import com.hola.base.fragment.BaseFragment
-import com.hola.ext.viewBinding
+import com.hola.viewbind.viewBinding
 
 class SearchCityFragment : BaseFragment(R.layout.fragment_search_city) {
     private val view by viewBinding(::bind)
