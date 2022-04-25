@@ -1,6 +1,7 @@
 package com.hola.app.weather.location
 
 import android.Manifest.permission
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.Geocoder
@@ -12,9 +13,6 @@ import android.os.Process
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.location.LocationManagerCompat
-import com.hola.app.weather.location.exception.LocFailureException
-import com.hola.app.weather.location.exception.LocNotDeviceException
-import com.hola.app.weather.location.exception.LocNotPermissionException
 import java.util.*
 
 class SystemLocationClient(override val context: Context) : ILocationClient {
@@ -33,7 +31,12 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
     private val handler = Handler(thread.looper) {
         if (it.what == MSG_WHAT_TIME_OUT) {
             isStarted = false
-            listener?.onFailure(LocFailureException())
+            listener?.onCallback(
+                Location(
+                    errorCode = LocationCode.FAILURE,
+                    message = "Location Time out!"
+                )
+            )
         }
         return@Handler true
     }
@@ -54,15 +57,16 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
             isStarted = false
             stopLocation()
         }
-        if (needAddress) {
+        val location = if (needAddress) {
             try {
-                listener?.onSuccess(getAddress(it.latitude, it.longitude))
+                getAddress(it.latitude, it.longitude)
             } catch (e: Exception) {
-                listener?.onFailure(e)
+                Location(errorCode = LocationCode.FAILURE, message = e.message)
             }
         } else {
-            listener?.onSuccess(Location(it.latitude, it.longitude))
+            Location(it.latitude, it.longitude, errorCode = LocationCode.SUCCESS)
         }
+        listener?.onCallback(location)
     }
 
     override fun getPermissions(): Array<String> {
@@ -93,31 +97,24 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
         }
     }
 
+    @SuppressLint("MissingPermission")
     override fun startLocation() {
-        if (!LocationManagerCompat.isLocationEnabled(locationManager)) {
-            listener?.onFailure(LocNotDeviceException())
-            return
-        }
         Log.d(TAG, "current mode is $mode")
         if (!hasProvider(mode)) {
-            listener?.onFailure(LocNotDeviceException())
-            return
+            listener?.onCallback(Location(LocationCode.NOT_FOUND_DEVICE, "Not Found GPS Devices!"))
+        } else if (!hasPermissions()) {
+            listener?.onCallback(Location(LocationCode.NO_PERMISSION, "No Permission!"))
+        } else {
+            handler.sendMessageDelayed(handler.obtainMessage(MSG_WHAT_TIME_OUT), timeOut)
+            locationManager.requestLocationUpdates(
+                mode,
+                interval,
+                LOC_MIN_DISTANCE,
+                systemLocationListener,
+                thread.looper
+            )
+            isStarted = true
         }
-        getCheckPermissions().forEach {
-            if (ActivityCompat.checkSelfPermission(context, it) != PERMISSION_GRANTED) {
-                listener?.onFailure(LocNotPermissionException())
-                return@forEach
-            }
-        }
-        handler.sendMessageDelayed(handler.obtainMessage(MSG_WHAT_TIME_OUT), timeOut)
-        locationManager.requestLocationUpdates(
-            mode,
-            interval,
-            LOC_MIN_DISTANCE,
-            systemLocationListener,
-            thread.looper
-        )
-        isStarted = true
     }
 
     override fun isStarted(): Boolean = isStarted
@@ -149,7 +146,17 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
         handler.removeCallbacksAndMessages(null)
     }
 
-    private fun hasProvider(provider: String) = providers.contains(provider)
+    private fun hasProvider(provider: String) =
+        providers.contains(provider) && LocationManagerCompat.isLocationEnabled(locationManager)
+
+    private fun hasPermissions(): Boolean {
+        getCheckPermissions().forEach {
+            if (ActivityCompat.checkSelfPermission(context, it) != PERMISSION_GRANTED) {
+                return false
+            }
+        }
+        return true
+    }
 
     private fun getDefaultProvider(): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -163,20 +170,21 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
         try {
             val geocoder = Geocoder(context, Locale.getDefault())
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-            addresses?.takeIf { it.isNotEmpty() }?.let {
+            return addresses?.takeIf { it.isNotEmpty() }?.let {
                 val address = it[0]
-                return Location(
+                Location(
                     lat = latitude,
                     lng = longitude,
                     province = address.adminArea,
                     city = address.locality,
                     district = address.subLocality,
                     street = address.thoroughfare,
-                    address = address.getAddressLine(0)
+                    address = address.getAddressLine(0),
+                    errorCode = LocationCode.SUCCESS
                 )
-            } ?: throw LocFailureException()
+            } ?: Location(LocationCode.FAILURE, "Coordinate Transform Failure!")
         } catch (e: Exception) {
-            throw LocFailureException()
+            return Location(LocationCode.NOT_FOUND_DEVICE, e.message)
         }
     }
 }

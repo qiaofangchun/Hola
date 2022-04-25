@@ -6,9 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 
 open class WeatherUseCase(scope: CoroutineScope) : UseCase(scope) {
     override fun handException(throwable: Throwable): ApiException {
-        throwable.printStackTrace()
-        return object : ApiException(0, throwable) {
-            override fun getMessage(throwable: Throwable): String = throwable.message?:"this is error"
-        }
+        return ApiException(0, throwable)
     }
 }

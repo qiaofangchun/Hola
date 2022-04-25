@@ -2,7 +2,6 @@ package com.hola.app.weather.utils
 
 import android.util.Log
 import com.hola.app.weather.location.*
-import com.hola.app.weather.location.exception.LocNotPermissionException
 import com.hola.common.utils.AppHelper
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -58,40 +57,26 @@ object LocationHelper {
         client.locationMode(LocationMode.MODE_NETWORK)
         client.setLocationListener(if (client is AMapLocationClient) {
             object : LocationListener {
-                override fun onSuccess(loc: Location) {
-                    handSuccess(loc)
-                }
-
-                override fun onFailure(e: Exception) {
-                    if (e is LocNotPermissionException) {
-                        handFailure(e)
-                        return
+                override fun onCallback(loc: Location) {
+                    when (loc.errorCode) {
+                        LocationCode.NO_PERMISSION,
+                        LocationCode.SUCCESS -> handleResult(loc)
+                        else -> sysClient.startLocation()
                     }
-                    sysClient.startLocation()
                 }
             }
         } else {
             object : LocationListener {
-                override fun onSuccess(loc: Location) {
-                    handSuccess(loc)
-                }
-
-                override fun onFailure(e: Exception) {
-                    handFailure(e)
+                override fun onCallback(loc: Location) {
+                    handleResult(loc)
                 }
             }
         })
     }
 
-    private fun handSuccess(loc: Location) {
+    private fun handleResult(loc: Location) {
         callback.forEach {
-            it.onSuccess(loc)
-        }
-    }
-
-    private fun handFailure(e: Exception) {
-        callback.forEach {
-            it.onFailure(e)
+            it.onCallback(loc)
         }
     }
 }

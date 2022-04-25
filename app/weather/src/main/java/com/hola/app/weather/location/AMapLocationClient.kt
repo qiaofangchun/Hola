@@ -7,9 +7,6 @@ import android.util.Log
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
-import com.hola.app.weather.location.exception.LocFailureException
-import com.hola.app.weather.location.exception.LocNotDeviceException
-import com.hola.app.weather.location.exception.LocNotPermissionException
 
 class AMapLocationClient(override val context: Context) : ILocationClient {
     companion object {
@@ -52,35 +49,40 @@ class AMapLocationClient(override val context: Context) : ILocationClient {
                 if (option.isOnceLocation) {
                     this@AMapLocationClient.stopLocation()
                 }
-                it?.let {
+                val location = it?.let {
                     when (it.errorCode) {
-                        AMapLocation.LOCATION_SUCCESS -> listener?.onSuccess(
-                            Location(
-                                lat = it.latitude,
-                                lng = it.longitude,
-                                province = it.province,
-                                city = it.city,
-                                district = it.district,
-                                street = it.street,
-                                address = it.address,
-                            )
+                        AMapLocation.LOCATION_SUCCESS -> Location(
+                            lat = it.latitude,
+                            lng = it.longitude,
+                            province = it.province,
+                            city = it.city,
+                            district = it.district,
+                            street = it.street,
+                            address = it.address,
+                            errorCode = LocationCode.SUCCESS
                         )
-                        AMapLocation.ERROR_CODE_FAILURE_LOCATION_PERMISSION -> listener?.onFailure(
-                            LocNotPermissionException(it.errorCode, it.errorInfo)
+                        AMapLocation.ERROR_CODE_FAILURE_LOCATION_PERMISSION -> Location(
+                            LocationCode.NO_PERMISSION,
+                            it.errorInfo
                         )
-                        AMapLocation.ERROR_CODE_FAILURE_NOWIFIANDAP -> listener?.onFailure(
-                            LocNotDeviceException(it.errorCode, it.errorInfo)
+                        AMapLocation.ERROR_CODE_FAILURE_NOWIFIANDAP -> Location(
+                            errorCode = LocationCode.NOT_FOUND_DEVICE,
+                            message = it.errorInfo
                         )
-                        else -> listener?.onFailure(LocFailureException(it.errorCode, it.errorInfo))
+                        else -> Location(
+                            errorCode = LocationCode.FAILURE,
+                            message = it.errorInfo
+                        )
                     }
-                } ?: listener?.onFailure(LocNotPermissionException())
+                } ?: Location(errorCode = LocationCode.FAILURE, message = it.errorInfo)
+                listener?.onCallback(location)
             }
         }
     }
 
     init {
-        AMapLocationClient.updatePrivacyShow(context, true, true);
-        AMapLocationClient.updatePrivacyAgree(context, true);
+        AMapLocationClient.updatePrivacyShow(context, true, true)
+        AMapLocationClient.updatePrivacyAgree(context, true)
     }
 
     override fun getPermissions(): Array<String> {

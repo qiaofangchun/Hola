@@ -11,6 +11,8 @@ android {
 }
 
 dependencies {
+    api project(path: ':lib_common')
+
     api deps.androidx.core
     api deps.androidx.activity
     api deps.androidx.fragment

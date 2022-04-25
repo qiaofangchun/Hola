@@ -1,8 +1,10 @@
 package com.hola.arch.usecase
 
 import com.hola.arch.exception.ApiException
+import com.hola.arch.exception.BaseException
 import com.hola.arch.exception.DataNullException
 import kotlinx.coroutines.*
+import java.lang.Exception
 
 abstract class UseCase(private val mScope: CoroutineScope) {
     fun <T> doRequest(request: (suspend () -> T?)): UseCaseExecutor<T> {
@@ -21,16 +23,16 @@ abstract class UseCase(private val mScope: CoroutineScope) {
         return deferred
     }
 
-    abstract fun handException(throwable: Throwable): ApiException
+    abstract fun handException(throwable: Throwable): BaseException
 
     class UseCaseExecutor<T>(
         private val mScope: CoroutineScope,
-        private val mHandler: ((Throwable) -> ApiException),
+        private val mHandler: ((Throwable) -> BaseException),
         private val mRequest: (suspend () -> T?)? = null
     ) {
         private var mOnStart: (() -> Unit)? = null
         private var mOnSuccess: ((T) -> Unit)? = null
-        private var mOnFailure: ((ApiException) -> Unit)? = null
+        private var mOnFailure: ((Exception) -> Unit)? = null
 
         fun onStart(onStart: (() -> Unit)?): UseCaseExecutor<T> {
             this.mOnStart = onStart
@@ -42,7 +44,7 @@ abstract class UseCase(private val mScope: CoroutineScope) {
             return this
         }
 
-        fun onFailure(onFailure: ((ApiException) -> Unit)?): UseCaseExecutor<T> {
+        fun onFailure(onFailure: ((Exception) -> Unit)?): UseCaseExecutor<T> {
             this.mOnFailure = onFailure
             return this
         }

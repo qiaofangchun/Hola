@@ -1,6 +1,5 @@
 package com.hola.app.weather.location
 
 interface LocationListener {
-    fun onSuccess(loc: Location)
-    fun onFailure(e: Exception)
+    fun onCallback(loc: Location)
 }

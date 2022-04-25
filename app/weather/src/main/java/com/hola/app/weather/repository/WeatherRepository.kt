@@ -3,8 +3,9 @@ package com.hola.app.weather.repository
 import android.util.Log
 import androidx.room.withTransaction
 import com.hola.app.weather.location.Location
+import com.hola.app.weather.location.LocationCode
 import com.hola.app.weather.location.LocationListener
-import com.hola.app.weather.location.exception.LocFailureException
+import com.hola.app.weather.location.LocationException
 import com.hola.app.weather.repository.locale.WeatherDb
 import com.hola.app.weather.repository.locale.model.*
 import com.hola.app.weather.repository.remote.WeatherNet
@@ -73,8 +74,7 @@ object WeatherRepository {
                 updateWeatherByPlace(PlaceTab(loc.lat, loc.lng, result.name, isLocation = true))
             }
         } ?: let {
-            Log.d(TAG, "city code parser failure")
-            throw LocFailureException()
+            throw LocationException(LocationCode.FAILURE, "city code parser failure")
         }
     }
 
@@ -87,7 +87,11 @@ object WeatherRepository {
         val alert = weather.result.alert.toAlertTab(place.lat, place.lng)
         val hourly = weather.result.hourly.toHourlyTab(place.lat, place.lng)
         val daily = weather.result.daily.toDailyTab(place.lat, place.lng)
-        val city = place.copy(timeZone = weather.timezone, tzshift = weather.tzshift, updateTime = weather.server_time)
+        val city = place.copy(
+            timeZone = weather.timezone,
+            tzshift = weather.tzshift,
+            updateTime = weather.server_time
+        )
         localeApi.withTransaction {
             insertOrUpdatePlace(city)
             insertOrUpdateRealTime(realtime)
@@ -140,13 +144,17 @@ object WeatherRepository {
     private suspend fun getLocation(): Location {
         return suspendCancellableCoroutine { continuation ->
             val listener = object : LocationListener {
-                override fun onSuccess(loc: Location) {
-                    continuation.resume(loc)
-                    LocationHelper.unRegLocationListener(this)
-                }
-
-                override fun onFailure(e: Exception) {
-                    continuation.resumeWithException(e)
+                override fun onCallback(loc: Location) {
+                    if (loc.errorCode == LocationCode.SUCCESS) {
+                        continuation.resume(loc)
+                    } else {
+                        continuation.resumeWithException(
+                            LocationException(
+                                loc.errorCode,
+                                loc.message
+                            )
+                        )
+                    }
                     LocationHelper.unRegLocationListener(this)
                 }
             }
