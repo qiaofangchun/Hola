@@ -48,9 +48,7 @@ object WeatherRepository {
      * 插入或更新地方信息
      */
     suspend fun insertPlace(place: PlaceTab) {
-        localeApi.withTransaction {
-            insertOrUpdatePlace(place)
-        }
+        localeApi.withTransaction { insertOrUpdatePlace(place) }
     }
 
     /**
@@ -148,12 +146,8 @@ object WeatherRepository {
                     if (loc.errorCode == LocationCode.SUCCESS) {
                         continuation.resume(loc)
                     } else {
-                        continuation.resumeWithException(
-                            LocationException(
-                                loc.errorCode,
-                                loc.message
-                            )
-                        )
+                        val ex = LocationException(loc.errorCode, loc.message)
+                        continuation.resumeWithException(ex)
                     }
                     LocationHelper.unRegLocationListener(this)
                 }

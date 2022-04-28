@@ -1,11 +1,11 @@
 package com.hola.app.weather.repository
 
-import com.hola.arch.exception.ApiException
+import com.hola.arch.exception.RemoteException
 import com.hola.arch.usecase.UseCase
 import kotlinx.coroutines.CoroutineScope
 
 open class WeatherUseCase(scope: CoroutineScope) : UseCase(scope) {
-    override fun handException(throwable: Throwable): ApiException {
-        return ApiException(0, throwable)
+    override fun handException(throwable: Throwable): RemoteException {
+        return RemoteException(0, throwable)
     }
 }

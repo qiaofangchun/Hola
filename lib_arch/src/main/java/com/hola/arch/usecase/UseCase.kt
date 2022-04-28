@@ -1,6 +1,5 @@
 package com.hola.arch.usecase
 
-import com.hola.arch.exception.ApiException
 import com.hola.arch.exception.BaseException
 import com.hola.arch.exception.DataNullException
 import kotlinx.coroutines.*

@@ -164,4 +164,3 @@ fun String.toWeather(isNight: Boolean): Int {
         else -> if (isNight) WeatherType.UNKNOWN_N else WeatherType.UNKNOWN_D
     }
 }
-
