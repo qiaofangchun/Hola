@@ -1,12 +1,14 @@
 package com.hola.app.weather
 
-import android.content.pm.ActivityInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.hola.app.weather.databinding.ActivityMainBinding.bind
+import com.hola.app.weather.location.AMapLocationClient
+import com.hola.app.weather.location.SystemLocationClient
 import com.hola.app.weather.ui.main.MainViewModel
-import com.hola.app.weather.utils.LocationHelper
 import com.hola.base.activity.BaseActivity
+import com.hola.location.LocationHelper
+import com.hola.location.annotation.ExecuteMode
 import com.hola.viewbind.viewBinding
 
 class MainActivity : BaseActivity(R.layout.activity_main) {
@@ -20,6 +22,11 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     }
 
     override fun initWithData() {
+        LocationHelper.init(
+            ExecuteMode.SEPARATE,
+            true,
+            arrayOf(AMapLocationClient(this), SystemLocationClient(this))
+        )
         val permission =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { map ->
                 if (map.containsValue(false) || map.containsValue(null)) {

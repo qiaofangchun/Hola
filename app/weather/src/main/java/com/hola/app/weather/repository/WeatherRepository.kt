@@ -2,17 +2,18 @@ package com.hola.app.weather.repository
 
 import android.util.Log
 import androidx.room.withTransaction
-import com.hola.app.weather.location.Location
-import com.hola.app.weather.location.LocationCode
-import com.hola.app.weather.location.LocationListener
 import com.hola.app.weather.location.LocationException
+import com.hola.location.annotation.LocationCode
 import com.hola.app.weather.repository.locale.WeatherDb
 import com.hola.app.weather.repository.locale.model.*
 import com.hola.app.weather.repository.remote.WeatherNet
 import com.hola.app.weather.repository.remote.dao.ApiService
 import com.hola.app.weather.repository.remote.model.Place
-import com.hola.app.weather.utils.LocationHelper
 import com.hola.common.utils.AppHelper
+import com.hola.location.ILocationClient
+import com.hola.location.Location
+import com.hola.location.LocationHelper
+import com.hola.location.LocationListener
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -142,7 +143,7 @@ object WeatherRepository {
     private suspend fun getLocation(): Location {
         return suspendCancellableCoroutine { continuation ->
             val listener = object : LocationListener {
-                override fun onCallback(loc: Location) {
+                override fun onCallback(client: ILocationClient, loc: Location) {
                     if (loc.errorCode == LocationCode.SUCCESS) {
                         continuation.resume(loc)
                     } else {

@@ -1,4 +1,4 @@
-package com.hola.app.weather.location
+package com.hola.location.annotation
 
 import androidx.annotation.IntDef
 

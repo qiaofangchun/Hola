@@ -1,5 +1,6 @@
-package com.hola.app.weather.location
+package com.hola.location
 
+import com.hola.location.annotation.LocationCode
 import java.lang.IllegalArgumentException
 
 data class Location(
@@ -17,7 +18,7 @@ data class Location(
         errorCode = code,
         message = message
     ){
-        if (code==LocationCode.SUCCESS){
+        if (code== LocationCode.SUCCESS){
             throw IllegalArgumentException("This errorCode cannot be 0")
         }
     }

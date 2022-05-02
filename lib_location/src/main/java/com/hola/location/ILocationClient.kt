@@ -1,6 +1,7 @@
-package com.hola.app.weather.location
+package com.hola.location
 
 import android.content.Context
+import com.hola.location.annotation.LocationMode
 
 interface ILocationClient {
     val context: Context
@@ -8,8 +9,6 @@ interface ILocationClient {
     fun getPermissions(): Array<String>
 
     fun timeOut(timeOut: Long)
-
-    fun interval(interval: Long)
 
     fun locationMode(@LocationMode mode: Int)
 
@@ -20,8 +19,6 @@ interface ILocationClient {
     fun stopLocation()
 
     fun needAddress(needAddress: Boolean)
-
-    fun onceLocation(isOnce: Boolean)
 
     fun useCache(isUse: Boolean)
 

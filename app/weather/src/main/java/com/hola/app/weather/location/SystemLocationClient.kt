@@ -13,9 +13,13 @@ import android.os.Process
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.location.LocationManagerCompat
+import com.hola.location.Location
+import com.hola.location.LocationListener
+import com.hola.location.annotation.LocationCode
+import com.hola.location.annotation.LocationMode
 import java.util.*
 
-class SystemLocationClient(override val context: Context) : ILocationClient {
+class SystemLocationClient(override val context: Context) : com.hola.location.ILocationClient {
     companion object {
         private const val TAG = "SystemLocationClient"
         private const val T_NAME = "T_SYS_LOC"
@@ -32,10 +36,8 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
         if (it.what == MSG_WHAT_TIME_OUT) {
             isStarted = false
             listener?.onCallback(
-                Location(
-                    errorCode = LocationCode.FAILURE,
-                    message = "Location Time out!"
-                )
+                this@SystemLocationClient,
+                Location(errorCode = LocationCode.FAILURE, message = "Location Time out!")
             )
         }
         return@Handler true
@@ -66,7 +68,7 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
         } else {
             Location(it.latitude, it.longitude, errorCode = LocationCode.SUCCESS)
         }
-        listener?.onCallback(location)
+        listener?.onCallback(this@SystemLocationClient, location)
     }
 
     override fun getPermissions(): Array<String> {
@@ -85,10 +87,6 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
         this.timeOut = timeOut
     }
 
-    override fun interval(interval: Long) {
-        this.interval = interval
-    }
-
     override fun locationMode(@LocationMode mode: Int) {
         this.mode = when (mode) {
             LocationMode.MODE_GPS -> LocationManager.GPS_PROVIDER
@@ -101,9 +99,9 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
     override fun startLocation() {
         Log.d(TAG, "current mode is $mode")
         if (!hasProvider(mode)) {
-            listener?.onCallback(Location(LocationCode.NOT_FOUND_DEVICE, "Not Found GPS Devices!"))
+            listener?.onCallback(this, Location(LocationCode.NOT_FOUND_DEVICE, "Not Found GPS Devices!"))
         } else if (!hasPermissions()) {
-            listener?.onCallback(Location(LocationCode.NO_PERMISSION, "No Permission!"))
+            listener?.onCallback(this, Location(LocationCode.NO_PERMISSION, "No Permission!"))
         } else {
             handler.sendMessageDelayed(handler.obtainMessage(MSG_WHAT_TIME_OUT), timeOut)
             locationManager.requestLocationUpdates(
@@ -126,10 +124,6 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
 
     override fun needAddress(needAddress: Boolean) {
         this.needAddress = needAddress
-    }
-
-    override fun onceLocation(isOnce: Boolean) {
-        this.onceLocation = isOnce
     }
 
     override fun useCache(isUse: Boolean) {
@@ -166,7 +160,7 @@ class SystemLocationClient(override val context: Context) : ILocationClient {
         }
     }
 
-    private fun getAddress(latitude: Double, longitude: Double): Location {
+    private fun getAddress(latitude: Double, longitude: Double): com.hola.location.Location {
         try {
             val geocoder = Geocoder(context, Locale.getDefault())
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)

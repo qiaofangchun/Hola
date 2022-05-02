@@ -7,8 +7,10 @@ import android.util.Log
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
+import com.hola.location.annotation.LocationCode
+import com.hola.location.annotation.LocationMode
 
-class AMapLocationClient(override val context: Context) : ILocationClient {
+class AMapLocationClient(override val context: Context) : com.hola.location.ILocationClient {
     companion object {
         private const val TAG = "AMapLocationClient"
         private const val LOC_TIME_OUT = 5000L
@@ -16,7 +18,7 @@ class AMapLocationClient(override val context: Context) : ILocationClient {
     }
 
     private var isStarted = false
-    private var listener: LocationListener? = null
+    private var listener: com.hola.location.LocationListener? = null
     private val option by lazy {
         AMapLocationClientOption().apply {
             //可选， 设置网络请求的协议。可选HTTP或者HTTPS。默认为HTTP
@@ -51,7 +53,7 @@ class AMapLocationClient(override val context: Context) : ILocationClient {
                 }
                 val location = it?.let {
                     when (it.errorCode) {
-                        AMapLocation.LOCATION_SUCCESS -> Location(
+                        AMapLocation.LOCATION_SUCCESS -> com.hola.location.Location(
                             lat = it.latitude,
                             lng = it.longitude,
                             province = it.province,
@@ -61,21 +63,24 @@ class AMapLocationClient(override val context: Context) : ILocationClient {
                             address = it.address,
                             errorCode = LocationCode.SUCCESS
                         )
-                        AMapLocation.ERROR_CODE_FAILURE_LOCATION_PERMISSION -> Location(
+                        AMapLocation.ERROR_CODE_FAILURE_LOCATION_PERMISSION -> com.hola.location.Location(
                             LocationCode.NO_PERMISSION,
                             it.errorInfo
                         )
-                        AMapLocation.ERROR_CODE_FAILURE_NOWIFIANDAP -> Location(
+                        AMapLocation.ERROR_CODE_FAILURE_NOWIFIANDAP -> com.hola.location.Location(
                             errorCode = LocationCode.NOT_FOUND_DEVICE,
                             message = it.errorInfo
                         )
-                        else -> Location(
+                        else -> com.hola.location.Location(
                             errorCode = LocationCode.FAILURE,
                             message = it.errorInfo
                         )
                     }
-                } ?: Location(errorCode = LocationCode.FAILURE, message = it.errorInfo)
-                listener?.onCallback(location)
+                } ?: com.hola.location.Location(
+                    errorCode = LocationCode.FAILURE,
+                    message = it.errorInfo
+                )
+                listener?.onCallback(this@AMapLocationClient, location)
             }
         }
     }
@@ -98,10 +103,6 @@ class AMapLocationClient(override val context: Context) : ILocationClient {
 
     override fun timeOut(timeOut: Long) {
         option.httpTimeOut = timeOut
-    }
-
-    override fun interval(interval: Long) {
-        option.interval = interval
     }
 
     override fun locationMode(mode: Int) {
@@ -130,15 +131,11 @@ class AMapLocationClient(override val context: Context) : ILocationClient {
         option.isNeedAddress = needAddress
     }
 
-    override fun onceLocation(isOnce: Boolean) {
-        option.isOnceLocation = isOnce
-    }
-
     override fun useCache(isUse: Boolean) {
         option.isLocationCacheEnable = isUse
     }
 
-    override fun setLocationListener(listener: LocationListener) {
+    override fun setLocationListener(listener: com.hola.location.LocationListener) {
         this.listener = listener
     }
 
