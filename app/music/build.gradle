@@ -6,7 +6,7 @@ apply from: "${project.rootDir}/config_app.gradle"
 
 android {
     defaultConfig {
-        applicationId "com.hola.app.weather"
+        applicationId "com.hola.app.music"
         versionCode 1
         versionName "1.0"
     }
