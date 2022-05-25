@@ -3,7 +3,7 @@ package com.hola.app.weather
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Build
+import android.content.pm.ActivityInfo
 import android.os.IBinder
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,25 +23,18 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
 
     override fun initWithView() {
         view.change.setOnClickListener {
-            val intent = Intent().apply {
+            bindService(Intent().apply {
                 action = "hola.intent.action.MUSIC"
                 `package` = "com.hola.app.music"
-            }
-            /*bindService(intent, object : ServiceConnection {
+            }, object : ServiceConnection {
                 override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                    Log.d("qfc","----->onServiceConnected()")
+                    Log.i("qfc", "onServiceConnected()")
                 }
 
                 override fun onServiceDisconnected(name: ComponentName?) {
-                    Log.d("qfc","----->onServiceDisconnected()")
+                    Log.i("qfc", "onServiceDisconnected()")
                 }
-
-            }, BIND_AUTO_CREATE)*/
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(intent)
-            } else {
-                startService(intent)
-            }
+            }, BIND_AUTO_CREATE)
         }
     }
 
