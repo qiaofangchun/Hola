@@ -2,13 +2,17 @@ package com.hola.network
 
 import com.hola.network.converter.JsonConverterFactory
 import com.hola.network.interceptor.RetryInterceptor
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.lang.reflect.InvocationHandler
+import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
 import java.util.concurrent.TimeUnit
 
-abstract class BaseNetwork<I>(private val mBaseUrl: String) {
+abstract class BaseNetwork<I>(private val baseUrl: String) {
     companion object {
         private const val TIME_OUT = 10L
         private const val RETRY_NUM = 3
@@ -23,7 +27,7 @@ abstract class BaseNetwork<I>(private val mBaseUrl: String) {
 
     protected open fun getRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(mBaseUrl)
+            .baseUrl(baseUrl)
             .client(getOkHttpClient())
             .addConverterFactory(JsonConverterFactory.create(::parserResponseStatus))
             .addConverterFactory(ScalarsConverterFactory.create())

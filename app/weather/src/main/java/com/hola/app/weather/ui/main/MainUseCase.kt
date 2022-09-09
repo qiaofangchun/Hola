@@ -4,7 +4,9 @@ import android.util.Log
 import com.hola.app.weather.repository.WeatherRepository
 import com.hola.app.weather.repository.WeatherUseCase
 import com.hola.app.weather.repository.locale.model.PlaceTab
+import com.hola.arch.asFlow
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class MainUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
     companion object {
@@ -16,10 +18,13 @@ class MainUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
     }
 
     fun update(placeTab: PlaceTab) {
+        coroutineScope.launch {
+            WeatherRepository.updateWeatherByLoc()
+        }
         doRequest {
             Log.d(TAG, "doRequest---->thread:${Thread.currentThread().name}")
             if (placeTab.isLocation) {
-                WeatherRepository.updateWeatherByLoc()
+                WeatherRepository.updateWeatherByLoc().asFlow()
             } else {
                 WeatherRepository.updateWeatherByPlace(placeTab)
             }

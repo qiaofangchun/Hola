@@ -1,11 +1,12 @@
-package com.hola.arch.usecase
+package com.hola.arch.domain
 
 import com.hola.arch.exception.BaseException
 import com.hola.arch.exception.DataNullException
 import kotlinx.coroutines.*
 import java.lang.Exception
 
-abstract class UseCase(private val mScope: CoroutineScope) {
+abstract class UseCase(protected val coroutineScope: CoroutineScope) {
+
     fun <T> doRequest(request: (suspend () -> T?)): UseCaseExecutor<T> {
         return UseCaseExecutor(mScope, this::handException, request)
     }

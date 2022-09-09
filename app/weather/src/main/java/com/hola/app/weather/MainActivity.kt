@@ -8,6 +8,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.hola.app.weather.databinding.ActivityMainBinding.bind
 import com.hola.app.weather.location.AMapLocationClient
 import com.hola.app.weather.location.SystemLocationClient
@@ -16,6 +17,10 @@ import com.hola.base.activity.BaseActivity
 import com.hola.location.LocationHelper
 import com.hola.location.annotation.ExecuteMode
 import com.hola.viewbind.viewBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import java.lang.NullPointerException
 
 class MainActivity : BaseActivity(R.layout.activity_main) {
     private val view by viewBinding(::bind)
@@ -35,6 +40,24 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
                     Log.i("qfc", "onServiceDisconnected()")
                 }
             }, BIND_AUTO_CREATE)
+        }
+        test();
+    }
+
+    private fun test(){
+        lifecycleScope.launch {
+            flow<Int> {
+                emit(1)
+                delay(1000L)
+                emit(2)
+                //throw NullPointerException("abcde")
+            }.onStart {
+                Log.i("qfc", "onStart()")
+            }.catch { e ->
+                Log.i("qfc", "catch() $e")
+            }.collect{
+                Log.i("qfc", "collect() $it")
+            }
         }
     }
 
