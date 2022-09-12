@@ -28,6 +28,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
 
     override fun initWithView() {
         view.change.setOnClickListener {
+            model.searchPlace()
             bindService(Intent().apply {
                 action = "hola.intent.action.MUSIC"
                 `package` = "com.hola.app.music"

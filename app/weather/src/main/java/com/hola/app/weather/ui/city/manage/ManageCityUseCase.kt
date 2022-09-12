@@ -1,7 +1,5 @@
 package com.hola.app.weather.ui.city.manage
 
-import android.util.Log
-import com.hola.app.weather.repository.WeatherRepository
 import com.hola.app.weather.repository.WeatherUseCase
 import com.hola.app.weather.repository.locale.model.PlaceTab
 import kotlinx.coroutines.CoroutineScope
@@ -12,7 +10,7 @@ class ManageCityUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
     }
 
     fun getPlaces(){
-        doRequest {
+        /*doRequest {
             WeatherRepository.getPlaces()
         }.onStart {
             // todo start UI state
@@ -23,11 +21,11 @@ class ManageCityUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
         }.onFailure {
             // todo show error msg
             Log.d(TAG, "search onFailure---->${it.message}")
-        }.execute()
+        }.execute()*/
     }
 
     fun searchPlace(address:String){
-        doRequest {
+        /*doRequest {
             WeatherRepository.searchPlace(address)
         }.onStart {
             // todo start UI state
@@ -38,11 +36,11 @@ class ManageCityUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
         }.onFailure {
             // todo show error msg
             Log.d(TAG, "search onFailure---->${it.message}")
-        }.execute()
+        }.execute()*/
     }
 
     fun addPlace(place: PlaceTab) {
-        doRequest {
+        /*doRequest {
             WeatherRepository.insertPlace(place)
         }.onStart {
             // todo start UI state
@@ -53,11 +51,11 @@ class ManageCityUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
         }.onFailure {
             // todo show error msg
             Log.d(TAG, "add onFailure---->${it.message}")
-        }.execute()
+        }.execute()*/
     }
 
     fun deletePlace(places: List<PlaceTab>) {
-        doRequest {
+        /*doRequest {
             WeatherRepository.deletePlaces(places)
         }.onStart {
             // todo start UI state
@@ -68,6 +66,6 @@ class ManageCityUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
         }.onFailure {
             // todo show error msg
             Log.d(TAG, "delete onFailure---->${it.message}")
-        }.execute()
+        }.execute()*/
     }
 }

@@ -13,6 +13,7 @@ android {
 dependencies {
     api deps.google.gson
     api deps.retrofit.api
+    api deps.retrofit.gson_converter
     api deps.retrofit.scalars_converter
     api deps.retrofit.logging_interceptor
 }

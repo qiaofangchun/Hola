@@ -1,3 +1,3 @@
 package com.hola.arch.exception
 
-class DataFailedException : BaseException("data api access failed")
+class DataFailedException : BaseException(message = "data api access failed")

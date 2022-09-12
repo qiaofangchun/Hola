@@ -4,7 +4,6 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
 
-
 /**
  * 重试拦截器
  */
@@ -18,6 +17,7 @@ class RetryInterceptor(private val mMaxRetryNum: Int) : Interceptor {
         while ((!response.isSuccessful) && (mRetryNum < mMaxRetryNum)) {
             mRetryNum++
             println("retryNum=$mRetryNum")
+            response.close()
             response = chain.proceed(request)
         }
         return response

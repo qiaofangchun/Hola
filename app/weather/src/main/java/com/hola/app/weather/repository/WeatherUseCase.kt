@@ -6,6 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 
 open class WeatherUseCase(scope: CoroutineScope) : UseCase(scope) {
     override fun handException(throwable: Throwable): RemoteException {
-        return RemoteException(0, throwable)
+        return RemoteException(0, cause = throwable)
     }
 }

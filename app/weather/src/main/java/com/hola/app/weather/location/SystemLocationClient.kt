@@ -97,7 +97,7 @@ class SystemLocationClient(override val context: Context) : com.hola.location.IL
 
     @SuppressLint("MissingPermission")
     override fun startLocation() {
-        Log.d(TAG, "current mode is $mode")
+        Log.d(TAG, "startLocation current mode is $mode")
         if (!hasProvider(mode)) {
             listener?.onCallback(this, Location(LocationCode.NOT_FOUND_DEVICE, "Not Found GPS Devices!"))
         } else if (!hasPermissions()) {

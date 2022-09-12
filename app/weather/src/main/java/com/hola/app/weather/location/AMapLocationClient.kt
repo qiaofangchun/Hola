@@ -114,7 +114,7 @@ class AMapLocationClient(override val context: Context) : com.hola.location.ILoc
     }
 
     override fun startLocation() {
-        Log.d(TAG, "current mode is ${option.locationMode}")
+        Log.d(TAG, "startLocation current mode is ${option.locationMode}")
         amapClient.setLocationOption(option)
         amapClient.startLocation()
         isStarted = true

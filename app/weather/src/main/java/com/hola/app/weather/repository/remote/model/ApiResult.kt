@@ -1,6 +1,6 @@
 package com.hola.app.weather.repository.remote.model
 
-open class ApiResult {
-    lateinit var status: String
-    lateinit var error: String
-}
+open class ApiResult(
+    val status: String = "",
+    val error: String = ""
+)

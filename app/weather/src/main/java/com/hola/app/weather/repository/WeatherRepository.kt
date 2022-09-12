@@ -3,18 +3,20 @@ package com.hola.app.weather.repository
 import android.util.Log
 import androidx.room.withTransaction
 import com.hola.app.weather.location.LocationException
-import com.hola.location.annotation.LocationCode
 import com.hola.app.weather.repository.locale.WeatherDb
 import com.hola.app.weather.repository.locale.model.*
 import com.hola.app.weather.repository.remote.WeatherNet
 import com.hola.app.weather.repository.remote.dao.ApiService
-import com.hola.app.weather.repository.remote.model.Place
+import com.hola.app.weather.repository.remote.handleNetApiResult
+import com.hola.common.ext.asFlow
 import com.hola.common.utils.AppHelper
 import com.hola.location.ILocationClient
 import com.hola.location.Location
 import com.hola.location.LocationHelper
 import com.hola.location.LocationListener
-import kotlinx.coroutines.flow.Flow
+import com.hola.location.annotation.LocationCode
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -55,25 +57,33 @@ object WeatherRepository {
     /**
      * 搜索城市
      */
-    suspend fun searchPlace(place: String): List<Place> =
-        remoteApi.searchPlace(place, language).places
+    fun searchPlace(place: String) =
+        remoteApi::searchPlace.asFlow(place, language).handleNetApiResult()
+
 
     /**
      * 获取当前位置的天气信息
      */
-    suspend fun updateWeatherByLoc() {
-        val location = getLocation()
-        Log.d(TAG, "location---->$location")
-        val key = StringBuilder().append(location.province.safe()).append(location.city.safe())
-            .append(location.district.safe()).toString()
-        key.takeIf { it.isNotBlank() }?.let { address ->
-            searchPlace(address).takeIf { it.isNotEmpty() }?.let { it ->
-                val result = it[0]
-                val loc = result.location
-                updateWeatherByPlace(PlaceTab(loc.lat, loc.lng, result.name, isLocation = true))
-            }
-        } ?: let {
-            throw LocationException(LocationCode.FAILURE, "city code parser failure")
+    @OptIn(FlowPreview::class)
+    fun updateWeatherByLoc(): Flow<Boolean> {
+        return this::getLocation.asFlow().flatMapConcat { it ->
+            Log.d(TAG, "location---->$it")
+            StringBuilder().append(it.province.safe())
+                .append(it.city.safe())
+                .append(it.district.safe())
+                .toString().takeIf { it.isNotEmpty() }?.let {
+                    flowOf("北京")
+                }
+                ?: throw LocationException(LocationCode.FAILURE, "city code parser failure")
+        }.flatMapConcat {
+            Log.d(TAG, "flatMapConcat---->$it")
+            searchPlace(it)
+        }.flatMapConcat {
+            Log.d(TAG, "flatMapConcat2---->$it")
+            val result = it.places[0]
+            val loc = result.location
+            updateWeatherByPlace(PlaceTab(loc.lat, loc.lng, result.name, isLocation = true))
+            flowOf(true)
         }
     }
 
@@ -141,6 +151,7 @@ object WeatherRepository {
      * 获取当前位置
      */
     private suspend fun getLocation(): Location {
+        Log.d(TAG, "getLocation----》")
         return suspendCancellableCoroutine { continuation ->
             val listener = object : LocationListener {
                 override fun onCallback(client: ILocationClient, loc: Location) {

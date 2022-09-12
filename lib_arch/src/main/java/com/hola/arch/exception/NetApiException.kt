@@ -1,6 +1,6 @@
 package com.hola.arch.exception
 
-class RemoteException(
+class NetApiException(
     code: Int = 0,
     message: String? = null,
     cause: Throwable? = null
