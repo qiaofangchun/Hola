@@ -66,7 +66,7 @@ object WeatherRepository {
      */
     @OptIn(FlowPreview::class)
     fun updateWeatherByLoc(): Flow<Boolean> {
-        return this::getLocation.asFlow().flatMapConcat { it ->
+        return getLocation().flatMapConcat { it ->
             Log.d(TAG, "location---->$it")
             StringBuilder().append(it.province.safe())
                 .append(it.city.safe())
@@ -150,9 +150,8 @@ object WeatherRepository {
     /**
      * 获取当前位置
      */
-    private suspend fun getLocation(): Location {
-        Log.d(TAG, "getLocation----》")
-        return suspendCancellableCoroutine { continuation ->
+    fun getLocation() = flow {
+        emit(suspendCancellableCoroutine { continuation ->
             val listener = object : LocationListener {
                 override fun onCallback(client: ILocationClient, loc: Location) {
                     if (loc.errorCode == LocationCode.SUCCESS) {
@@ -169,6 +168,6 @@ object WeatherRepository {
                 LocationHelper.unRegLocationListener(listener)
             }
             LocationHelper.startLocation()
-        }
+        })
     }
 }

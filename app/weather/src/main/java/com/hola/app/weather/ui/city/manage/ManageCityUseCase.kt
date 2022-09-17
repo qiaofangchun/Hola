@@ -2,9 +2,8 @@ package com.hola.app.weather.ui.city.manage
 
 import com.hola.app.weather.repository.WeatherUseCase
 import com.hola.app.weather.repository.locale.model.PlaceTab
-import kotlinx.coroutines.CoroutineScope
 
-class ManageCityUseCase(scope: CoroutineScope) : WeatherUseCase(scope) {
+class ManageCityUseCase : WeatherUseCase() {
     companion object {
         private const val TAG = "ManageCityUseCase"
     }

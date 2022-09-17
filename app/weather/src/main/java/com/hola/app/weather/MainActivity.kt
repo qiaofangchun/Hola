@@ -12,7 +12,9 @@ import androidx.lifecycle.lifecycleScope
 import com.hola.app.weather.databinding.ActivityMainBinding.bind
 import com.hola.app.weather.location.AMapLocationClient
 import com.hola.app.weather.location.SystemLocationClient
+import com.hola.app.weather.ui.main.MainViewAction
 import com.hola.app.weather.ui.main.MainViewModel
+import com.hola.app.weather.ui.main.MainViewState
 import com.hola.base.activity.BaseActivity
 import com.hola.location.LocationHelper
 import com.hola.location.annotation.ExecuteMode
@@ -28,7 +30,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
 
     override fun initWithView() {
         view.change.setOnClickListener {
-            model.searchPlace()
+            model.input(MainViewAction.SearchPlace("北京"))
             bindService(Intent().apply {
                 action = "hola.intent.action.MUSIC"
                 `package` = "com.hola.app.music"
@@ -43,9 +45,14 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
             }, BIND_AUTO_CREATE)
         }
         test();
+        model.output(this) {
+            when (it) {
+                is MainViewState.SearchPlace -> view.content.text = it.data
+            }
+        }
     }
 
-    private fun test(){
+    private fun test() {
         lifecycleScope.launch {
             flow<Int> {
                 emit(1)
@@ -56,7 +63,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
                 Log.i("qfc", "onStart()")
             }.catch { e ->
                 Log.i("qfc", "catch() $e")
-            }.collect{
+            }.collect {
                 Log.i("qfc", "collect() $it")
             }
         }

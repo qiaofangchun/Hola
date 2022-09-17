@@ -1,4 +1,3 @@
 package com.hola.arch.ui
 
-class BaseUiState {
-}
+open class MviViewAction

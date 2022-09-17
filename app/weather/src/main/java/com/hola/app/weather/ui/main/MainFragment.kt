@@ -1,5 +1,7 @@
 package com.hola.app.weather.ui.main
 
+import androidx.activity.viewModels
+import androidx.fragment.app.activityViewModels
 import com.hola.app.weather.R
 import com.hola.app.weather.databinding.FragmentMainBinding.bind
 import com.hola.base.fragment.BaseFragment
@@ -11,6 +13,7 @@ class MainFragment : BaseFragment(R.layout.fragment_main) {
     }
 
     private val view by viewBinding(::bind)
+    private val model by activityViewModels<MainViewModel>()
 
     override fun initWithView() {
         //view.recyclerView.layoutManager = MainLayoutManager()

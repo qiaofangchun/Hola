@@ -1,11 +1,10 @@
 package com.hola.app.weather.ui.city.search
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.hola.app.weather.repository.locale.model.PlaceTab
 
 class SearchCityViewModel : ViewModel() {
-    private val mUseCase by lazy { SearchCityUseCase(viewModelScope) }
+    private val mUseCase by lazy { SearchCityUseCase() }
 
     fun getPlaces(){
         mUseCase.getPlaces()
