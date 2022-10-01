@@ -1,6 +1,6 @@
 package com.hola.location.annotation
 
-import androidx.annotation.IntDef
+import com.hola.location.IntDef
 
 @IntDef(
     LocationMode.MODE_GPS,

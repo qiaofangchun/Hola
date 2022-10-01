@@ -1,50 +1,49 @@
 package com.hola.app.weather.ui.main
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
 import com.hola.app.weather.repository.locale.model.PlaceTab
 import com.hola.arch.ui.LoadState
 import com.hola.arch.ui.MviViewAction
 import com.hola.arch.ui.MviViewModel
+import com.hola.arch.ui.StateFlowWarp
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 
 class MainViewModel : MviViewModel() {
     private val mUseCase by lazy { MainUseCase() }
-    private val searchPlaceState = MainViewState.SearchPlace(LoadState.EMPTY())
+    private var clickNum = 0
+    private val searchPlaceState = MutableStateFlow(MainViewState.SearchPlace(LoadState.EMPTY()))
+    private val textState = MutableStateFlow(MainViewState.TextState("clickNum=$clickNum"))
+    private val toastState = MutableStateFlow(MainViewState.ToastState("Toast clickNum=$clickNum"))
 
-    override suspend fun handleAction(action: MviViewAction) {
+    override fun getNeedCollectFlow(): List<StateFlowWarp> {
+        return listOf(
+            StateFlowWarp(searchPlaceState),
+            StateFlowWarp(textState),
+            StateFlowWarp(toastState)
+        )
+    }
+
+    override suspend fun handleInput(action: MviViewAction) {
+        clickNum++
         when (action) {
-            is MainViewAction.SearchPlace -> searchPlace(action.place)
+            is MainViewAction.SearchPlace -> {
+                searchPlace(action.place)
+                textState.emit(MainViewState.TextState("clickNum=$clickNum"))
+                toastState.emit(MainViewState.ToastState("Toast clickNum=$clickNum"))
+            }
         }
     }
 
     private suspend fun searchPlace(place: String) {
+        if (searchPlaceState.value.state == LoadState.LOADING()) return
         mUseCase.update(PlaceTab(isLocation = true))
             .flowOn(Dispatchers.IO)
             .onStart {
-                sendResult(searchPlaceState.apply { state = LoadState.LOADING() })
-            }
-            .catch { ex ->
-                sendResult(searchPlaceState.apply { state = LoadState.FAILURE(ex.toString()) })
+                searchPlaceState.emit(MainViewState.SearchPlace(LoadState.LOADING()))
+            }.catch { ex ->
+                searchPlaceState.emit(MainViewState.SearchPlace(LoadState.FAILURE(ex.message ?: "")))
             }.collect {
-                sendResult(searchPlaceState.apply {
-                    state = LoadState.SUCCESS()
-                    data = "$it"
-                })
+                searchPlaceState.emit(MainViewState.SearchPlace(LoadState.SUCCESS(), "it"))
             }
-    }
-
-    override fun onCleared() {
-        Log.d("qfc", "onCleared----->")
-        super.onCleared()
-        val a = 0
-        when (a) {
-            0 -> ""
-            1 -> "1"
-            2 -> "2"
-        }
     }
 }

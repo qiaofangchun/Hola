@@ -1,83 +1,32 @@
 package com.hola.arch.ui
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-open class MviViewModel : ViewModel() {
-    private var version = START_VERSION
-    private var currentVersion = START_VERSION
-    private var observerCount = 0
-    private val _sharedFlow: MutableSharedFlow<ConsumeOnceValue<MviViewState<*>>> by lazy {
-        MutableSharedFlow(
-            onBufferOverflow = BufferOverflow.DROP_OLDEST,
-            extraBufferCapacity = initQueueMaxLength(),
-            replay = initQueueMaxLength()
-        )
-    }
+abstract class MviViewModel : ViewModel() {
+    private val isCollect = false
+    private lateinit var stateFlows: List<StateFlowWarp>
 
-    protected open fun initQueueMaxLength(): Int {
-        return DEFAULT_QUEUE_LENGTH
-    }
-
-    fun output(activity: AppCompatActivity?, observer: (MviViewState<*>) -> Unit) {
-        currentVersion = version
-        observerCount++
-        activity?.lifecycleScope?.launch {
-            activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                _sharedFlow.collect {
-                    if (version > currentVersion) {
-                        if (it.consumeCount >= observerCount) return@collect
-                        it.consumeCount++
-                        observer.invoke(it.value)
-                    }
-                }
-            }
-        }
-    }
-
-    fun output(fragment: Fragment?, observer: (MviViewState<*>) -> Unit) {
-        currentVersion = version
-        observerCount++
-        fragment?.viewLifecycleOwner?.lifecycleScope?.launch {
-            fragment.viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                _sharedFlow.collect {
-                    if (version > currentVersion) {
-                        if (it.consumeCount >= observerCount) return@collect
-                        it.consumeCount++
-                        observer.invoke(it.value)
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onCleared() {
-        observerCount--
-        super.onCleared()
-    }
-
-    protected suspend fun sendResult(event: MviViewState<*>) {
-        version++
-        _sharedFlow.emit(ConsumeOnceValue(value = event))
-    }
+    protected abstract fun getNeedCollectFlow(): List<StateFlowWarp>
 
     fun input(action: MviViewAction) {
-        viewModelScope.launch { handleAction(action) }
+        viewModelScope.launch { handleInput(action) }
     }
 
-    protected open suspend fun handleAction(action: MviViewAction) {}
-
-    data class ConsumeOnceValue<E>(
-        var consumeCount: Int = 0,
-        val value: E
-    )
-
-    companion object {
-        private const val DEFAULT_QUEUE_LENGTH = 10
-        private const val START_VERSION = -1
+    fun output(lifecycleOwner: LifecycleOwner, observer: (MviViewState<*>) -> Unit) {
+        if (isCollect) return
+        stateFlows = getNeedCollectFlow()
+        stateFlows.forEach { warp -> warp.flow.collect(lifecycleOwner, warp.state, observer) }
     }
+
+    private fun <T> Flow<T>.collect(lifecycleOwner: LifecycleOwner, state: Lifecycle.State, observer: (T) -> Unit) {
+        lifecycleOwner.lifecycleScope.launch {
+            lifecycleOwner.repeatOnLifecycle(state) {
+                this@collect.collect { observer.invoke(it) }
+            }
+        }
+    }
+
+    protected open suspend fun handleInput(action: MviViewAction) {}
 }

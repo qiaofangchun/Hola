@@ -9,13 +9,13 @@ build.buildTools = "30.0.3"
 build.gradle = "com.android.tools.build:gradle:7.1.2"
 deps.build = build
 
-version.kotlin = "1.6.10"
+version.kotlin = "1.6.21"
 def kotlin = [:]
 kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$version.kotlin"
 kotlin.gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
 deps.kotlin = kotlin
 
-version.coroutines = "1.5.2"
+version.coroutines = "1.6.1"
 def coroutines = [:]
 coroutines.core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version.coroutines"
 coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version.coroutines"
