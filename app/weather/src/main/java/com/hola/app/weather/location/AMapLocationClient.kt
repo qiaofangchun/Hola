@@ -3,14 +3,20 @@ package com.hola.app.weather.location
 import android.Manifest.permission
 import android.content.Context
 import android.os.Build
+import android.os.Looper
 import android.util.Log
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
+import com.hola.common.utils.Logcat
+import com.hola.common.utils.ThreadPoolUtils
+import com.hola.location.BaseLocationClient
+import com.hola.location.Location
+import com.hola.location.LocationListener
 import com.hola.location.annotation.LocationCode
 import com.hola.location.annotation.LocationMode
 
-class AMapLocationClient(override val context: Context) : com.hola.location.ILocationClient {
+class AMapLocationClient(context: Context) : BaseLocationClient(context) {
     companion object {
         private const val TAG = "AMapLocationClient"
         private const val LOC_TIME_OUT = 5000L
@@ -18,7 +24,7 @@ class AMapLocationClient(override val context: Context) : com.hola.location.ILoc
     }
 
     private var isStarted = false
-    private var listener: com.hola.location.LocationListener? = null
+    private var listener: LocationListener? = null
     private val option by lazy {
         AMapLocationClientOption().apply {
             //可选， 设置网络请求的协议。可选HTTP或者HTTPS。默认为HTTP
@@ -34,7 +40,7 @@ class AMapLocationClient(override val context: Context) : com.hola.location.ILoc
             //可选，设置是否返回逆地理地址信息。默认是true
             isNeedAddress = false
             //可选，设置是否单次定位。默认是false
-            isOnceLocation = false
+            isOnceLocation = true
             //可选，设置是否等待wifi刷新，默认为false.如果设置为true,会自动变为单次定位，持续定位时不要使用
             isOnceLocationLatest = false
             //可选，设置是否使用传感器。默认是false
@@ -46,14 +52,12 @@ class AMapLocationClient(override val context: Context) : com.hola.location.ILoc
         }
     }
     private val amapClient by lazy {
-        AMapLocationClient(context).apply {
+        AMapLocationClient(ThreadPoolUtils.handlerThread.looper, context).apply {
             setLocationListener {
-                if (option.isOnceLocation) {
-                    this@AMapLocationClient.stopLocation()
-                }
+                stopLocation()
                 val location = it?.let {
                     when (it.errorCode) {
-                        AMapLocation.LOCATION_SUCCESS -> com.hola.location.Location(
+                        AMapLocation.LOCATION_SUCCESS -> Location(
                             lat = it.latitude,
                             lng = it.longitude,
                             province = it.province,
@@ -63,20 +67,20 @@ class AMapLocationClient(override val context: Context) : com.hola.location.ILoc
                             address = it.address,
                             errorCode = LocationCode.SUCCESS
                         )
-                        AMapLocation.ERROR_CODE_FAILURE_LOCATION_PERMISSION -> com.hola.location.Location(
+                        AMapLocation.ERROR_CODE_FAILURE_LOCATION_PERMISSION -> Location(
                             LocationCode.NO_PERMISSION,
                             it.errorInfo
                         )
-                        AMapLocation.ERROR_CODE_FAILURE_NOWIFIANDAP -> com.hola.location.Location(
+                        AMapLocation.ERROR_CODE_FAILURE_NOWIFIANDAP -> Location(
                             errorCode = LocationCode.NOT_FOUND_DEVICE,
                             message = it.errorInfo
                         )
-                        else -> com.hola.location.Location(
+                        else -> Location(
                             errorCode = LocationCode.FAILURE,
                             message = it.errorInfo
                         )
                     }
-                } ?: com.hola.location.Location(
+                } ?: Location(
                     errorCode = LocationCode.FAILURE,
                     message = it.errorInfo
                 )
@@ -90,16 +94,12 @@ class AMapLocationClient(override val context: Context) : com.hola.location.ILoc
         AMapLocationClient.updatePrivacyAgree(context, true)
     }
 
-    override fun getPermissions(): Array<String> {
-        var permissions = arrayOf(
-            permission.ACCESS_COARSE_LOCATION
-        )
+    override fun addPermissions(permissions: List<String>) {
+        permissions.plus(permission.ACCESS_COARSE_LOCATION)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            permissions += permission.ACCESS_BACKGROUND_LOCATION
+            permissions.plus(permission.ACCESS_BACKGROUND_LOCATION)
         }
-        return permissions
     }
-
 
     override fun timeOut(timeOut: Long) {
         option.httpTimeOut = timeOut
@@ -114,7 +114,7 @@ class AMapLocationClient(override val context: Context) : com.hola.location.ILoc
     }
 
     override fun startLocation() {
-        Log.d(TAG, "startLocation current mode is ${option.locationMode}")
+        Logcat.d(TAG, "startLocation current mode is ${option.locationMode}")
         amapClient.setLocationOption(option)
         amapClient.startLocation()
         isStarted = true
@@ -135,12 +135,12 @@ class AMapLocationClient(override val context: Context) : com.hola.location.ILoc
         option.isLocationCacheEnable = isUse
     }
 
-    override fun setLocationListener(listener: com.hola.location.LocationListener) {
+    override fun setLocationListener(listener: LocationListener) {
         this.listener = listener
     }
 
     override fun release() {
-        amapClient.stopLocation()
+        stopLocation()
         amapClient.onDestroy()
     }
 }

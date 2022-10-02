@@ -10,6 +10,7 @@ import com.hola.app.weather.repository.remote.dao.ApiService
 import com.hola.app.weather.repository.remote.handleNetApiResult
 import com.hola.common.ext.asFlow
 import com.hola.common.utils.AppHelper
+import com.hola.common.utils.Logcat
 import com.hola.location.ILocationClient
 import com.hola.location.Location
 import com.hola.location.LocationHelper
@@ -67,7 +68,7 @@ object WeatherRepository {
     @OptIn(FlowPreview::class)
     fun updateWeatherByLoc(): Flow<Boolean> {
         return getLocation().flatMapConcat { it ->
-            Log.d(TAG, "location---->$it")
+            Logcat.d(TAG, "location---->$it")
             StringBuilder().append(it.province.safe())
                 .append(it.city.safe())
                 .append(it.district.safe())
@@ -76,10 +77,10 @@ object WeatherRepository {
                 }
                 ?: throw LocationException(LocationCode.FAILURE, "city code parser failure")
         }.flatMapConcat {
-            Log.d(TAG, "flatMapConcat---->$it")
+            Logcat.d(TAG, "flatMapConcat---->$it")
             searchPlace(it)
         }.flatMapConcat {
-            Log.d(TAG, "flatMapConcat2---->$it")
+            Logcat.d(TAG, "flatMapConcat2---->$it")
             val result = it.places[0]
             val loc = result.location
             updateWeatherByPlace(PlaceTab(loc.lat, loc.lng, result.name, isLocation = true))

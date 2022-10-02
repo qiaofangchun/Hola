@@ -6,39 +6,41 @@ import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.Geocoder
 import android.location.LocationManager
-import android.os.Build
-import android.os.Handler
-import android.os.HandlerThread
-import android.os.Process
+import android.os.*
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.location.LocationManagerCompat
+import com.hola.common.utils.Logcat
+import com.hola.common.utils.ThreadPoolUtils
+import com.hola.location.BaseLocationClient
+import com.hola.location.ILocationClient
 import com.hola.location.Location
 import com.hola.location.LocationListener
 import com.hola.location.annotation.LocationCode
 import com.hola.location.annotation.LocationMode
 import java.util.*
 
-class SystemLocationClient(override val context: Context) : com.hola.location.ILocationClient {
+@SuppressLint("MissingPermission")
+class SystemLocationClient(context: Context) : BaseLocationClient(context) {
     companion object {
         private const val TAG = "SystemLocationClient"
-        private const val T_NAME = "T_SYS_LOC"
         private const val LOC_TIME_OUT = 5000L
         private const val LOC_INTERVAL = 2000L
         private const val LOC_MIN_DISTANCE = 1000F
-        private const val MSG_WHAT_TIME_OUT = 1
+        private const val MSG_WHAT_TIME_OUT = -1
+        private const val MSG_WHAT_START_LOCATION = 0
     }
 
-    private val thread = HandlerThread(T_NAME, Process.THREAD_PRIORITY_FOREGROUND).also {
-        it.start()
-    }
-    private val handler = Handler(thread.looper) {
-        if (it.what == MSG_WHAT_TIME_OUT) {
-            isStarted = false
-            listener?.onCallback(
-                this@SystemLocationClient,
-                Location(errorCode = LocationCode.FAILURE, message = "Location Time out!")
-            )
+    private val handler = Handler(ThreadPoolUtils.handlerThread.looper) {
+        when (it.what) {
+            MSG_WHAT_TIME_OUT -> {
+                stopLocation()
+                listener?.onCallback(
+                    this@SystemLocationClient,
+                    Location(errorCode = LocationCode.FAILURE, message = "Location Time out!")
+                )
+            }
+            MSG_WHAT_START_LOCATION -> realStartLocation()
         }
         return@Handler true
     }
@@ -51,14 +53,10 @@ class SystemLocationClient(override val context: Context) : com.hola.location.IL
     private var mode = getDefaultProvider()
     private var isStarted = false
     private var needAddress = false
-    private var onceLocation = false
     private var isUseCache = false
     private var listener: LocationListener? = null
     private val systemLocationListener = android.location.LocationListener {
-        if (onceLocation) {
-            isStarted = false
-            stopLocation()
-        }
+        stopLocation()
         val location = if (needAddress) {
             try {
                 getAddress(it.latitude, it.longitude)
@@ -71,12 +69,11 @@ class SystemLocationClient(override val context: Context) : com.hola.location.IL
         listener?.onCallback(this@SystemLocationClient, location)
     }
 
-    override fun getPermissions(): Array<String> {
-        var permissions = getCheckPermissions()
+    override fun addPermissions(permissions: List<String>) {
+        permissions.plus(permission.ACCESS_COARSE_LOCATION)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            permissions += permission.ACCESS_BACKGROUND_LOCATION
+            permissions.plus(permission.ACCESS_BACKGROUND_LOCATION)
         }
-        return permissions
     }
 
     private fun getCheckPermissions(): Array<String> = arrayOf(
@@ -95,31 +92,37 @@ class SystemLocationClient(override val context: Context) : com.hola.location.IL
         }
     }
 
-    @SuppressLint("MissingPermission")
     override fun startLocation() {
-        Log.d(TAG, "startLocation current mode is $mode")
+        Logcat.d(TAG, "startLocation current mode is $mode")
         if (!hasProvider(mode)) {
-            listener?.onCallback(this, Location(LocationCode.NOT_FOUND_DEVICE, "Not Found GPS Devices!"))
+            listener?.onCallback(
+                this,
+                Location(LocationCode.NOT_FOUND_DEVICE, "Not found GPS devices!")
+            )
         } else if (!hasPermissions()) {
             listener?.onCallback(this, Location(LocationCode.NO_PERMISSION, "No Permission!"))
         } else {
+            handler.sendEmptyMessage(MSG_WHAT_START_LOCATION)
             handler.sendMessageDelayed(handler.obtainMessage(MSG_WHAT_TIME_OUT), timeOut)
-            locationManager.requestLocationUpdates(
-                mode,
-                interval,
-                LOC_MIN_DISTANCE,
-                systemLocationListener,
-                thread.looper
-            )
-            isStarted = true
         }
+    }
+
+    private fun realStartLocation() {
+        isStarted = true
+        locationManager.requestLocationUpdates(
+            mode,
+            interval,
+            LOC_MIN_DISTANCE,
+            systemLocationListener,
+        )
     }
 
     override fun isStarted(): Boolean = isStarted
 
     override fun stopLocation() {
         isStarted = false
-        handler.removeMessages(MSG_WHAT_TIME_OUT)
+        handler.removeCallbacksAndMessages(null)
+        locationManager.removeUpdates(systemLocationListener)
     }
 
     override fun needAddress(needAddress: Boolean) {
@@ -135,9 +138,7 @@ class SystemLocationClient(override val context: Context) : com.hola.location.IL
     }
 
     override fun release() {
-        isStarted = false
-        locationManager.removeUpdates(systemLocationListener)
-        handler.removeCallbacksAndMessages(null)
+        stopLocation()
     }
 
     private fun hasProvider(provider: String) =
@@ -160,7 +161,7 @@ class SystemLocationClient(override val context: Context) : com.hola.location.IL
         }
     }
 
-    private fun getAddress(latitude: Double, longitude: Double): com.hola.location.Location {
+    private fun getAddress(latitude: Double, longitude: Double): Location {
         try {
             val geocoder = Geocoder(context, Locale.getDefault())
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)

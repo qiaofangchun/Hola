@@ -1,11 +1,12 @@
 package com.hola.app.weather
 
-import android.os.StrictMode
 import com.hola.base.application.BaseApplication
+import com.hola.common.utils.Logcat
 
 class WeatherApp : BaseApplication() {
     override fun onCreate() {
         super.onCreate()
+        Logcat.init("Weather")
         /*StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
             .detectDiskReads()
             .detectDiskWrites()

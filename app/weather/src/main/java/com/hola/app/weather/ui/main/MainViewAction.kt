@@ -4,4 +4,6 @@ import com.hola.arch.ui.MviViewAction
 
 sealed class MainViewAction : MviViewAction() {
     class SearchPlace(val place: String) : MainViewAction()
+    class Text : MainViewAction()
+    class Toast : MainViewAction()
 }

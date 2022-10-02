@@ -4,17 +4,17 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-abstract class MviViewModel : ViewModel() {
+abstract class MviViewModel<A : MviViewAction, S : MviViewState<*>> : ViewModel() {
     private val isCollect = false
-    private lateinit var stateFlows: List<StateFlowWarp>
+    private lateinit var stateFlows: List<StateFlowWarp<S>>
 
-    protected abstract fun getNeedCollectFlow(): List<StateFlowWarp>
+    protected abstract fun getNeedCollectFlow(): List<StateFlowWarp<S>>
 
-    fun input(action: MviViewAction) {
+    fun input(action: A) {
         viewModelScope.launch { handleInput(action) }
     }
 
-    fun output(lifecycleOwner: LifecycleOwner, observer: (MviViewState<*>) -> Unit) {
+    fun output(lifecycleOwner: LifecycleOwner, observer: (S) -> Unit) {
         if (isCollect) return
         stateFlows = getNeedCollectFlow()
         stateFlows.forEach { warp -> warp.flow.collect(lifecycleOwner, warp.state, observer) }
@@ -28,5 +28,5 @@ abstract class MviViewModel : ViewModel() {
         }
     }
 
-    protected open suspend fun handleInput(action: MviViewAction) {}
+    protected open suspend fun handleInput(action: A) {}
 }

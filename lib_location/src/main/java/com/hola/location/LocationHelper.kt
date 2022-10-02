@@ -4,6 +4,8 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Process
 import android.util.Log
+import com.hola.common.utils.Logcat
+import com.hola.common.utils.ThreadPoolUtils
 import com.hola.location.annotation.ExecuteMode
 import com.hola.location.annotation.LocationCode
 import com.hola.location.annotation.LocationMode
@@ -12,30 +14,21 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 object LocationHelper {
     private const val TAG = "LocationHelper"
-    private const val T_NAME = "t_loc"
 
     private const val EXE_STATUS_RUNNING = 0
     private const val EXE_STATUS_STOP = 1
 
     private const val LOC_TIME_OUT = 5000L
     private const val LOC_INTERVAL = 5000L
-    private const val MSG_WHAT_TIME_OUT = 1
     private const val MSG_WHAT_LOCATION = 0
 
     private var isOnce = true
     private var exeMode = ExecuteMode.SEPARATE
-    private val ht = HandlerThread(T_NAME, Process.THREAD_PRIORITY_FOREGROUND).also {
-        it.start()
-    }
-    private val handler = Handler(ht.looper) { msg ->
+
+    private val handler = Handler(ThreadPoolUtils.handlerThread.looper) { msg ->
         when (msg.what) {
-            MSG_WHAT_TIME_OUT -> {
-                val location = Location(message = "Location time!")
-                listener.onCallback(clients.entries.last().value, location)
-                stopLocation()
-            }
-            MSG_WHAT_LOCATION -> startLocation()
-            else -> Log.w(TAG, "not supprot message what=${msg.what}")
+            MSG_WHAT_LOCATION -> realStartLocation()
+            else -> Logcat.w(TAG, "not supprot message what=${msg.what}")
         }
         return@Handler true
     }
@@ -47,18 +40,16 @@ object LocationHelper {
 
     private val listener = object : LocationListener {
         override fun onCallback(client: ILocationClient, loc: Location) {
-            val key = getClientKey(client)
-            stopLocation(key)
-            handleResult(key, loc)
+            handleResult(getClientKey(client), loc)
         }
     }
 
-    private fun getNextExeClientKey(exeClientKey: String): String? {
+    private fun getNextClient(exeClientKey: String): ILocationClient? {
         val index = allClientKeys.indexOf(exeClientKey)
         if (allClientKeys.lastIndex == index) {
             return null
         }
-        return allClientKeys[index + 1]
+        return clients[allClientKeys[index + 1]]
     }
 
     fun init(@ExecuteMode exeMode: Int, isOnce: Boolean, clients: Array<ILocationClient>) {
@@ -87,35 +78,35 @@ object LocationHelper {
     private fun getClientKey(client: ILocationClient) = client::class.java.name
 
     fun startLocation() {
+        handler.sendEmptyMessage(MSG_WHAT_LOCATION)
+    }
+
+    private fun realStartLocation() {
         if (runStatus.contains(EXE_STATUS_RUNNING)) {
-            Log.d(TAG, "location client running!")
+            Logcat.d(TAG, "location client running!")
             return
         }
-        clients.takeIf { it.isNotEmpty() }?.forEach {
+        allClientKeys.takeIf { it.isNotEmpty() }?.forEach {
             if (exeMode == ExecuteMode.SEPARATE) {
-                startLocation(it.key)
-                return@forEach
+                startLocation(it)
+                return
             }
-            startLocation(it.key)
+            startLocation(it)
         }
-        handler.sendEmptyMessageDelayed(MSG_WHAT_TIME_OUT, LOC_INTERVAL)
+    }
+
+    fun stopLocation() {
+        runStatus.forEach {
+            if (it.value == EXE_STATUS_RUNNING) {
+                stopLocation(it.key)
+            }
+        }
     }
 
     private fun startLocation(key: String) {
         clients[key]?.let {
             it.startLocation()
             runStatus[key] = EXE_STATUS_RUNNING
-        }
-    }
-
-    fun stopLocation() {
-        if (!runStatus.contains(EXE_STATUS_RUNNING)) {
-            return
-        }
-        runStatus.forEach {
-            if (it.value == EXE_STATUS_RUNNING) {
-                stopLocation(it.key)
-            }
         }
     }
 
@@ -134,9 +125,9 @@ object LocationHelper {
     }
 
     fun getPermissions(): Array<String> {
-        var permissions = emptyArray<String>()
+        val permissions = emptyList<String>()
         clients.forEach {
-            permissions += it.value.getPermissions()
+            permissions.plus(it.value.getPermissions())
         }
         return permissions.distinct().toTypedArray()
     }
@@ -157,37 +148,29 @@ object LocationHelper {
     }
 
     private fun handleResult(key: String, loc: Location) {
+        Logcat.d(TAG, "$key,result=$loc")
         when (loc.errorCode) {
             LocationCode.FAILURE -> {
-                if (!needCallback(key)) return
-            }
-            LocationCode.SUCCESS -> {
-                stopLocation()
-                if (!isOnce) {
-                    handler.sendEmptyMessageDelayed(MSG_WHAT_LOCATION, LOC_INTERVAL)
+                if (ExecuteMode.SEPARATE == exeMode) {
+                    getNextClient(key)?.also { it.startLocation() }.let { return }
+                } else {
+                    if (runStatus.contains(EXE_STATUS_RUNNING)) return
+                    stopLocation()
                 }
             }
-            else -> stopLocation()
+            LocationCode.SUCCESS -> stopLocation()
+            else -> {
+                stopLocation()
+                return
+            }
         }
         clients[key]?.let { client ->
             callback.forEach {
                 it.onCallback(client, loc)
             }
         }
-    }
-
-    private fun needCallback(key: String): Boolean {
-        if (ExecuteMode.SEPARATE == exeMode) {
-            getNextExeClientKey(key)?.let {
-                startLocation(it)
-                return false
-            }
-        } else {
-            if (runStatus.contains(EXE_STATUS_RUNNING)) {
-                return false
-            }
-            stopLocation()
+        if (!isOnce) {
+            handler.sendEmptyMessageDelayed(MSG_WHAT_LOCATION, LOC_INTERVAL)
         }
-        return true
     }
 }

@@ -1,12 +1,9 @@
 package com.hola.location
 
-import android.content.Context
 import com.hola.location.annotation.LocationMode
 
 interface ILocationClient {
-    val context: Context
-
-    fun getPermissions(): Array<String>
+    fun getPermissions(): List<String>
 
     fun timeOut(timeOut: Long)
 
