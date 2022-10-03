@@ -1,6 +1,5 @@
 package com.hola.app.weather
 
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -15,8 +14,6 @@ import com.hola.common.utils.Logcat
 import com.hola.location.LocationHelper
 import com.hola.location.annotation.ExecuteMode
 import com.hola.viewbind.viewBinding
-import java.util.logging.Level
-import java.util.logging.Logger
 
 class MainActivity : BaseActivity(R.layout.activity_main) {
     private val view by viewBinding(::bind)
