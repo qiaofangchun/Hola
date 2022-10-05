@@ -9,11 +9,14 @@ import com.hola.app.weather.location.SystemLocationClient
 import com.hola.app.weather.ui.main.MainViewAction
 import com.hola.app.weather.ui.main.MainViewModel
 import com.hola.app.weather.ui.main.MainViewState
+import com.hola.arch.ui.LoadState
+import com.hola.arch.ui.StateFlowCreator
 import com.hola.base.activity.BaseActivity
 import com.hola.common.utils.Logcat
 import com.hola.location.LocationHelper
 import com.hola.location.annotation.ExecuteMode
 import com.hola.viewbind.viewBinding
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class MainActivity : BaseActivity(R.layout.activity_main) {
     private val view by viewBinding(::bind)

@@ -6,17 +6,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 abstract class MviViewModel<A : MviViewAction, S : MviViewState<*>> : ViewModel() {
-    private val isCollect = false
-    private val stateFlows by lazy { getNeedCollectFlow() }
+    private val stateFlowMap by lazy {
+        val map = mutableMapOf<Class<S>, StateFlowCreator<S>>()
+        configStateFlow().forEach{ map[it.stateClass] = it }
+        return@lazy map
+    }
 
-    protected abstract fun getNeedCollectFlow(): List<StateFlowWarp<S>>
+    protected abstract fun configStateFlow(): List<StateFlowCreator<S>>
 
     fun input(action: A) {
         viewModelScope.launch { handleInput(action) }
     }
 
     fun output(lifecycleOwner: LifecycleOwner, observer: (S) -> Unit) {
-        stateFlows.forEach { warp -> warp.flow.collect(lifecycleOwner, warp.state, observer) }
+        stateFlowMap.forEach { it.value.flow.collect(lifecycleOwner, it.value.lifecycleState, observer) }
     }
 
     private fun <T> Flow<T>.collect(lifecycleOwner: LifecycleOwner, state: State, observer: (T) -> Unit) {
@@ -25,6 +28,10 @@ abstract class MviViewModel<A : MviViewAction, S : MviViewState<*>> : ViewModel(
                 this@collect.collect { observer.invoke(it) }
             }
         }
+    }
+
+    protected suspend fun output(state: S) {
+        stateFlowMap[state::class.java]?.flow?.emit(state)
     }
 
     protected open suspend fun handleInput(action: A) {}
