@@ -1,12 +1,25 @@
 package com.hola.app.music
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import com.hola.app.music.databinding.ActivityMainBinding.bind
+import com.hola.base.activity.BaseActivity
+import com.hola.viewbind.viewBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity(R.layout.activity_main) {
+    private val view by viewBinding(::bind)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun initWithView() {
+    }
+
+    override fun initWithData() {
+        view.text.text = getFFmpegVersion()
+    }
+
+    private external fun getFFmpegVersion():String
+
+    companion object {
+        // Used to load the 'music' library on application startup.
+        init {
+            System.loadLibrary("music")
+        }
     }
 }

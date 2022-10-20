@@ -1,9 +1,6 @@
 apply from: "${project.rootDir}/config.gradle"
 android {
     defaultConfig {
-        ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a'
-        }
         resConfigs("zh-rCN", "en-rUS")
     }
     android.buildFeatures.viewBinding = true

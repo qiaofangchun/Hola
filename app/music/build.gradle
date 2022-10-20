@@ -9,10 +9,26 @@ android {
         applicationId "com.hola.app.music"
         versionCode 1
         versionName "1.0"
+        externalNativeBuild {
+            cmake {
+                cppFlags '-frtti -fexceptions -Wno-deprecated-declarations'
+            }
+            ndk {
+                abiFilters 'armeabi-v7a'
+            }
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
     }
 }
 
 dependencies {
+    implementation project(path: ':lib_base')
+    implementation project(path: ':lib_viewbind')
     implementation project(path: ':lib_extends')
     implementation project(path: ':lib_arch')
     implementation project(path: ':lib_network')
