@@ -19,7 +19,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     companion object {
         // Used to load the 'music' library on application startup.
         init {
-            System.loadLibrary("music")
+            System.loadLibrary("player")
         }
     }
 }
