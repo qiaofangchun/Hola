@@ -14,8 +14,6 @@ message(${LIB_PATH})
 
 add_library(player SHARED ${SOURCE})
 
-find_library(log-lib log)
-
 target_link_libraries(
         player
         avcodec avfilter avformat avutil swresample swscale
