@@ -1,16 +1,18 @@
 #include <jni.h>
 #include <string>
 #include <android/native_window_jni.h>
+#include <android/log.h>
 #include <zconf.h>
 
-extern "C"{
+extern "C" {
 #include "libavcodec/codec.h"
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
 #include "libavutil/imgutils.h"
 #include "libswscale/swscale.h"
+#include "unistd.h"
 }
-
+#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,"LC",FORMAT,##__VA_ARGS__);
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_hola_app_music_VideoPlayer_native_1version(JNIEnv *env, jobject thiz) {
@@ -33,6 +35,7 @@ Java_com_hola_app_music_VideoPlayer_native_1start(JNIEnv *env, jobject thiz, job
     av_dict_set(&opts, "timeout", "3000000", 0);
     // 打开视频，如果打开失败就结束
     if (avformat_open_input(&format_ctx, path, NULL, &opts)) {
+        LOGE("视频打开失败")
         return;
     }
 
@@ -57,8 +60,6 @@ Java_com_hola_app_music_VideoPlayer_native_1start(JNIEnv *env, jobject thiz, job
     avcodec_parameters_to_context(codec_ctx, codec_par);
     // 进行解码
     avcodec_open2(codec_ctx, de_codec, NULL);
-    // 因为YUV数据被封装在了AVPacket中，因此我们需要用AVPacket去获取数据
-    AVPacket *packet = av_packet_alloc();
     // 获取转换上下文（把解码后的YUV数据转换为RGB数据才能在屏幕上显示）
     SwsContext *sws_ctx = sws_getContext(codec_ctx->width, codec_ctx->height, codec_ctx->pix_fmt,
                                          codec_ctx->width, codec_ctx->height, AV_PIX_FMT_RGBA,
@@ -76,18 +77,25 @@ Java_com_hola_app_music_VideoPlayer_native_1start(JNIEnv *env, jobject thiz, job
     //进行计算
     av_image_alloc(dst_data, dst_line_size, codec_ctx->width, codec_ctx->height,
                    AV_PIX_FMT_RGBA, 1);
+
+    // 因为YUV数据被封装在了AVPacket中，因此我们需要用AVPacket去获取数据
+    AVPacket *packet = av_packet_alloc();
+    // 接收发送出来的数据
+    AVFrame *frame = av_frame_alloc();
+
     // 从视频流中读数据包，返回值小于0的时候表示读取完毕
     while (av_read_frame(format_ctx, packet) >= 0) {
         // 将取出的数据发送出来
         avcodec_send_packet(codec_ctx, packet);
         // 接收发送出来的数据
-        AVFrame *frame = av_frame_alloc();
         int result = avcodec_receive_frame(codec_ctx, frame);
         // 如果读取失败就重新读
         if (result == AVERROR(EAGAIN)) {
+            LOGE("数据贞读取失败")
             continue;
         } else if (result < 0) {
             //如果到末尾了就结束循环读取
+            LOGE("数据贞读取完毕")
             break;
         }
         // 将取出的数据放到之前定义的RGB目标容器中
@@ -110,10 +118,13 @@ Java_com_hola_app_music_VideoPlayer_native_1start(JNIEnv *env, jobject thiz, job
         // 绘制完解锁画布
         ANativeWindow_unlockAndPost(native_window);
         //40000微秒之后解析下一帧(这个是根据视频的帧率来设置的，我这播放的视频帧率是25帧/秒)
-        usleep(1000 * 40);
-        //释放资源
-        av_frame_free(&frame);
-        av_packet_free(&packet);
+        usleep(1000 * 16);
     }
+    //释放资源
+    av_frame_free(&frame);
+    av_packet_free(&packet);
+    avcodec_close(codec_ctx);
+    avformat_free_context(format_ctx);
+    ANativeWindow_release(native_window);
     env->ReleaseStringUTFChars(file_path, path);
 }

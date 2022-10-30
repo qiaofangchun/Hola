@@ -1,32 +1,15 @@
 package com.hola.app.music
 
+import android.graphics.PixelFormat
 import android.view.Surface
-import android.view.SurfaceHolder
 import android.view.SurfaceView
 
 class VideoPlayer(private val surfaceView: SurfaceView) {
-    private val surfaceHolder = surfaceView.holder
-    private val callback = object : SurfaceHolder.Callback {
-        override fun surfaceCreated(holder: SurfaceHolder) {
-            surfaceView.holder
-        }
-
-        override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-
-        }
-
-        override fun surfaceDestroyed(holder: SurfaceHolder) {
-
-        }
-    }
-
-    init {
-        surfaceHolder.removeCallback(callback)
-        surfaceHolder.addCallback(callback)
-    }
-
     fun start(filePath: String) {
-        native_start(surfaceHolder.surface, filePath)
+        //子线程进行视频渲染
+        val holder = surfaceView.holder
+        holder.setFormat(PixelFormat.RGBA_8888)
+        native_start(surfaceView.holder.surface, filePath)
     }
 
     fun getVersion() = native_version()

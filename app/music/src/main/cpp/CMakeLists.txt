@@ -8,7 +8,7 @@ set(LIB_PATH ${CMAKE_SOURCE_DIR}/../../../libs/${ANDROID_ABI})
 #配置库文件寻找路径
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L${LIB_PATH}")
 #设置头文件路径
-include_directories("${CMAKE_SOURCE_DIR}/includes/${ANDROID_ABI}")
+include_directories("${CMAKE_SOURCE_DIR}/includes")
 
 message(${LIB_PATH})
 
@@ -17,7 +17,6 @@ add_library(player SHARED ${SOURCE})
 target_link_libraries(
         player
         avcodec avfilter avformat avutil swresample swscale
-        ${log-lib}
-        z
-        android
+        android log z
+
 )
