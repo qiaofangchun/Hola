@@ -17,4 +17,7 @@ add_library(player SHARED ${SOURCE})
 target_link_libraries(
         player
         avcodec avfilter avformat avutil swresample swscale
-        ${log-lib})
+        ${log-lib}
+        z
+        android
+)
