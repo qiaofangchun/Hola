@@ -12,7 +12,8 @@ import java.io.File
 
 class MainActivity : BaseActivity(R.layout.activity_main) {
     private val view by viewBinding(::bind)
-    private val player by lazy { VideoPlayer(view.surfaceView) }
+    //private val player by lazy { VideoPlayer(view.surfaceView) }
+    private val player by lazy { MusicPlayer() }
     val permission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { map ->
             if (map.containsValue(false) || map.containsValue(null)) {
                 return@registerForActivityResult
@@ -21,7 +22,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
             Logcat.init("music")
 
             Logcat.d("Main", "file path--->${file.absolutePath}")
-            player.start(file.absolutePath)
+            player.setDataSource(file.absolutePath)
         }
 
     override fun initWithView() {
@@ -31,6 +32,6 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     }
 
     override fun initWithData() {
-        view.version.text = player.getVersion()
+        //view.version.text = player.getVersion()
     }
 }

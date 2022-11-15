@@ -1,3 +1,4 @@
+/*
 package com.hola.app.music
 
 import android.graphics.PixelFormat
@@ -23,4 +24,4 @@ class VideoPlayer(private val surfaceView: SurfaceView) {
             System.loadLibrary("player")
         }
     }
-}
+}*/
