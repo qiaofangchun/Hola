@@ -12,11 +12,10 @@ include_directories("${CMAKE_SOURCE_DIR}/includes")
 
 message(${LIB_PATH})
 
-add_library(player SHARED ${SOURCE})
+add_library(MediaPlayer SHARED ${SOURCE})
 
 target_link_libraries(
-        player
+        MediaPlayer
         avcodec avfilter avformat avutil swresample swscale
         android log z
-
 )

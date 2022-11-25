@@ -1,8 +1,10 @@
 #include <jni.h>
 #include <string>
 #include <android/native_window_jni.h>
-#include <android/log.h>
 #include <zconf.h>
+#include "consts.h"
+#include "media-core.h"
+#include "media-player.h"
 
 extern "C" {
 #include "libavcodec/codec.h"
@@ -13,7 +15,9 @@ extern "C" {
 #include "libswresample/swresample.h"
 #include "unistd.h"
 }
-#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,"LC",FORMAT,##__VA_ARGS__);
+
+static MediaPlayer *player = NULL;
+
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_hola_app_music_VideoPlayer_native_1version(JNIEnv *env, jobject thiz) {
@@ -24,9 +28,6 @@ JNIEXPORT void JNICALL
 Java_com_hola_app_music_MusicPlayer_n_1start(JNIEnv *env, jobject thiz, jstring path) {
     // 转换为c可用的字符串
     const char *url = env->GetStringUTFChars(path, 0);
-
-    // 初始化网络
-    avformat_network_init();
 
     AVFormatContext *format_ctx = avformat_alloc_context();
     // 1.打开文件
@@ -166,4 +167,51 @@ Java_com_hola_app_music_MusicPlayer_n_1start(JNIEnv *env, jobject thiz, jstring 
     avformat_network_deinit();
     // 释放文件路径
     env->ReleaseStringUTFChars(path, url);
+}
+// 初始化
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1init(JNIEnv *env, jobject thiz) {
+    // 初始化网络
+    avformat_network_init();
+}
+// 释放
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1deinit(JNIEnv *env, jobject thiz) {
+    avformat_network_deinit();
+}
+// 设置文件路径
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1set_1path(JNIEnv *env, jobject thiz, jstring path) {
+
+}
+// 播放
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1play(JNIEnv *env, jobject thiz) {
+
+}
+// 暂停
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1pause(JNIEnv *env, jobject thiz) {
+
+}
+// 停止
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1stop(JNIEnv *env, jobject thiz) {
+
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1prepare(JNIEnv *env, jobject thiz) {
+
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1seek(JNIEnv *env, jobject thiz, jlong msec) {
+
 }
