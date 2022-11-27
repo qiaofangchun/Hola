@@ -27,11 +27,12 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
 
     override fun initWithView() {
         view.startPlay.setOnClickListener {
-            permission.launch(arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE))
+            player.prepare()
         }
     }
 
     override fun initWithData() {
         //view.version.text = player.getVersion()
+        permission.launch(arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE))
     }
 }

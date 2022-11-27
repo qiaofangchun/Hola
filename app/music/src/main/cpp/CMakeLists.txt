@@ -17,5 +17,5 @@ add_library(MediaPlayer SHARED ${SOURCE})
 target_link_libraries(
         MediaPlayer
         avcodec avfilter avformat avutil swresample swscale
-        android log z
+        android log z OpenSLES
 )

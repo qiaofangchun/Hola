@@ -1,9 +1,10 @@
 //
-// Created by Administrator on 2022/11/22.
+// Created by admin on 2022/11/25.
 //
 
 #ifndef HOLA_PLAY_STATUS_H
 #define HOLA_PLAY_STATUS_H
+
 
 class PlayStatus {
 public:
@@ -15,5 +16,6 @@ public:
 public:
     PlayStatus();
 };
+
 
 #endif //HOLA_PLAY_STATUS_H
