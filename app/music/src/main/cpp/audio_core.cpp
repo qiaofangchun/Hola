@@ -15,8 +15,8 @@ AudioCore::~AudioCore() {
     release();
 }
 
-void AudioCore::analysisStream(ThreadMode mode, AVFormatContext *pFormatContext) {
-    MediaCore::analysisStream(mode, pFormatContext);
+void AudioCore::analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext) {
+    MediaCore::analysis_stream(mode, pFormatContext);
 
     // 处理一些异常的问题
     if (codec_ctx->channels > 0 && codec_ctx->channel_layout == 0) {
@@ -41,8 +41,8 @@ void AudioCore::analysisStream(ThreadMode mode, AVFormatContext *pFormatContext)
         return;
     }
 
-    frameBufferSize = codec_ctx->frame_size * 2 * 2;
-    convertOutBuffer = (uint8_t *) malloc(frameBufferSize);
+    stream_buffer_size = codec_ctx->frame_size * 2 * 2;
+    stream_buffer = (uint8_t *) malloc(stream_buffer_size);
 }
 
 void *threadDecodePlay(void *data) {
@@ -92,7 +92,7 @@ void AudioCore::resample() {
             int receive_frame_res = avcodec_receive_frame(codec_ctx, avFrame);
             pthread_mutex_unlock(&seek_mutex);
             if (receive_frame_res == 0) {
-                swr_convert(swrContext, &convertOutBuffer, avFrame->nb_samples, (
+                swr_convert(swrContext, &stream_buffer, avFrame->nb_samples, (
                         const uint8_t **) (avFrame->data), avFrame->nb_samples);
                 int time = avFrame->pts * av_q2d(rational);
                 if (time > position) {
@@ -121,7 +121,7 @@ void bufferQueueCallback(SLAndroidSimpleBufferQueueItf bufferQueueItf, void *con
     if (audio != NULL) {
         audio->resample();
         audio->position +=
-                audio->frameBufferSize / ((double) (audio->codec_ctx->sample_rate * 2 * 2));
+                audio->stream_buffer_size / ((double) (audio->codec_ctx->sample_rate * 2 * 2));
         // 0.5 回调更新一次进度
         if (audio->position - audio->last_update_time > 1) {
             audio->last_update_time = audio->position;
@@ -135,8 +135,8 @@ void bufferQueueCallback(SLAndroidSimpleBufferQueueItf bufferQueueItf, void *con
             audio->jni_player_call->onCallComplete(THREAD_CHILD);
         }
 
-        (*bufferQueueItf)->Enqueue(bufferQueueItf, (char *) audio->convertOutBuffer,
-                                   audio->frameBufferSize);
+        (*bufferQueueItf)->Enqueue(bufferQueueItf, (char *) audio->stream_buffer,
+                                   audio->stream_buffer_size);
     }
 }
 
@@ -226,7 +226,7 @@ void AudioCore::release() {
         engineObj = NULL;
     }
 
-    free(convertOutBuffer);
+    free(stream_buffer);
     if (swrContext != NULL) {
         swr_free(&swrContext);
         swrContext = NULL;

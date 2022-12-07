@@ -35,15 +35,19 @@ public:
     PlayStatus *pPlayStatus;
 
 public:
-    MediaPlayer(JNIPlayerCall *jni_player_call, const char *url);
+    MediaPlayer();
 
     ~MediaPlayer();
 
-    void prepared();
+    void data_source(const char *url);
+
+    void player_call(JNIPlayerCall *jni_player_call);
+
+    void prepare();
+
+    void prepare_async();
 
     void preparedAudio(ThreadMode mode);
-
-    void prepared_async();
 
     void start();
 

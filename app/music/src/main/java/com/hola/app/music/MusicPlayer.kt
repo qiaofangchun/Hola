@@ -6,10 +6,6 @@ class MusicPlayer {
 
     private var url: String = ""
 
-    init {
-        native_init()
-    }
-
     // called from jni
     private fun onError(code: Int, msg: String) {
         Logcat.w(TAG, "errorCode=$code,msg=$msg")
@@ -56,12 +52,14 @@ class MusicPlayer {
 
     }
 
-    fun prepare() {
-        native_prepare(url)
-    }
-
     fun setDataSource(path: String) {
         this.url = path
+        native_init()
+        native_data_source(path)
+    }
+
+    fun prepare(){
+        native_prepare()
     }
 
     fun play() = native_play()
@@ -76,7 +74,9 @@ class MusicPlayer {
 
     private external fun native_init()
 
-    private external fun native_prepare(path: String)
+    private external fun native_data_source(path: String)
+
+    private external fun native_prepare()
 
     private external fun native_play()
 

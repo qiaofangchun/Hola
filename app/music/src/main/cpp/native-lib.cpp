@@ -39,7 +39,11 @@ jint JNICALL JNI_OnLoad(JavaVM *javaVM, void *reserved) {
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_hola_app_music_MusicPlayer_native_1init(JNIEnv *env, jobject thiz) {
-
+    if (player == NULL) {
+        player = new MediaPlayer();
+        jni_call = new JNIPlayerCall(jvm, env, thiz);
+        player->player_call(jni_call);
+    }
 }
 // 释放
 extern "C"
@@ -50,30 +54,32 @@ Java_com_hola_app_music_MusicPlayer_native_1deinit(JNIEnv *env, jobject thiz) {
 // 设置文件路径
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_hola_app_music_MusicPlayer_native_1prepare(JNIEnv *env, jobject thiz, jstring path) {
+Java_com_hola_app_music_MusicPlayer_native_1data_1source(JNIEnv *env, jobject thiz, jstring path) {
+    if (player == NULL) return;
     const char *url = env->GetStringUTFChars(path, 0);
-    if (player == NULL) {
-        jni_call = new JNIPlayerCall(jvm, env, thiz);
-        player = new MediaPlayer(jni_call, url);
-        player->prepared();
-    }
+    player->data_source(url);
     env->ReleaseStringUTFChars(path, url);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1prepare(JNIEnv *env, jobject thiz) {
+    if (player == NULL) return;
+    player->prepare();
 }
 // 播放
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_hola_app_music_MusicPlayer_native_1play(JNIEnv *env, jobject thiz) {
-    if (player != NULL) {
-        player->start();
-    }
+    if (player == NULL) return;
+    player->start();
 }
 // 暂停
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_hola_app_music_MusicPlayer_native_1pause(JNIEnv *env, jobject thiz) {
-    if (player != NULL) {
-        player->onPause();
-    }
+    if (player == NULL) return;
+    player->onPause();
 }
 // 停止
 extern "C"

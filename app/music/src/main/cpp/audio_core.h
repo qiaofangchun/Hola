@@ -23,15 +23,12 @@ extern "C" {
 
 class AudioCore : public MediaCore {
 public:
-    pthread_t playThreadT;
-    uint8_t *convertOutBuffer = NULL;
     SwrContext *swrContext = NULL;
     SLPlayItf slPlayItf = NULL;
     SLObjectItf pPlayer = NULL;
     SLObjectItf mixObj = NULL;
     SLObjectItf engineObj = NULL;
     SLAndroidSimpleBufferQueueItf androidBufferQueueItf;
-    int frameBufferSize = 0;
 
 public:
     AudioCore(int audioStreamIndex, PlayStatus *pPlayStatus, JNIPlayerCall *pPlayerCall);
@@ -40,7 +37,7 @@ public:
 
     void init();
 
-    void analysisStream(ThreadMode mode, AVFormatContext *pFormatContext);
+    void analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext);
 
     void resample();
 

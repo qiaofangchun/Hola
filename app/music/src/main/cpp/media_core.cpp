@@ -17,7 +17,7 @@ MediaCore::~MediaCore() {
     release();
 }
 
-void MediaCore::analysisStream(ThreadMode mode, AVFormatContext *format_ctx) {
+void MediaCore::analysis_stream(ThreadMode mode, AVFormatContext *format_ctx) {
     AVCodecParameters *codec_ptr = format_ctx->streams[stream_index]->codecpar;
     const AVCodec *codec = avcodec_find_decoder(codec_ptr->codec_id);
     if (!codec) {

@@ -19,6 +19,10 @@ extern "C" {
  */
 class MediaCore {
 public:
+    pthread_t playThreadT;
+    uint8_t *stream_buffer = NULL;
+    int stream_buffer_size = 0;
+
     /**
      * 当前流的角标（音频/视频/字幕）
      */
@@ -64,7 +68,7 @@ public:
     pthread_mutex_t seek_mutex;
 
 public:
-    MediaCore(int streamIndex, PlayStatus *status, JNIPlayerCall *call);
+    MediaCore(int index, PlayStatus *status, JNIPlayerCall *call);
 
     ~MediaCore();
 
@@ -77,7 +81,7 @@ public:
     /**
      * 解析公共的解码器上下文
      */
-    virtual void analysisStream(ThreadMode mode, AVFormatContext *pFormatContext);
+    virtual void analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext);
 
     /**
      * 准备解析数据过程中出错的回调

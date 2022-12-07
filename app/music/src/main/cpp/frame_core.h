@@ -22,7 +22,6 @@ extern "C" {
 class FrameCore : public MediaCore {
 public:
     AVFrame *pFrameYUV420P = NULL;
-    uint8_t *pFrameBuffer = NULL;
     SwsContext *pSwsContext = NULL;
     AudioCore *pAudio = NULL;
     double delayTime = 0;
@@ -38,7 +37,7 @@ public:
 public:
     void play();
 
-    virtual void analysisStream(ThreadMode mode, AVFormatContext *pFormatContext);
+    virtual void analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext);
 
     void release();
 

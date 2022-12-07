@@ -3,13 +3,19 @@
 //
 #include "media_player.h"
 
-MediaPlayer::MediaPlayer(JNIPlayerCall *jni_player_call, const char *url) {
-    this->pPlayerCall = jni_player_call;
+MediaPlayer::MediaPlayer() {
+    pthread_mutex_init(&releaseMutex, NULL);
+    pPlayStatus = new PlayStatus();
+}
+
+void MediaPlayer::data_source(const char *url) {
     // 复制 url
     this->url = (char *) (malloc(strlen(url) + 1));
     memcpy(this->url, url, strlen(url) + 1);
-    pthread_mutex_init(&releaseMutex, NULL);
-    pPlayStatus = new PlayStatus();
+}
+
+void MediaPlayer::player_call(JNIPlayerCall *jni_player_call) {
+    this->pPlayerCall = jni_player_call;
 }
 
 void *decodeAudioThread(void *data) {
@@ -18,11 +24,11 @@ void *decodeAudioThread(void *data) {
     pthread_exit(0);
 }
 
-void MediaPlayer::prepared() {
+void MediaPlayer::prepare() {
     preparedAudio(THREAD_MAIN);
 }
 
-void MediaPlayer::prepared_async() {
+void MediaPlayer::prepare_async() {
     pthread_create(&preparedThread, NULL, decodeAudioThread, this);
 }
 
@@ -46,25 +52,25 @@ void MediaPlayer::preparedAudio(ThreadMode mode) {
         return;
     }
 
-    int audio_stream_index = av_find_best_stream(format_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, NULL,
-                                                 0);
+    int audio_stream_index = av_find_best_stream(format_ctx, AVMEDIA_TYPE_AUDIO,
+                                                 -1, -1, NULL, 0);
     if (audio_stream_index < 0) {
         LOGE("Can't find audio stream info url : %s", url);
         releasePreparedRes(mode, FIND_AUDIO_STREAM_ERROR_CODE, "Can't find audio stream info url.");
         return;
     }
     audio = new AudioCore(audio_stream_index, pPlayStatus, pPlayerCall);
-    audio->analysisStream(mode, format_ctx);
+    audio->analysis_stream(mode, format_ctx);
 
-    int frame_stream_index = av_find_best_stream(format_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, NULL,
-                                                 0);
+    int frame_stream_index = av_find_best_stream(format_ctx, AVMEDIA_TYPE_VIDEO,
+                                                 -1, -1, NULL, 0);
     if (frame_stream_index < 0) {
         LOGE("Can't find video stream info url : %s", url);
         releasePreparedRes(mode, FIND_VIDEO_STREAM_ERROR_CODE, "Can't find video stream info url.");
         return;
     }
     pVideo = new FrameCore(frame_stream_index, pPlayStatus, pPlayerCall, audio);
-    pVideo->analysisStream(mode, format_ctx);
+    pVideo->analysis_stream(mode, format_ctx);
 
     pPlayerCall->onCallPrepared(mode);
     pthread_mutex_unlock(&releaseMutex);

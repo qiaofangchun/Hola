@@ -85,7 +85,6 @@ void *threadPlay(void *context) {
 }
 
 void FrameCore::play() {
-    pthread_t playThreadT;
     pthread_create(&playThreadT, NULL, threadPlay, this);
 }
 
@@ -97,9 +96,9 @@ void FrameCore::release() {
         pFrameYUV420P = NULL;
     }
 
-    if (pFrameBuffer != NULL) {
-        free(pFrameBuffer);
-        pFrameBuffer = NULL;
+    if (stream_buffer != NULL) {
+        free(stream_buffer);
+        stream_buffer = NULL;
     }
 
     if (pSwsContext != NULL) {
@@ -115,16 +114,15 @@ void FrameCore::release() {
     }
 }
 
-void FrameCore::analysisStream(ThreadMode mode, AVFormatContext *pFormatContext) {
-    MediaCore::analysisStream(mode, pFormatContext);
+void FrameCore::analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext) {
+    MediaCore::analysis_stream(mode, pFormatContext);
 
     pFrameYUV420P = av_frame_alloc();
-    int frameBufferSize = av_image_get_buffer_size(AVPixelFormat::AV_PIX_FMT_YUV420P,
+    stream_buffer_size = av_image_get_buffer_size(AVPixelFormat::AV_PIX_FMT_YUV420P,
             codec_ctx->width,
             codec_ctx->height, 1);
-    pFrameBuffer = (uint8_t *)
-            malloc(frameBufferSize);
-    av_image_fill_arrays(pFrameYUV420P->data, pFrameYUV420P->linesize, pFrameBuffer,
+    stream_buffer = (uint8_t *)malloc(stream_buffer_size);
+    av_image_fill_arrays(pFrameYUV420P->data, pFrameYUV420P->linesize, stream_buffer,
             AV_PIX_FMT_YUV420P, codec_ctx->width, codec_ctx->height, 1);
 
     pSwsContext = sws_getContext(codec_ctx->width, codec_ctx->height,
