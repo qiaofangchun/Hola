@@ -9,6 +9,7 @@
 
 #define TAG "MediaPlayer"
 #define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR, TAG, FORMAT, ##__VA_ARGS__);
+#define LOGW(FORMAT, ...) __android_log_print(ANDROID_LOG_WARN, TAG, FORMAT, ##__VA_ARGS__);
 
 #define FIND_AUDIO_STREAM_ERROR_CODE -0x011
 #define FIND_AUDIO_DECODER_ERROR_CODE -0x012

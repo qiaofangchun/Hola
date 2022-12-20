@@ -12,6 +12,10 @@ FrameCore::~FrameCore() {
     release();
 }
 
+void FrameCore::decode() {
+
+}
+
 void *threadPlay(void *context) {
     FrameCore *pVideo = (FrameCore *) context;
     AVPacket *pPacket = av_packet_alloc();
@@ -88,6 +92,15 @@ void FrameCore::play() {
     pthread_create(&playThreadT, NULL, threadPlay, this);
 }
 
+void FrameCore::pause() {
+}
+
+void FrameCore::stop() {
+}
+
+void FrameCore::resume() {
+}
+
 void FrameCore::release() {
     MediaCore::release();
 
@@ -114,8 +127,8 @@ void FrameCore::release() {
     }
 }
 
-void FrameCore::analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext) {
-    MediaCore::analysis_stream(mode, pFormatContext);
+void FrameCore::prepare(ThreadMode mode, AVFormatContext *pFormatContext) {
+    MediaCore::prepare(mode, pFormatContext);
 
     pFrameYUV420P = av_frame_alloc();
     stream_buffer_size = av_image_get_buffer_size(AVPixelFormat::AV_PIX_FMT_YUV420P,
@@ -130,7 +143,7 @@ void FrameCore::analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext
                                  codec_ctx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL,
             NULL, NULL);
     if (pSwsContext == NULL) {
-        callPlayerJniError(mode, SWS_GET_CONTEXT_ERROR_CODE, "sws get context error.");
+        on_error(mode, SWS_GET_CONTEXT_ERROR_CODE, "sws get context error.");
     }
 
     int num = pFormatContext->streams[stream_index]->avg_frame_rate.num;

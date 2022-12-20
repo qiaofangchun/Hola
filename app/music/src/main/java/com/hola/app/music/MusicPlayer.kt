@@ -1,10 +1,12 @@
 package com.hola.app.music
 
+import android.media.MediaPlayer
 import com.hola.common.utils.Logcat
 
 class MusicPlayer {
 
     private var url: String = ""
+    private var isStop = true
 
     // called from jni
     private fun onError(code: Int, msg: String) {
@@ -14,7 +16,6 @@ class MusicPlayer {
     // called from jni
     private fun onPrepared() {
         Logcat.w(TAG, "onPrepared")
-        play()
     }
 
     // Called from jni
@@ -56,19 +57,32 @@ class MusicPlayer {
         this.url = path
         native_init()
         native_data_source(path)
+        val aa = MediaPlayer()
+        aa.reset();
     }
 
-    fun prepare(){
+    fun prepare() {
         native_prepare()
     }
 
-    fun play() = native_play()
+    fun play(){
+        if (isStop) {
+            native_start()
+            isStop = false
+        } else {
+            if (!native_is_playing()) {
+                native_resume()
+            }
+        }
+    }
 
     fun pause() = native_pause()
 
     fun stop() = native_stop()
 
     fun seekTo(msec: Long) = native_seek(msec)
+
+    fun reset() = native_reset()
 
     fun release() = native_deinit()
 
@@ -78,13 +92,19 @@ class MusicPlayer {
 
     private external fun native_prepare()
 
-    private external fun native_play()
+    private external fun native_start()
 
     private external fun native_stop()
 
     private external fun native_pause()
 
+    private external fun native_resume()
+
     private external fun native_seek(msec: Long)
+
+    private external fun native_reset()
+
+    private external fun native_is_playing(): Boolean
 
     private external fun native_deinit()
 

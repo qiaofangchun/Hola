@@ -6,6 +6,8 @@
 MediaPlayer::MediaPlayer() {
     pthread_mutex_init(&releaseMutex, NULL);
     pPlayStatus = new PlayStatus();
+    // av_register_all: 作用是初始化所有组件，只有调用了该函数，才能使用复用器和编解码器（源码）
+    avformat_network_init();
 }
 
 void MediaPlayer::data_source(const char *url) {
@@ -19,13 +21,14 @@ void MediaPlayer::player_call(JNIPlayerCall *jni_player_call) {
 }
 
 void *decodeAudioThread(void *data) {
-    MediaPlayer *fFmpeg = (MediaPlayer *) data;
+    auto *fFmpeg = (MediaPlayer *) data;
     fFmpeg->preparedAudio(THREAD_CHILD);
     pthread_exit(0);
 }
 
 void MediaPlayer::prepare() {
-    preparedAudio(THREAD_MAIN);
+    pthread_create(&preparedThread, NULL, decodeAudioThread, this);
+    //preparedAudio(THREAD_MAIN);
 }
 
 void MediaPlayer::prepare_async() {
@@ -35,63 +38,65 @@ void MediaPlayer::prepare_async() {
 void MediaPlayer::preparedAudio(ThreadMode mode) {
     pthread_mutex_lock(&releaseMutex);
 
-    // av_register_all: 作用是初始化所有组件，只有调用了该函数，才能使用复用器和编解码器（源码）
-    avformat_network_init();
-
     int format_open_res = avformat_open_input(&format_ctx, url, NULL, NULL);
     if (format_open_res < 0) {
-        LOGE("Can't open url : %s, %s", url, av_err2str(format_open_res));
-        releasePreparedRes(mode, format_open_res, av_err2str(format_open_res));
+        LOGE("Can't open url : %s, %s", url, av_err2str(format_open_res))
+        on_error(mode, format_open_res, av_err2str(format_open_res));
         return;
     }
 
     int find_stream_info_res = avformat_find_stream_info(format_ctx, NULL);
     if (find_stream_info_res < 0) {
-        LOGE("Can't find stream info url : %s, %s", url, av_err2str(find_stream_info_res));
-        releasePreparedRes(mode, find_stream_info_res, av_err2str(find_stream_info_res));
+        LOGE("Can't find stream info url : %s, %s", url, av_err2str(find_stream_info_res))
+        on_error(mode, find_stream_info_res, av_err2str(find_stream_info_res));
         return;
     }
 
+    // 获取视频流对应的索引
     int audio_stream_index = av_find_best_stream(format_ctx, AVMEDIA_TYPE_AUDIO,
                                                  -1, -1, NULL, 0);
-    if (audio_stream_index < 0) {
-        LOGE("Can't find audio stream info url : %s", url);
-        releasePreparedRes(mode, FIND_AUDIO_STREAM_ERROR_CODE, "Can't find audio stream info url.");
-        return;
-    }
-    audio = new AudioCore(audio_stream_index, pPlayStatus, pPlayerCall);
-    audio->analysis_stream(mode, format_ctx);
-
     int frame_stream_index = av_find_best_stream(format_ctx, AVMEDIA_TYPE_VIDEO,
                                                  -1, -1, NULL, 0);
-    if (frame_stream_index < 0) {
-        LOGE("Can't find video stream info url : %s", url);
-        releasePreparedRes(mode, FIND_VIDEO_STREAM_ERROR_CODE, "Can't find video stream info url.");
+    if (audio_stream_index >= 0) {
+        audio = new AudioCore(audio_stream_index, pPlayStatus, pPlayerCall);
+        audio->prepare(mode, format_ctx);
+    } else {
+        LOGW("Can't find audio stream info url : %s", url);
+    }
+    if (frame_stream_index >= 0) {
+        //pVideo = new FrameCore(frame_stream_index, pPlayStatus, pPlayerCall, audio);
+        //pVideo->prepare(mode, format_ctx);
+    } else {
+        LOGW("Can't find video stream info url : %s", url);
+    }
+
+    if (frame_stream_index < 0 && audio_stream_index < 0) {
+        LOGE("Can't find audio and video stream info url : %s", url);
+        on_error(mode, FIND_VIDEO_STREAM_ERROR_CODE, "Can't find video stream info url.");
         return;
     }
-    pVideo = new FrameCore(frame_stream_index, pPlayStatus, pPlayerCall, audio);
-    pVideo->analysis_stream(mode, format_ctx);
+
 
     pPlayerCall->onCallPrepared(mode);
     pthread_mutex_unlock(&releaseMutex);
 }
 
 MediaPlayer::~MediaPlayer() {
-
+    avformat_network_deinit();
+    pPlayerCall = NULL;
 }
 
-void *threadDecodeFrame(void *data) {
-    MediaPlayer *pFFmpeg = (MediaPlayer *) (data);
-
-    while (pFFmpeg->pPlayStatus != NULL && !pFFmpeg->pPlayStatus->isExit) {
+void *read_frame(void *data) {
+    auto *player = (MediaPlayer *) (data);
+    while (player->pPlayStatus != NULL && !player->pPlayStatus->isExit) {
         AVPacket *packet = av_packet_alloc();
         // 提取每一帧的音频流
-        if (av_read_frame(pFFmpeg->format_ctx, packet) >= 0) {
+        if (av_read_frame(player->format_ctx, packet) >= 0) {
             // 必须要是音频流
-            if (pFFmpeg->audio->stream_index == packet->stream_index) {
-                pFFmpeg->audio->packet_queue->push(packet);
-            } else if (pFFmpeg->pVideo->stream_index == packet->stream_index) {
-                pFFmpeg->pVideo->packet_queue->push(packet);
+            if ((player->audio != NULL) && (player->audio->stream_index == packet->stream_index)) {
+                player->audio->packet_queue->push(packet);
+            } else if ((player->pVideo != NULL) && (player->pVideo->stream_index == packet->stream_index)) {
+                player->pVideo->packet_queue->push(packet);
             } else {
                 av_packet_free(&packet);
             }
@@ -103,43 +108,39 @@ void *threadDecodeFrame(void *data) {
 }
 
 void MediaPlayer::start() {
-    if (audio == NULL) {
-        LOGE("DZAudio is null , prepared may be misleading");
-        return;
-    }
-    if (pVideo == NULL) {
-        LOGE("DZVideo is null , prepared may be misleading");
-        return;
-    }
     this->decodeFrame();
-    audio->play();
-    pVideo->play();
-}
-
-void MediaPlayer::onPause() {
     if (audio != NULL) {
-        audio->pause();
+        audio->play();
     }
-
-    if (pPlayStatus != NULL) {
-        pPlayStatus->isPause = true;
+    if (pVideo != NULL) {
+        pVideo->play();
     }
 }
 
-void MediaPlayer::onResume() {
-    if (audio != NULL) {
-        audio->resume();
-    }
+void MediaPlayer::pause() {
+    if ((audio == NULL) || (pPlayStatus == NULL)) return;
+    audio->pause();
+    pPlayStatus->isPause = true;
+}
 
-    if (pPlayStatus != NULL) {
-        pPlayStatus->isPause = false;
-    }
+void MediaPlayer::resume() {
+    if ((audio == NULL) || (pPlayStatus == NULL)) return;
+    pPlayStatus->isPause = false;
+    audio->resume();
+}
+
+void MediaPlayer::stop() {
+    if ((audio == NULL) || (pPlayStatus == NULL)) return;
+    audio->stop();
+    pPlayStatus->isExit = true;
+}
+
+void MediaPlayer::reset(){
+
 }
 
 void MediaPlayer::release() {
-
     pthread_mutex_lock(&releaseMutex);
-
     if (audio->play_status->isExit) {
         return;
     }
@@ -164,27 +165,24 @@ void MediaPlayer::release() {
         format_ctx = NULL;
     }
 
-    pPlayerCall = NULL;
     free(url);
 
     pthread_mutex_unlock(&releaseMutex);
     pthread_mutex_destroy(&releaseMutex);
 }
 
-void MediaPlayer::releasePreparedRes(ThreadMode mode, int errorCode, const char *errorMsg) {
-    pthread_mutex_unlock(&releaseMutex);
+void MediaPlayer::on_error(ThreadMode mode, int errorCode, const char *errorMsg) {
+    if (pPlayerCall != NULL) {
+        pPlayerCall->onCallError(mode, errorCode, errorMsg);
+    }
     if (format_ctx != NULL) {
         avformat_close_input(&format_ctx);
         avformat_free_context(format_ctx);
         format_ctx = NULL;
     }
-
-    if (pPlayerCall != NULL) {
-        pPlayerCall->onCallError(mode, errorCode, errorMsg);
-    }
-
-    pthread_mutex_destroy(&releaseMutex);
     free(url);
+    pthread_mutex_unlock(&releaseMutex);
+    pthread_mutex_destroy(&releaseMutex);
 }
 
 void MediaPlayer::seek(uint64_t seconds) {
@@ -212,6 +210,6 @@ void MediaPlayer::seek(uint64_t seconds) {
 
 void MediaPlayer::decodeFrame() {
     pthread_t decodeFrameThreadT;
-    pthread_create(&decodeFrameThreadT, NULL, threadDecodeFrame, this);
+    pthread_create(&decodeFrameThreadT, NULL, read_frame, this);
 }
 

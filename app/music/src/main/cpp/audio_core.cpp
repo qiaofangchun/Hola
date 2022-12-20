@@ -7,16 +7,16 @@ extern "C" {
 #include "libavcodec/avcodec.h"
 }
 
-AudioCore::AudioCore(int audioStreamIndex, PlayStatus *pPlayStatus, JNIPlayerCall *pPlayerCall)
-        : MediaCore(audioStreamIndex, pPlayStatus, pPlayerCall) {
+AudioCore::AudioCore(int stream_index, PlayStatus *pPlayStatus, JNIPlayerCall *pPlayerCall)
+        : MediaCore(stream_index, pPlayStatus, pPlayerCall) {
 }
 
 AudioCore::~AudioCore() {
     release();
 }
 
-void AudioCore::analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext) {
-    MediaCore::analysis_stream(mode, pFormatContext);
+void AudioCore::prepare(ThreadMode mode, AVFormatContext *pFormatContext) {
+    MediaCore::prepare(mode, pFormatContext);
 
     // 处理一些异常的问题
     if (codec_ctx->channels > 0 && codec_ctx->channel_layout == 0) {
@@ -37,7 +37,7 @@ void AudioCore::analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext
     int swr_init_res = swr_init(swrContext);
     if (swrContext == NULL || swr_init_res < 0) {
         LOGE("init SwrContext error : %s", av_err2str(swr_init_res));
-        callPlayerJniError(mode, swr_init_res, av_err2str(swr_init_res));
+        on_error(mode, swr_init_res, av_err2str(swr_init_res));
         return;
     }
 
@@ -45,14 +45,7 @@ void AudioCore::analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext
     stream_buffer = (uint8_t *) malloc(stream_buffer_size);
 }
 
-void *threadDecodePlay(void *data) {
-    AudioCore *audio = (AudioCore *) (data);
-    LOGE("audio -> %p", audio);
-    audio->init();
-    pthread_exit((void *) 1);
-}
-
-void AudioCore::resample() {
+void AudioCore::decode() {
     AVPacket *avPacket = av_packet_alloc();
     AVFrame *avFrame = av_frame_alloc();
     while (play_status != NULL && !play_status->isExit) {
@@ -112,6 +105,13 @@ void AudioCore::resample() {
     av_frame_free(&avFrame);
 }
 
+void *threadDecodePlay(void *data) {
+    AudioCore *audio = (AudioCore *) (data);
+    LOGE("audio -> %p", audio);
+    audio->init();
+    pthread_exit((void *) 1);
+}
+
 void AudioCore::play() {
     pthread_create(&playThreadT, NULL, threadDecodePlay, this);
 }
@@ -119,7 +119,7 @@ void AudioCore::play() {
 void bufferQueueCallback(SLAndroidSimpleBufferQueueItf bufferQueueItf, void *context) {
     AudioCore *audio = (AudioCore *) context;
     if (audio != NULL) {
-        audio->resample();
+        audio->decode();
         audio->position +=
                 audio->stream_buffer_size / ((double) (audio->codec_ctx->sample_rate * 2 * 2));
         // 0.5 回调更新一次进度

@@ -70,7 +70,7 @@ Java_com_hola_app_music_MusicPlayer_native_1prepare(JNIEnv *env, jobject thiz) {
 // 播放
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_hola_app_music_MusicPlayer_native_1play(JNIEnv *env, jobject thiz) {
+Java_com_hola_app_music_MusicPlayer_native_1start(JNIEnv *env, jobject thiz) {
     if (player == NULL) return;
     player->start();
 }
@@ -79,20 +79,40 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_hola_app_music_MusicPlayer_native_1pause(JNIEnv *env, jobject thiz) {
     if (player == NULL) return;
-    player->onPause();
+    player->pause();
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1resume(JNIEnv *env, jobject thiz) {
+    if (player == NULL) return;
+    player->resume();
+}
+
 // 停止
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_hola_app_music_MusicPlayer_native_1stop(JNIEnv *env, jobject thiz) {
-
+    if (player == NULL) return;
+    player->stop();
 }
-
 
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_hola_app_music_MusicPlayer_native_1seek(JNIEnv *env, jobject thiz, jlong msec) {
-    if (player != NULL) {
-        player->seek(msec);
-    }
+    if (player == NULL) return;
+    player->seek(msec);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1reset(JNIEnv *env, jobject thiz) {
+    if (player == NULL) return;
+    player->reset();
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_hola_app_music_MusicPlayer_native_1is_1playing(JNIEnv *env, jobject thiz) {
+    if (player == NULL) return false;
+    return !player->pPlayStatus->isPause;
 }

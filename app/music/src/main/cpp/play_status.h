@@ -5,6 +5,11 @@
 #ifndef HOLA_PLAY_STATUS_H
 #define HOLA_PLAY_STATUS_H
 
+/*enum PlayStatus {
+    STATUS_INIT, STATUS_PREPARE,
+    STATUS_STOP, STATUS_PLAYING,
+    STATUS_PAUSE, STATUS_SEEK,
+};*/
 
 class PlayStatus {
 public:

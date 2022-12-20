@@ -51,15 +51,19 @@ public:
 
     void start();
 
-    void onPause();
+    void pause();
 
-    void onResume();
+    void resume();
+
+    void stop();
 
     void seek(uint64_t seconds);
 
+    void reset();
+
     void release();
 
-    void releasePreparedRes(ThreadMode mode, int errorCode, const char *errorMsg);
+    void on_error(ThreadMode mode, int errorCode, const char *errorMsg);
 
     void decodeFrame();
 };

@@ -37,9 +37,9 @@ public:
 
     void init();
 
-    void analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext);
+    void prepare(ThreadMode mode, AVFormatContext *pFormatContext);
 
-    void resample();
+    void decode();
 
     void play();
 

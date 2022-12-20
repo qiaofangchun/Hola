@@ -35,9 +35,17 @@ public:
     ~FrameCore();
 
 public:
+    void prepare(ThreadMode mode, AVFormatContext *pFormatContext);
+
+    void decode();
+
     void play();
 
-    virtual void analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext);
+    void pause();
+
+    void resume();
+
+    void stop();
 
     void release();
 

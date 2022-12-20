@@ -17,12 +17,12 @@ MediaCore::~MediaCore() {
     release();
 }
 
-void MediaCore::analysis_stream(ThreadMode mode, AVFormatContext *format_ctx) {
+void MediaCore::prepare(ThreadMode mode, AVFormatContext *format_ctx) {
     AVCodecParameters *codec_ptr = format_ctx->streams[stream_index]->codecpar;
     const AVCodec *codec = avcodec_find_decoder(codec_ptr->codec_id);
     if (!codec) {
         LOGE("Can't find audio decoder");
-        callPlayerJniError(mode, FIND_AUDIO_DECODER_ERROR_CODE, "Can't find audio decoder.");
+        on_error(mode, FIND_AUDIO_DECODER_ERROR_CODE, "Can't find audio decoder.");
         return;
     }
 
@@ -30,14 +30,14 @@ void MediaCore::analysis_stream(ThreadMode mode, AVFormatContext *format_ctx) {
     int ptr_copy_res = avcodec_parameters_to_context(codec_ctx, codec_ptr);
     if (ptr_copy_res < 0) {
         LOGE("codec parameters to_context error :%s", av_err2str(ptr_copy_res));
-        callPlayerJniError(mode, ptr_copy_res, av_err2str(ptr_copy_res));
+        on_error(mode, ptr_copy_res, av_err2str(ptr_copy_res));
         return;
     }
 
     int codec_open_res = avcodec_open2(codec_ctx, codec, NULL);
     if (codec_open_res < 0) {
         LOGE("codec open error : %s", av_err2str(codec_open_res));
-        callPlayerJniError(mode, codec_open_res, av_err2str(codec_open_res));
+        on_error(mode, codec_open_res, av_err2str(codec_open_res));
         return;
     }
 
@@ -46,7 +46,7 @@ void MediaCore::analysis_stream(ThreadMode mode, AVFormatContext *format_ctx) {
 }
 
 
-void MediaCore::callPlayerJniError(ThreadMode mode, int errorCode, const char *errorMsg) {
+void MediaCore::on_error(ThreadMode mode, int errorCode, const char *errorMsg) {
     release();
     if (jni_player_call != NULL) {
         jni_player_call->onCallError(mode, errorCode, errorMsg);

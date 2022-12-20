@@ -67,21 +67,13 @@ public:
      */
     pthread_mutex_t seek_mutex;
 
-public:
-    MediaCore(int index, PlayStatus *status, JNIPlayerCall *call);
-
-    ~MediaCore();
-
-public:
+protected:
     /**
-     * 播放方法，纯虚函数
-     */
-    virtual void play() = 0;
+    * 解析公共的解码器上下文
+    */
+    virtual void prepare(ThreadMode mode, AVFormatContext *pFormatContext);
 
-    /**
-     * 解析公共的解码器上下文
-     */
-    virtual void analysis_stream(ThreadMode mode, AVFormatContext *pFormatContext);
+    virtual void decode() = 0;
 
     /**
      * 准备解析数据过程中出错的回调
@@ -89,12 +81,25 @@ public:
      * @param errorCode 错误码
      * @param errorMsg 错误信息
      */
-    void callPlayerJniError(ThreadMode mode, int errorCode, const char *errorMsg);
+    void on_error(ThreadMode mode, int errorCode, const char *errorMsg);
 
     /**
-     * 释放资源
-     */
-    void release();
+    * 释放资源
+    */
+    virtual void release();
+
+public:
+    MediaCore(int index, PlayStatus *status, JNIPlayerCall *call);
+
+    ~MediaCore();
+
+    virtual void play() = 0;
+
+    virtual void pause() = 0;
+
+    virtual void resume() = 0;
+
+    virtual void stop() = 0;
 
     /**
      * seek到当前时间
