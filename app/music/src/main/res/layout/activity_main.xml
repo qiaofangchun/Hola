@@ -21,6 +21,24 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/pause"
+        app:layout_constraintTop_toBottomOf="@+id/startPlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="暂停"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/seek"
+        app:layout_constraintTop_toBottomOf="@+id/pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="跳转"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <TextView
         android:id="@+id/version"
         android:layout_width="wrap_content"
