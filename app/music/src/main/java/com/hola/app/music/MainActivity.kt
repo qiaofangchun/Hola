@@ -18,7 +18,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     private val player by lazy { MusicPlayer() }
     val permission =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { map ->
-            if (map.containsValue(false) || map.containsValue(null)) {
+            if (map.containsValue(false)) {
                 return@registerForActivityResult
             }
             val file = File(Environment.getExternalStorageDirectory(), "music.mp3")

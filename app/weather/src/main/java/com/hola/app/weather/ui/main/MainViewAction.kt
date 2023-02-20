@@ -1,9 +1,7 @@
 package com.hola.app.weather.ui.main
 
-import com.hola.arch.ui.MviViewAction
+import com.hola.arch.core.ViewIntent
 
-sealed class MainViewAction : MviViewAction() {
+sealed class MainViewAction : ViewIntent() {
     class SearchPlace(val place: String) : MainViewAction()
-    class Text : MainViewAction()
-    class Toast : MainViewAction()
 }

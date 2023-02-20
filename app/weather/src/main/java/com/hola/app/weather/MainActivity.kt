@@ -1,6 +1,5 @@
 package com.hola.app.weather
 
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.hola.app.weather.databinding.ActivityMainBinding.bind
@@ -9,14 +8,12 @@ import com.hola.app.weather.location.SystemLocationClient
 import com.hola.app.weather.ui.main.MainViewAction
 import com.hola.app.weather.ui.main.MainViewModel
 import com.hola.app.weather.ui.main.MainViewState
-import com.hola.arch.ui.LoadState
-import com.hola.arch.ui.StateFlowCreator
 import com.hola.base.activity.BaseActivity
+import com.hola.common.utils.AppHelper
 import com.hola.common.utils.Logcat
 import com.hola.location.LocationHelper
 import com.hola.location.annotation.ExecuteMode
 import com.hola.viewbind.viewBinding
-import kotlinx.coroutines.flow.MutableStateFlow
 
 class MainActivity : BaseActivity(R.layout.activity_main) {
     private val view by viewBinding(::bind)
@@ -25,8 +22,6 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
     override fun initWithView() {
         view.change.setOnClickListener {
             model.input(MainViewAction.SearchPlace("北京"))
-            model.input(MainViewAction.Text())
-            model.input(MainViewAction.Toast())
             /*bindService(Intent().apply {
                 action = "hola.intent.action.MUSIC"
                 `package` = "com.hola.app.music"
@@ -43,9 +38,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
         model.output(this) {
             Logcat.i("qfc", "state=${it::class.java}")
             when (it) {
-                is MainViewState.SearchPlace -> view.content.text = it.data ?: it.state.message
-                is MainViewState.ToastState -> Toast.makeText(this,it.data ?: it.state.message,Toast.LENGTH_LONG).show()
-                is MainViewState.TextState-> view.change.text = it.data ?: it.state.message
+                is MainViewState.GetWeather -> view.content.text = it.data ?: it.state.message
             }
         }
     }
@@ -58,7 +51,7 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
         )
         val permission =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { map ->
-                if (map.containsValue(false) || map.containsValue(null)) {
+                if (map.containsValue(false)) {
                     return@registerForActivityResult
                 }
             }

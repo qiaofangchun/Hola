@@ -13,9 +13,9 @@ android {
 }
 
 dependencies {
-    implementation deps.androidx.annotation
-    implementation deps.androidx.activity
     implementation deps.androidx.appcompat
+    implementation deps.androidx.activity
+    implementation deps.androidx.fragment
     implementation deps.androidx.annotation
     implementation deps.androidx.recyclerview
 }

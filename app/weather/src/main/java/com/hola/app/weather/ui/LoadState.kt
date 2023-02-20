@@ -1,4 +1,4 @@
-package com.hola.arch.ui
+package com.hola.app.weather.ui
 
 sealed class LoadState(val message: String) {
     class LOADING(msg: String = "") : LoadState(msg)

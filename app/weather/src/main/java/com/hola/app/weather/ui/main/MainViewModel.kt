@@ -1,42 +1,34 @@
 package com.hola.app.weather.ui.main
 
-import com.hola.app.weather.repository.locale.model.PlaceTab
-import com.hola.arch.ui.LoadState
-import com.hola.arch.ui.MviViewModel
-import com.hola.arch.ui.StateFlowCreator
+import com.hola.app.weather.ui.LoadState
+import com.hola.arch.core.ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 
-class MainViewModel : MviViewModel<MainViewAction, MainViewState>() {
+class MainViewModel : ViewModel<MainViewAction, MainViewState>() {
     private val mUseCase by lazy { MainUseCase() }
-    private var clickNum = 0
 
-    override fun configStateFlow(): List<StateFlowCreator<MainViewState>> = listOf(
-        StateFlowCreator(MainViewState.SearchPlace(LoadState.EMPTY())),
-        StateFlowCreator(MainViewState.TextState("clickNum=$clickNum")),
-        StateFlowCreator(MainViewState.ToastState("Toast clickNum=$clickNum"))
-    )
+    override fun initUiState() {
+        addUiState(MainViewState.GetWeather(LoadState.EMPTY()))
+    }
 
     override suspend fun handleInput(action: MainViewAction) {
-        clickNum++
         when (action) {
-            is MainViewAction.SearchPlace -> searchPlace(action.place)
-            is MainViewAction.Text -> output(MainViewState.TextState("clickNum=$clickNum"))
-            is MainViewAction.Toast -> output(MainViewState.ToastState("Toast clickNum=$clickNum"))
+            is MainViewAction.SearchPlace -> getWeather(action.place)
         }
     }
 
-    private suspend fun searchPlace(place: String) {
-        mUseCase.update(PlaceTab(isLocation = true))
+    private suspend fun getWeather(place: String) {
+        mUseCase.getWeather()
             .flowOn(Dispatchers.IO)
             .onStart {
-                output(MainViewState.SearchPlace(LoadState.LOADING()))
+                output(MainViewState.GetWeather(LoadState.LOADING()))
             }.catch { ex ->
-                output(MainViewState.SearchPlace(LoadState.FAILURE(ex.message ?: "")))
+                output(MainViewState.GetWeather(LoadState.FAILURE(ex.message ?: "")))
             }.collect {
-                output(MainViewState.SearchPlace(LoadState.SUCCESS(), "it"))
+                output(MainViewState.GetWeather(LoadState.SUCCESS(), "Get Success"))
             }
     }
 }
