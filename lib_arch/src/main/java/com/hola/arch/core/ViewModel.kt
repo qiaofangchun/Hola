@@ -24,7 +24,7 @@ abstract class ViewModel<I : ViewIntent, S : ViewState> : androidx.lifecycle.Vie
     }
 
     fun input(intent: I) {
-        viewModelScope.launch { handleInput(intent) }
+        viewModelScope.launch { onInput(intent) }
     }
 
     fun output(lifecycleOwner: LifecycleOwner, observer: (S) -> Unit) {
@@ -55,7 +55,7 @@ abstract class ViewModel<I : ViewIntent, S : ViewState> : androidx.lifecycle.Vie
             ?: throw IllegalArgumentException("Not fund UiState($clzName), Please add it first in initUiState.")
     }
 
-    protected open suspend fun handleInput(intent: I) {}
+    protected open suspend fun onInput(intent: I) {}
 
     private class StateFlowCreator<T : ViewState>(uiState: T, val lifecycleState: State) {
         val flow = MutableStateFlow(uiState)

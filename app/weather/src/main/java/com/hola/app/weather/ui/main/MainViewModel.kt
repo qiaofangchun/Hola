@@ -14,7 +14,7 @@ class MainViewModel : ViewModel<MainViewAction, MainViewState>() {
         addUiState(MainViewState.GetWeather(LoadState.EMPTY()))
     }
 
-    override suspend fun handleInput(action: MainViewAction) {
+    override suspend fun onInput(action: MainViewAction) {
         when (action) {
             is MainViewAction.SearchPlace -> getWeather(action.place)
         }
