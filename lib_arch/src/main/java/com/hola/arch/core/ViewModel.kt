@@ -1,16 +1,14 @@
 package com.hola.arch.core
 
+import androidx.lifecycle.*
 import androidx.lifecycle.Lifecycle.State
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.collections.set
 
-abstract class ViewModel<I : ViewIntent, S : ViewState> : androidx.lifecycle.ViewModel() {
+abstract class ViewModel<I : ViewIntent, S : ViewState> : ViewModel() {
     private val stateFlowMap = mutableMapOf<Class<S>, StateFlowCreator<S>>()
 
     init {
@@ -30,17 +28,13 @@ abstract class ViewModel<I : ViewIntent, S : ViewState> : androidx.lifecycle.Vie
     fun output(lifecycleOwner: LifecycleOwner, observer: (S) -> Unit) {
         stateFlowMap.forEach {
             it.value.flow.collect(
-                lifecycleOwner,
-                it.value.lifecycleState,
-                observer
+                lifecycleOwner, it.value.lifecycleState, observer
             )
         }
     }
 
     private fun <S> Flow<S>.collect(
-        lifecycleOwner: LifecycleOwner,
-        state: State,
-        observer: (S) -> Unit
+        lifecycleOwner: LifecycleOwner, state: State, observer: (S) -> Unit
     ) {
         lifecycleOwner.lifecycleScope.launch {
             lifecycleOwner.repeatOnLifecycle(state) {

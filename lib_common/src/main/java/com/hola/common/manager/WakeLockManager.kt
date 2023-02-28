@@ -21,7 +21,7 @@ object WakeLockManager {
     }
 
     fun acquire(timeout: Long) {
-        mLock?.takeIf { !it.isHeld }?.acquire(timeout)
+        mLock.takeIf { !it.isHeld }?.acquire(timeout)
     }
 
     fun release() {
@@ -29,6 +29,6 @@ object WakeLockManager {
     }
 
     fun release(flags: Int) {
-        mLock?.takeIf { it.isHeld }?.release(flags)
+        mLock.takeIf { it.isHeld }?.release(flags)
     }
 }
