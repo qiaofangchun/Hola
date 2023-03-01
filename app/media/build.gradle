@@ -20,9 +20,8 @@ dependencies {
     implementation project(path: ':lib_network')
     implementation project(path: ':lib_common')
 
-    def media2_version = "1.2.1"
-    // Interacting with MediaSessions
-    implementation "androidx.media2:media2-session:$media2_version"
+    implementation deps.media2.session
+
     // optional - UI widgets for VideoView and MediaControlView
     //implementation "androidx.media2:media2-widget:$media2_version"
     // optional - Implementation of a SessionPlayer

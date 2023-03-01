@@ -24,4 +24,4 @@ include ':lib_datastore'
 include ':lib_location'
 
 include ':app:weather'
-include ':app:music'
+include ':app:media'

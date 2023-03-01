@@ -44,6 +44,14 @@ lifecycle.savedstate = "androidx.lifecycle:lifecycle-viewmodel-savedstate:$versi
 lifecycle.reactivestreams = "androidx.lifecycle:lifecycle-reactivestreams-ktx:$version.lifecycle"
 deps.lifecycle = lifecycle
 
+version.media2 = '1.2.1'
+def media2 = [:]
+media2.session = "androidx.media2:media2-session:$version.media2"
+media2.widget = "androidx.media2:media2-widget:$version.media2"
+media2.player = "androidx.media2:media2-player:$version.media2"
+deps.media2 = media2
+
+
 version.navigation = '2.4.1'
 def navigation = [:]
 navigation.ui = "androidx.navigation:navigation-ui-ktx:$version.navigation"

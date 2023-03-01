@@ -3,9 +3,7 @@ package com.hola.app.music
 import android.os.Bundle
 import android.os.Environment
 import androidx.fragment.app.FragmentActivity
-import com.hola.app.music.core.MediaController
-import com.hola.app.music.core.MediaMetaData
-import com.hola.app.music.core.MediaProvider
+import com.hola.app.music.R
 import com.hola.app.music.databinding.ActivityMainBinding.bind
 import com.hola.common.utils.Logcat
 import com.hola.viewbind.viewBinding
@@ -13,8 +11,6 @@ import java.io.File
 
 class MainActivity : FragmentActivity(R.layout.activity_main) {
     private val view by viewBinding(::bind)
-    private val mediaProvider = MediaProvider()
-    private val mediaController = MediaController(this, mediaProvider)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,20 +22,20 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
 
     fun initWithView() {
         view.version.setOnClickListener {
-            mediaController.play()
+            //mediaController.play()
         }
         view.next.setOnClickListener {
-            mediaController.next()
+            //mediaController.next()
         }
         view.prev.setOnClickListener {
-            mediaController.prev()
+            //mediaController.prev()
         }
     }
 
     fun initWithData() {
         val file = File(Environment.getExternalStorageDirectory(), "video.mp4")
         Logcat.d("Main", "file path--->${file.absolutePath}")
-        mediaProvider.addMedia(
+        /*mediaProvider.addMedia(
             MediaMetaData(
                 url = "https://www.xzmp3.com/down/548fc0ca7dbb.mp3",
                 name = "Because Of You"
@@ -62,6 +58,6 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
                 url = "https://www.xzmp3.com/down/597caee79849.mp3",
                 name = "See You Again"
             )
-        )
+        )*/
     }
 }
