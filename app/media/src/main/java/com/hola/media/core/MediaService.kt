@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.RatingCompat
+import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
 
@@ -17,6 +18,7 @@ open abstract class MediaService : MediaBrowserServiceCompat() {
 
     private val mMediaType = getMediaType()
     private lateinit var mMediaSession: MediaSessionCompat
+    private lateinit var mMediaController: MediaControllerCompat
 
     protected abstract fun getMediaType(): Int
     protected abstract fun getTag(): String
@@ -30,6 +32,7 @@ open abstract class MediaService : MediaBrowserServiceCompat() {
             // SessionCallback() has methods that handle callbacks from a media controller
             setCallback(MediaSessionCallback())
         }
+        mMediaController = MediaControllerCompat(this, mMediaSession.sessionToken)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {

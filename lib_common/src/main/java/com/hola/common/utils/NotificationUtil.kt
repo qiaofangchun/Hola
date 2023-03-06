@@ -13,14 +13,14 @@ object NotificationUtil {
 
     fun createNotificationChannel(
         context: Context,
-        id: String?,
+        channelId: String,
         @StringRes nameResId: Int,
         @StringRes descResId: Int,
         @Importance importance: Int
     ) {
         if (Build.VERSION.SDK_INT < VERSION_CODES.O) return
         (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).apply {
-            val channel = NotificationChannel(id, context.getString(nameResId), importance)
+            val channel = NotificationChannel(channelId, context.getString(nameResId), importance)
             if (descResId != 0) {
                 channel.description = context.getString(descResId)
             }
