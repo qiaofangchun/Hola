@@ -6,7 +6,6 @@ build.minSdk = 23
 build.compileSdk = 33
 build.targetSdk = 33
 build.buildTools = "33.0.0"
-build.gradle = "com.android.tools.build:gradle:7.1.2"
 deps.build = build
 
 version.kotlin = "1.6.21"

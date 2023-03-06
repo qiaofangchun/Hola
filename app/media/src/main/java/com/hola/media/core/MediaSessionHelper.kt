@@ -30,6 +30,7 @@ object MediaSessionHelper {
             .setActions(
                 PlaybackStateCompat.ACTION_PLAY
                         or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        or PlaybackStateCompat.ACTION_PLAY_PAUSE
             ).build()
     }
 
