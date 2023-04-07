@@ -2,6 +2,7 @@ package com.hola.media.core
 
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 
@@ -10,7 +11,11 @@ object MediaSessionHelper {
         val packageName = context.packageName
         val packageManager = context.packageManager
         val intent = packageManager.getLaunchIntentForPackage(packageName)?.let { sessionIntent ->
-            PendingIntent.getActivity(context, 0, sessionIntent, 0)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                PendingIntent.getActivity(context, 123, sessionIntent, PendingIntent.FLAG_IMMUTABLE);
+            } else {
+                PendingIntent.getActivity(context, 123, sessionIntent, PendingIntent.FLAG_ONE_SHOT);
+            }
         }
         setSessionActivity(intent)
         // Enable callbacks from MediaButtons and TransportControls

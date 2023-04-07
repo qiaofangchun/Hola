@@ -7,8 +7,6 @@ import com.hola.common.utils.Logcat
 class WeatherApp : BaseApplication() {
     override fun onCreate() {
         super.onCreate()
-        Logcat.init("Weather")
-        AppHelper.init(this)
         /*StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
             .detectDiskReads()
             .detectDiskWrites()
@@ -22,4 +20,6 @@ class WeatherApp : BaseApplication() {
             .penaltyDeath()
             .build());*/
     }
+
+    override fun getAppName() = "Weather"
 }

@@ -13,14 +13,14 @@ object AppHelper {
     private var impl: Application? = null
 
     val context
-        get() = impl ?: throw IllegalStateException("AppProxy should be initialized before get.")
+        get() = impl ?: throw IllegalStateException("AppHelper should be initialized before get.")
 
     val resources: Resources get() = context.resources
     val packageName: String get() = context.packageName
     val contentResolver: ContentResolver get() = context.contentResolver
     val packageManager: PackageManager get() = context.packageManager
-    val screenWidth: Int = resources.displayMetrics.widthPixels
-    val screenHeight: Int = resources.displayMetrics.heightPixels
+    val screenWidth: Int get() = resources.displayMetrics.widthPixels
+    val screenHeight: Int get() = resources.displayMetrics.heightPixels
 
     fun init(application: Application) {
         impl ?: synchronized(AppHelper::class.java) {

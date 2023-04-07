@@ -1,13 +1,13 @@
 package com.hola.app.music
 
-import android.content.ComponentName
+import android.media.AudioManager
 import android.os.Bundle
 import android.os.Environment
-import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.fragment.app.FragmentActivity
 import com.hola.app.music.databinding.ActivityMainBinding.bind
 import com.hola.common.utils.Logcat
-import com.hola.media.music.MusicService
+import com.hola.media.core.MediaBrowserHelper
 import com.hola.viewbind.viewBinding
 import java.io.File
 
@@ -18,12 +18,9 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
 
     private val view by viewBinding(::bind)
 
-    private lateinit var mediaBrowser: MediaBrowserCompat
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Logcat.init("music")
         initWithView()
         initWithData()
     }
@@ -31,35 +28,26 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
     fun initWithView() {
         view.version.setOnClickListener {
             //mediaController.play()
+            MediaBrowserHelper.mediaController?.let {
+                val pbState = it.playbackState?.state
+                if (pbState == PlaybackStateCompat.STATE_PLAYING) {
+                    it.transportControls.pause()
+                } else {
+                    it.transportControls.play()
+                }
+            }
         }
         view.next.setOnClickListener {
             //mediaController.next()
+            MediaBrowserHelper.mediaController?.transportControls?.skipToNext()
         }
         view.prev.setOnClickListener {
             //mediaController.prev()
+            MediaBrowserHelper.mediaController?.transportControls?.skipToPrevious()
         }
     }
 
     fun initWithData() {
-        // Create MediaBrowserServiceCompat
-        mediaBrowser = MediaBrowserCompat(
-            this, ComponentName(this, MusicService::class.java),
-            object : MediaBrowserCompat.ConnectionCallback() {
-                override fun onConnected() {
-                    Logcat.d(TAG, "[method=onConnected] MediaService connect success")
-                }
-
-                override fun onConnectionFailed() {
-                    Logcat.d(TAG, "[method=onConnected] MediaService connect failed")
-                }
-
-                override fun onConnectionSuspended() {
-                    Logcat.d(TAG, "[method=onConnected] MediaService connect suspended")
-                }
-
-            }, null
-        )
-
         val file = File(Environment.getExternalStorageDirectory(), "video.mp4")
         Logcat.d("Main", "file path--->${file.absolutePath}")
         /*mediaProvider.addMedia(
@@ -86,5 +74,21 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
                 name = "See You Again"
             )
         )*/
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        MediaBrowserHelper.connect()
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        volumeControlStream = AudioManager.STREAM_MUSIC
+    }
+
+
+    public override fun onStop() {
+        super.onStop()
+        MediaBrowserHelper.disconnect()
     }
 }
