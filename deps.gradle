@@ -8,20 +8,14 @@ build.targetSdk = 33
 build.buildTools = "33.0.0"
 deps.build = build
 
-version.kotlin = "1.6.21"
-def kotlin = [:]
-kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$version.kotlin"
-kotlin.gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
-deps.kotlin = kotlin
-
-version.coroutines = "1.6.1"
+version.coroutines = "1.6.4"
 def coroutines = [:]
 coroutines.core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version.coroutines"
 coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version.coroutines"
 deps.coroutines = coroutines
 
 def androidx = [:]
-androidx.core = 'androidx.core:core-ktx:1.9.0'
+androidx.core = 'androidx.core:core-ktx:1.10.0'
 androidx.appcompat = 'androidx.appcompat:appcompat:1.6.0'
 androidx.activity = 'androidx.activity:activity-ktx:1.6.1'
 androidx.fragment = 'androidx.fragment:fragment-ktx:1.5.5'
