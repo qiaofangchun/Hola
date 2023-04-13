@@ -15,8 +15,7 @@ import com.hola.common.utils.Logcat
 class MediaBrowserService : MediaBrowserServiceCompat() {
     companion object {
         private const val TAG = "MediaBrowserService"
-        private const val MY_MEDIA_ROOT_ID = "media_root_id"
-        private const val MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id"
+        private const val MEDIA_ROOT_ID = "media_root_id"
     }
 
     private lateinit var mMediaSession: MediaSessionCompat
@@ -41,32 +40,28 @@ class MediaBrowserService : MediaBrowserServiceCompat() {
      * @param rootHints
      * @return 返回客户端应要浏览/播放的媒体列表的“根”ID。
      */
-    override fun onGetRoot(packageName: String, uid: Int, rootHints: Bundle?): BrowserRoot? {
-        return if (allowBrowsing(packageName, uid)) {
-            BrowserRoot(MY_MEDIA_ROOT_ID, null)
-        } else {
-            BrowserRoot(MY_EMPTY_MEDIA_ROOT_ID, null)
+    override fun onGetRoot(pkgName: String, uid: Int, rootHints: Bundle?): BrowserRoot? {
+        Logcat.d(TAG, "[method=onGetRoot] pkg:$pkgName, uid:$uid, rootHints:${rootHints.toString()}")
+        if (!allowBrowsing(pkgName, uid)) {
+            Logcat.d(TAG, "[method=onGetRoot] not allow browse!")
+            return null
         }
+        return BrowserRoot(MEDIA_ROOT_ID, null)
     }
 
-    private fun allowBrowsing(clientPackageName: String, clientUid: Int): Boolean {
+    private fun allowBrowsing(clientPkgName: String, clientUid: Int): Boolean {
         return true
     }
 
     override fun onLoadChildren(
         parentMediaId: String, result: Result<List<MediaBrowserCompat.MediaItem>>
     ) {
-        //  Browsing not allowed
-        if (MY_EMPTY_MEDIA_ROOT_ID == parentMediaId) {
-            result.sendResult(null)
-            return
-        }
-
+        Logcat.d(TAG, "[method=onLoadChildren] parentMediaId:$parentMediaId, result:${result}")
         // Assume for example that the music catalog is already loaded/cached.
         val mediaItems = emptyList<MediaBrowserCompat.MediaItem>()
 
         // Check if this is the root menu:
-        if (MY_MEDIA_ROOT_ID == parentMediaId) {
+        if (MEDIA_ROOT_ID == parentMediaId) {
             // Build the MediaItem objects for the top level,
             // and put them in the mediaItems list...
         } else {

@@ -1,6 +1,7 @@
 package com.hola.media.core
 
 import android.content.ComponentName
+import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -27,11 +28,25 @@ object MediaBrowserHelper {
 
     private class MediaConnectionCallback : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
-            Logcat.d(TAG, "[method=onConnected] MediaService connect success")
+            Logcat.d(TAG, "[method=onConnected] connect success, root=${mMediaBrowser.root}")
             // Get the token for the MediaSession
             mController = MediaControllerCompat(mContext, mMediaBrowser.sessionToken).apply {
                 registerCallback(MediaControllerCallback())
             }
+            mMediaBrowser.subscribe(mMediaBrowser.root, object :
+                MediaBrowserCompat.SubscriptionCallback() {
+                override fun onChildrenLoaded(
+                    parentId: String,
+                    children: MutableList<MediaBrowserCompat.MediaItem>,
+                    options: Bundle
+                ) {
+                    Logcat.d(TAG, "[method=onChildrenLoaded] parentId=${parentId}, children=${children}")
+                }
+
+                override fun onError(parentId: String, options: Bundle) {
+                    Logcat.d(TAG, "[method=onError] parentId=${parentId}")
+                }
+            })
         }
 
         override fun onConnectionFailed() {
