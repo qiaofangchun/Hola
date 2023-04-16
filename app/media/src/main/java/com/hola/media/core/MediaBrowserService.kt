@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.*
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.RatingCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -35,7 +36,7 @@ class MediaBrowserService : MediaBrowserServiceCompat() {
     }
 
     /**
-     * @param packageName 客户端包名
+     * @param pkgName 客户端包名
      * @param uid 客户端uid
      * @param rootHints
      * @return 返回客户端应要浏览/播放的媒体列表的“根”ID。
@@ -54,7 +55,8 @@ class MediaBrowserService : MediaBrowserServiceCompat() {
     }
 
     override fun onLoadChildren(
-        parentMediaId: String, result: Result<List<MediaBrowserCompat.MediaItem>>
+        parentMediaId: String,
+        result: Result<List<MediaBrowserCompat.MediaItem>>
     ) {
         Logcat.d(TAG, "[method=onLoadChildren] parentMediaId:$parentMediaId, result:${result}")
         // Assume for example that the music catalog is already loaded/cached.
@@ -68,8 +70,19 @@ class MediaBrowserService : MediaBrowserServiceCompat() {
             // Examine the passed parentMediaId to see which submenu we're at,
             // and put the children of that menu in the mediaItems list...
         }
-        result.sendResult(mediaItems)
 
+        result.sendResult(
+            arrayListOf(
+                MediaBrowserCompat.MediaItem(
+                    MediaDescriptionCompat.Builder()
+                        .setMediaId("Because Of You")
+                        .setMediaUri(Uri.parse("https://www.xzmp3.com/down/548fc0ca7dbb.mp3"))
+                        .setTitle("Because Of You")
+                        .build(),
+                    MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                )
+            )
+        )
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {

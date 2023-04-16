@@ -1,13 +1,13 @@
 package com.hola.app.music
 
-import android.media.AudioManager
 import android.os.Bundle
 import android.os.Environment
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.fragment.app.FragmentActivity
 import com.hola.app.music.databinding.ActivityMainBinding.bind
 import com.hola.common.utils.Logcat
-import com.hola.media.core.MediaBrowserHelper
+import com.hola.media.core.MediaControllerHelper
 import com.hola.viewbind.viewBinding
 import java.io.File
 
@@ -27,23 +27,38 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
 
     fun initWithView() {
         view.version.setOnClickListener {
-            //mediaController.play()
-            MediaBrowserHelper.mediaController?.let {
-                val pbState = it.playbackState?.state
-                if (pbState == PlaybackStateCompat.STATE_PLAYING) {
-                    it.transportControls.pause()
-                } else {
-                    it.transportControls.play()
-                }
+            if (MediaControllerHelper.playState == PlaybackStateCompat.STATE_PLAYING) {
+                MediaControllerHelper.pause()
+            } else {
+                MediaControllerHelper.play()
             }
         }
         view.next.setOnClickListener {
-            //mediaController.next()
-            MediaBrowserHelper.mediaController?.transportControls?.skipToNext()
+            //MediaControllerHelper.skipToNext()
+            MediaControllerHelper.playFromSearch("abcde")
+
+            MediaControllerHelper.subscribeMediaData(
+                mediaId = "Because Of You",
+                callback = callback
+            )
         }
         view.prev.setOnClickListener {
-            //mediaController.prev()
-            MediaBrowserHelper.mediaController?.transportControls?.skipToPrevious()
+            //MediaControllerHelper.skipToPrevious()
+            MediaControllerHelper.playFromMediaId("1024")
+        }
+    }
+
+    private val callback = object : MediaBrowserCompat.SubscriptionCallback() {
+        override fun onChildrenLoaded(
+            parentId: String,
+            children: MutableList<MediaBrowserCompat.MediaItem>,
+            options: Bundle
+        ) {
+            Logcat.d("Main", "onChildrenLoaded--->$parentId")
+        }
+
+        override fun onError(parentId: String, options: Bundle) {
+            Logcat.d("Main", "onError--->$parentId")
         }
     }
 
@@ -78,17 +93,19 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
 
     public override fun onStart() {
         super.onStart()
-        MediaBrowserHelper.connect()
     }
 
     public override fun onResume() {
         super.onResume()
-        volumeControlStream = AudioManager.STREAM_MUSIC
     }
 
 
     public override fun onStop() {
         super.onStop()
-        MediaBrowserHelper.disconnect()
+    }
+
+    override fun onDestroy() {
+        MediaControllerHelper.unsubscribeMediaData("Because Of You", callback)
+        super.onDestroy()
     }
 }
