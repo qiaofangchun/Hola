@@ -1,10 +1,12 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
 }
 apply from: "${project.rootDir}/config_app.gradle"
 
 android {
+    namespace 'com.hola.app.music'
     defaultConfig {
         applicationId "com.hola.app.music"
         versionCode 1
@@ -27,4 +29,5 @@ dependencies {
     // optional - Implementation of a SessionPlayer
     //implementation "androidx.media2:media2-player:$media2_version"
     implementation 'com.guolindev.permissionx:permissionx:1.7.1'
+    implementation 'androidx.core:core-ktx:+'
 }

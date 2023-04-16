@@ -1,7 +1,7 @@
 apply from: "${project.rootDir}/config.gradle"
 android {
     defaultConfig {
-        resConfigs("zh-rCN", "en-rUS")
+        resourceConfigurations += ['zh-rCN', 'en-rUS']
     }
     android.buildFeatures.viewBinding = true
     buildTypes {

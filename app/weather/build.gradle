@@ -2,11 +2,13 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'org.jetbrains.kotlin.android'
     //id 'androidx.navigation.safeargs.kotlin'
 }
 apply from: "${project.rootDir}/config_app.gradle"
 
 android {
+    namespace 'com.hola.app.weather'
     signingConfigs {
         debug {
             storeFile file('./keystore')
@@ -56,6 +58,7 @@ dependencies {
     // room数据库
     implementation deps.room.api
     implementation deps.room.ktx
+    implementation 'androidx.core:core-ktx:+'
     kapt deps.room.compiler
     annotationProcessor deps.room.compiler
 }

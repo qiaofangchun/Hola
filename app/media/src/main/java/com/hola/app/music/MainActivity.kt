@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.os.Environment
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
 import com.hola.app.music.databinding.ActivityMainBinding.bind
 import com.hola.common.utils.Logcat
 import com.hola.media.core.MediaControllerHelper
+import com.hola.media.core.MediaDataSubscribeCallback
 import com.hola.viewbind.viewBinding
 import java.io.File
 
@@ -17,6 +19,7 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
     }
 
     private val view by viewBinding(::bind)
+    private val model by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,37 +37,23 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
             }
         }
         view.next.setOnClickListener {
-            //MediaControllerHelper.skipToNext()
-            MediaControllerHelper.playFromSearch("abcde")
-
-            MediaControllerHelper.subscribeMediaData(
-                mediaId = "Because Of You",
-                callback = callback
-            )
+            MediaControllerHelper.skipToNext()
         }
         view.prev.setOnClickListener {
-            //MediaControllerHelper.skipToPrevious()
-            MediaControllerHelper.playFromMediaId("1024")
+            MediaControllerHelper.skipToPrevious()
         }
     }
 
-    private val callback = object : MediaBrowserCompat.SubscriptionCallback() {
-        override fun onChildrenLoaded(
-            parentId: String,
-            children: MutableList<MediaBrowserCompat.MediaItem>,
-            options: Bundle
-        ) {
-            Logcat.d("Main", "onChildrenLoaded--->$parentId")
-        }
-
-        override fun onError(parentId: String, options: Bundle) {
-            Logcat.d("Main", "onError--->$parentId")
-        }
-    }
 
     fun initWithData() {
         val file = File(Environment.getExternalStorageDirectory(), "video.mp4")
         Logcat.d("Main", "file path--->${file.absolutePath}")
+        model.input(MainViewAction.SubscribeMediaData("abcdefg"))
+        model.output(this) {
+            when (it) {
+                is MainViewState.MediaData->Logcat.d("Main", "load success")
+            }
+        }
         /*mediaProvider.addMedia(
             MediaMetaData(
                 url = "https://www.xzmp3.com/down/548fc0ca7dbb.mp3",
@@ -105,7 +94,6 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
     }
 
     override fun onDestroy() {
-        MediaControllerHelper.unsubscribeMediaData("Because Of You", callback)
         super.onDestroy()
     }
 }

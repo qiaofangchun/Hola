@@ -54,12 +54,13 @@ object MediaControllerHelper {
 
     fun disconnectService() = mMediaBrowserClient.disconnect()
 
-    fun subscribeMediaData(
-        mediaId: String,
-        options: Bundle? = null,
-        callback: SubscriptionCallback
-    ) {
-        Logcat.d(TAG,"[method=subscribeMediaData] isConnectedService=$isConnectedService")
+    fun subscribeMediaData(mediaId: String, callback: SubscriptionCallback) {
+        Logcat.d(TAG, "[method=subscribeMediaData] isConnectedService=$isConnectedService")
+        mMediaBrowserClient.subscribeMediaInfo(mediaId, null, callback)
+    }
+
+    fun subscribeMediaData(mediaId: String, options: Bundle, callback: SubscriptionCallback) {
+        Logcat.d(TAG, "[method=subscribeMediaData] isConnectedService=$isConnectedService")
         mMediaBrowserClient.subscribeMediaInfo(mediaId, options, callback)
     }
 
