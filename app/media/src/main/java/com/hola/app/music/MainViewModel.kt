@@ -1,13 +1,9 @@
 package com.hola.app.music
 
-import android.support.v4.media.MediaBrowserCompat
 import com.hola.arch.core.ViewModel
-import com.hola.media.core.MediaControllerHelper
-import com.hola.media.core.MediaDataSubscribeCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onStart
 
 
 class MainViewModel : ViewModel<MainViewAction, MainViewState>() {

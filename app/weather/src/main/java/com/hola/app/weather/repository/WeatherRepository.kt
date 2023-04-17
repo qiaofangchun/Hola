@@ -159,10 +159,10 @@ object WeatherRepository {
                 }
             }
             LocationHelper.regLocationListener(listener)
+            LocationHelper.startLocation()
             continuation.invokeOnCancellation {
                 LocationHelper.unRegLocationListener(listener)
             }
-            LocationHelper.startLocation()
         })
     }
 }
