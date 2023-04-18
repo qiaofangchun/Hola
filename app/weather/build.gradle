@@ -58,7 +58,6 @@ dependencies {
     // room数据库
     implementation deps.room.api
     implementation deps.room.ktx
-    implementation 'androidx.core:core-ktx:+'
     kapt deps.room.compiler
     annotationProcessor deps.room.compiler
 }

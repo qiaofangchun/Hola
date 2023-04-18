@@ -29,5 +29,4 @@ dependencies {
     // optional - Implementation of a SessionPlayer
     //implementation "androidx.media2:media2-player:$media2_version"
     implementation 'com.guolindev.permissionx:permissionx:1.7.1'
-    implementation 'androidx.core:core-ktx:+'
 }

@@ -15,5 +15,4 @@ dependencies {
     api deps.androidx.appcompat
     api deps.lifecycle.viewmodel
     api deps.lifecycle.runtime
-    implementation 'androidx.core:core-ktx:+'
 }

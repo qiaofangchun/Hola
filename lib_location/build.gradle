@@ -10,5 +10,4 @@ android {
 
 dependencies {
     implementation project(path: ':lib_common')
-    implementation 'androidx.core:core-ktx:+'
 }

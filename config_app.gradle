@@ -2,6 +2,9 @@ apply from: "${project.rootDir}/config.gradle"
 android {
     defaultConfig {
         resourceConfigurations += ['zh-rCN', 'en-rUS']
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
     android.buildFeatures.viewBinding = true
     buildTypes {

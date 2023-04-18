@@ -15,5 +15,4 @@ dependencies {
     api deps.androidx.activity
     api deps.androidx.fragment
     api deps.androidx.recyclerview
-    implementation 'androidx.core:core-ktx:+'
 }

@@ -15,5 +15,4 @@ dependencies {
     implementation deps.androidx.fragment
     implementation deps.androidx.annotation
     implementation deps.androidx.recyclerview
-    implementation 'androidx.core:core-ktx:+'
 }
