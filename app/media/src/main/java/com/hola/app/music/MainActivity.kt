@@ -3,7 +3,6 @@ package com.hola.app.music
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.media.session.PlaybackStateCompat
-import android.widget.SimpleAdapter
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
 import com.hola.app.music.databinding.ActivityMainBinding.bind

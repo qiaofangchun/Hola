@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 
-
 class MainViewModel : ViewModel<MainViewAction, MainViewState>() {
     private val mUseCase by lazy { MainUseCase() }
 
@@ -20,6 +19,8 @@ class MainViewModel : ViewModel<MainViewAction, MainViewState>() {
     }
 
     private suspend fun getMediaData(mediaId: String) {
+        mUseCase.getMediaData(mediaId)
+
         mUseCase.getMediaData(mediaId).flowOn(Dispatchers.IO)
             .catch { ex ->
                 output(MainViewState.MediaData(emptyList()))
