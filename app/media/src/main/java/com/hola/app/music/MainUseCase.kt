@@ -32,10 +32,10 @@ class MainUseCase : UseCase() {
                     MediaControllerHelper.unsubscribeMediaData(mediaId, this)
                 }
             }
-            MediaControllerHelper.subscribeMediaData(mediaId, callback)
             continuation.invokeOnCancellation {
                 MediaControllerHelper.unsubscribeMediaData(mediaId, callback)
             }
+            MediaControllerHelper.subscribeMediaData(mediaId, callback)
         })
     }
 }

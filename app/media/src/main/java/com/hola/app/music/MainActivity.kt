@@ -3,6 +3,7 @@ package com.hola.app.music
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.media.session.PlaybackStateCompat
+import android.widget.SimpleAdapter
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
 import com.hola.app.music.databinding.ActivityMainBinding.bind
@@ -18,6 +19,7 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
 
     private val view by viewBinding(::bind)
     private val model by viewModels<MainViewModel>()
+    private val adapter = MediaItemAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +42,7 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
         view.prev.setOnClickListener {
             MediaControllerHelper.skipToPrevious()
         }
+        view.mediaList.adapter = adapter
     }
 
 
@@ -49,33 +52,12 @@ class MainActivity : FragmentActivity(R.layout.activity_main) {
         model.input(MainViewAction.SubscribeMediaData("abcdefg"))
         model.output(this) {
             when (it) {
-                is MainViewState.MediaData->Logcat.d("Main", "load success")
+                is MainViewState.MediaData->{
+                    Logcat.d("Main", "media data--->${it.mediaData}")
+                    adapter.setItems(it.mediaData)
+                }
             }
         }
-        /*mediaProvider.addMedia(
-            MediaMetaData(
-                url = "https://www.xzmp3.com/down/548fc0ca7dbb.mp3",
-                name = "Because Of You"
-            )
-        )
-        mediaProvider.addMedia(
-            MediaMetaData(
-                url = "https://www.xzmp3.com/down/8ca0713d630b.mp3",
-                name = "错位时空"
-            )
-        )
-        mediaProvider.addMedia(
-            MediaMetaData(
-                url = "https://www.xzmp3.com/down/fb8f3a845578.mp3",
-                name = "星辰大海"
-            )
-        )
-        mediaProvider.addMedia(
-            MediaMetaData(
-                url = "https://www.xzmp3.com/down/597caee79849.mp3",
-                name = "See You Again"
-            )
-        )*/
     }
 
     public override fun onStart() {

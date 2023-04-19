@@ -1,9 +1,11 @@
 package com.hola.media.core
 
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.RatingCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -68,7 +70,32 @@ object MediaControllerHelper {
         mMediaBrowserClient.unsubscribeMediaInfo(mediaId, callback)
     }
 
+    fun prepare() = realConnectService { mController?.transportControls?.prepare() }
+
+    fun prepareFromMediaId(mediaId: String, extras: Bundle? = null) =
+        realConnectService { mController?.transportControls?.prepareFromMediaId(mediaId, extras) }
+
+    fun prepareFromUri(url: String, extras: Bundle? = null) =
+        realConnectService {
+            mController?.transportControls?.prepareFromUri(
+                Uri.parse(url),
+                extras
+            )
+        }
+
+    fun prepareFromSearch(query: String, extras: Bundle? = null) =
+        realConnectService { mController?.transportControls?.prepareFromSearch(query, extras) }
+
     fun play() = realConnectService { mController?.transportControls?.play() }
+
+    fun playFromMediaId(mediaId: String, extras: Bundle? = null) =
+        realConnectService { mController?.transportControls?.playFromMediaId(mediaId, extras) }
+
+    fun playFromUri(url: String, extras: Bundle? = null) =
+        realConnectService { mController?.transportControls?.playFromUri(Uri.parse(url), extras) }
+
+    fun playFromSearch(query: String, extras: Bundle? = null) =
+        realConnectService { mController?.transportControls?.playFromSearch(query, extras) }
 
     fun pause() = realConnectService { mController?.transportControls?.pause() }
 
@@ -80,11 +107,38 @@ object MediaControllerHelper {
 
     fun seekTo(pos: Long) = realConnectService { mController?.transportControls?.seekTo(pos) }
 
-    fun playFromSearch(query: String, extras: Bundle? = null) =
-        realConnectService { mController?.transportControls?.playFromSearch(query, extras) }
+    fun skipToQueueItem(id: Long) =
+        realConnectService { mController?.transportControls?.skipToQueueItem(id) }
 
-    fun playFromMediaId(mediaId: String, extras: Bundle? = null) =
-        realConnectService { mController?.transportControls?.playFromMediaId(mediaId, extras) }
+    fun sendCustomAction(action: String, args: Bundle) =
+        realConnectService { mController?.transportControls?.sendCustomAction(action, args) }
+
+    fun sendCustomAction(action: PlaybackStateCompat.CustomAction, args: Bundle) =
+        realConnectService { mController?.transportControls?.sendCustomAction(action, args) }
+
+    fun setRating(rating: RatingCompat, extras: Bundle? = null) = realConnectService {
+        if (extras == null) {
+            mController?.transportControls?.setRating(rating)
+        } else {
+            mController?.transportControls?.setRating(rating, extras)
+        }
+    }
+
+    fun setPlaybackSpeed(speed: Float) =
+        realConnectService { mController?.transportControls?.setPlaybackSpeed(speed) }
+
+    fun setRepeatMode(@PlaybackStateCompat.RepeatMode repeatMode: Int) =
+        realConnectService { mController?.transportControls?.setRepeatMode(repeatMode) }
+
+    fun setShuffleMode(@PlaybackStateCompat.ShuffleMode shuffleMode: Int) =
+        realConnectService { mController?.transportControls?.setShuffleMode(shuffleMode) }
+
+    fun fastForward() = realConnectService { mController?.transportControls?.fastForward() }
+
+    fun rewind() = realConnectService { mController?.transportControls?.rewind() }
+
+    fun setCaptioningEnabled(enabled: Boolean) =
+        realConnectService { mController?.transportControls?.setCaptioningEnabled(enabled) }
 
     private class MediaConnectStatusCallback(callback: (Boolean) -> Unit) :
         MediaBrowserClient.ConnectStatusCallback {

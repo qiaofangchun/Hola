@@ -1,5 +1,6 @@
 package com.hola.media.core
 
+import MediaProvider
 import android.content.Intent
 import android.net.Uri
 import android.os.*
@@ -71,18 +72,7 @@ class MediaBrowserService : MediaBrowserServiceCompat() {
             // and put the children of that menu in the mediaItems list...
         }
 
-        result.sendResult(
-            arrayListOf(
-                MediaBrowserCompat.MediaItem(
-                    MediaDescriptionCompat.Builder()
-                        .setMediaId("Because Of You")
-                        .setMediaUri(Uri.parse("https://www.xzmp3.com/down/548fc0ca7dbb.mp3"))
-                        .setTitle("Because Of You")
-                        .build(),
-                    MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-                )
-            )
-        )
+        result.sendResult(MediaProvider.mediaData)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
