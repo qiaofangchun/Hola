@@ -1,17 +1,17 @@
 package com.hola.base.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 
-abstract class BaseActivity : AppCompatActivity {
+abstract class BaseFragment : Fragment {
 
     constructor() : super()
 
     constructor(@LayoutRes resId: Int) : super(resId)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initWithView()
         initWithData()
     }
@@ -20,7 +20,4 @@ abstract class BaseActivity : AppCompatActivity {
 
     protected abstract fun initWithData()
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 }

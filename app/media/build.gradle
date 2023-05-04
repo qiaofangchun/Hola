@@ -7,6 +7,9 @@ apply from: "${project.rootDir}/config_app.gradle"
 
 android {
     namespace 'com.hola.app.music'
+    buildFeatures {
+        viewBinding true
+    }
     defaultConfig {
         applicationId "com.hola.app.music"
         versionCode 1
@@ -23,10 +26,14 @@ dependencies {
     implementation project(path: ':lib_common')
 
     implementation deps.media2.session
+    implementation deps.androidx.constraint
+    implementation deps.androidx.viewpager
 
     // optional - UI widgets for VideoView and MediaControlView
     //implementation "androidx.media2:media2-widget:$media2_version"
     // optional - Implementation of a SessionPlayer
     //implementation "androidx.media2:media2-player:$media2_version"
     implementation 'com.guolindev.permissionx:permissionx:1.7.1'
+    implementation 'jp.wasabeef:blurry:4.0.1'
+    implementation 'io.github.scwang90:refresh-layout-kernel:2.0.6'
 }

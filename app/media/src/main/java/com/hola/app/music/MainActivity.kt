@@ -1,78 +1,49 @@
 package com.hola.app.music
 
+import android.graphics.Color
 import android.os.Bundle
-import android.os.Environment
-import android.support.v4.media.session.PlaybackStateCompat
-import androidx.activity.viewModels
-import androidx.fragment.app.FragmentActivity
-import com.hola.app.music.databinding.ActivityMainBinding.bind
-import com.hola.common.utils.Logcat
-import com.hola.media.core.MediaControllerHelper
+import com.hola.app.music.databinding.ActivityMainBinding
+import com.hola.base.activity.BaseActivity
 import com.hola.viewbind.viewBinding
-import java.io.File
+import jp.wasabeef.blurry.Blurry
 
-class MainActivity : FragmentActivity(R.layout.activity_main) {
+class MainActivity : BaseActivity(R.layout.activity_main) {
     companion object {
         private const val TAG = "MainActivity"
     }
 
-    private val view by viewBinding(::bind)
-    private val model by viewModels<MainViewModel>()
-    private val adapter = MediaItemAdapter(this)
+    private val view by viewBinding(ActivityMainBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initWithView()
-        initWithData()
-    }
-
-    fun initWithView() {
-        view.version.setOnClickListener {
-            if (MediaControllerHelper.playState == PlaybackStateCompat.STATE_PLAYING) {
-                MediaControllerHelper.pause()
-            } else {
-                MediaControllerHelper.play()
-            }
-        }
-        view.next.setOnClickListener {
-            MediaControllerHelper.skipToNext()
-        }
-        view.prev.setOnClickListener {
-            MediaControllerHelper.skipToPrevious()
-        }
-        view.mediaList.adapter = adapter
-    }
-
-
-    fun initWithData() {
-        val file = File(Environment.getExternalStorageDirectory(), "video.mp4")
-        Logcat.d("Main", "file path--->${file.absolutePath}")
-        model.input(MainViewAction.SubscribeMediaData("abcdefg"))
-        model.output(this) {
-            when (it) {
-                is MainViewState.MediaData->{
-                    Logcat.d("Main", "media data--->${it.mediaData}")
-                    adapter.setItems(it.mediaData)
-                }
-            }
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, MainFragment())
+                .commitNow()
         }
     }
 
-    public override fun onStart() {
-        super.onStart()
+    override fun initWithView() {
+        Blurry.with(this)
+            .radius(100)
+            .sampling(8)
+            .color(Color.BLUE)
+            .async()
+            .animate(500)
+            .onto(view.bottomView.miniPlayer);
+
+        /*val radius = 20f
+        val decorView: View = window.decorView
+        val windowBackground: Drawable = decorView.background
+        view.miniPlayer.blurViewPlay.setupWith(view.container)
+            .setFrameClearDrawable(windowBackground)
+            .setBlurAlgorithm(RenderScriptBlur(this))
+            .setBlurRadius(radius)
+            .setHasFixedTransformationMatrix(true)*/
     }
 
-    public override fun onResume() {
-        super.onResume()
-    }
+    override fun initWithData() {
 
-
-    public override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }
