@@ -3,10 +3,13 @@ package com.hola.media.core
 import MediaProvider
 import android.content.Intent
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.RatingCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -14,7 +17,7 @@ import android.view.KeyEvent
 import androidx.media.MediaBrowserServiceCompat
 import com.hola.common.utils.Logcat
 
-class MediaBrowserService : MediaBrowserServiceCompat() {
+abstract class MediaBrowserService : MediaBrowserServiceCompat() {
     companion object {
         private const val TAG = "MediaBrowserService"
         private const val MEDIA_ROOT_ID = "media_root_id"
@@ -23,8 +26,12 @@ class MediaBrowserService : MediaBrowserServiceCompat() {
     private lateinit var mMediaSession: MediaSessionCompat
     private lateinit var mMediaController: MediaControllerCompat
 
+    abstract val channelId: String
+    abstract val startForeground: Int
+
     override fun onCreate() {
         super.onCreate()
+        MediaNotificationHelper.init(this, startForeground, channelId)
         Logcat.d(TAG, "[method=onCreate] onCreate")
         mMediaSession = MediaSessionHelper.create(this, TAG).apply {
             isActive = true
@@ -34,6 +41,7 @@ class MediaBrowserService : MediaBrowserServiceCompat() {
             setCallback(MediaSessionCallback(), Handler(Looper.getMainLooper()))
         }
         mMediaController = MediaControllerCompat(this, mMediaSession.sessionToken)
+        MediaNotificationHelper.showNotification(mMediaSession, false)
     }
 
     /**
@@ -42,8 +50,10 @@ class MediaBrowserService : MediaBrowserServiceCompat() {
      * @param rootHints
      * @return 返回客户端应要浏览/播放的媒体列表的“根”ID。
      */
-    override fun onGetRoot(pkgName: String, uid: Int, rootHints: Bundle?): BrowserRoot? {
-        Logcat.d(TAG, "[method=onGetRoot] pkg:$pkgName, uid:$uid, rootHints:${rootHints.toString()}")
+    final override fun onGetRoot(pkgName: String, uid: Int, rootHints: Bundle?): BrowserRoot? {
+        Logcat.d(
+            TAG, "[method=onGetRoot] pkg:$pkgName, uid:$uid, rootHints:${rootHints.toString()}"
+        )
         if (!allowBrowsing(pkgName, uid)) {
             Logcat.d(TAG, "[method=onGetRoot] not allow browse!")
             return null
@@ -55,9 +65,8 @@ class MediaBrowserService : MediaBrowserServiceCompat() {
         return true
     }
 
-    override fun onLoadChildren(
-        parentMediaId: String,
-        result: Result<List<MediaBrowserCompat.MediaItem>>
+    final override fun onLoadChildren(
+        parentMediaId: String, result: Result<List<MediaBrowserCompat.MediaItem>>
     ) {
         Logcat.d(TAG, "[method=onLoadChildren] parentMediaId:$parentMediaId, result:${result}")
         // Assume for example that the music catalog is already loaded/cached.

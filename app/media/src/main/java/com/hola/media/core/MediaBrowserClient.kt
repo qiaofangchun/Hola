@@ -5,9 +5,14 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
+import androidx.media.MediaBrowserServiceCompat
 import com.hola.common.utils.Logcat
 
-class MediaBrowserClient(mContext: Context) {
+class MediaBrowserClient(
+    context: Context,
+    clazz: Class<*>,
+    rootHints: Bundle? = null
+) {
     companion object {
         private const val TAG = "MediaBrowserClient"
 
@@ -16,11 +21,12 @@ class MediaBrowserClient(mContext: Context) {
         const val CONNECT_REFUSED = -1
     }
 
-    private val mMediaBrowser = MediaBrowserCompat(
-        mContext,
-        ComponentName(mContext, MediaBrowserService::class.java),
-        MediaConnectionCallback(), null
+    private val mMediaBrowser: MediaBrowserCompat = MediaBrowserCompat(
+        context,
+        ComponentName(context, clazz),
+        MediaConnectionCallback(), rootHints
     )
+
     private var mConnectCallback: ConnectStatusCallback? = null
 
     val isConnected get() = mMediaBrowser.isConnected

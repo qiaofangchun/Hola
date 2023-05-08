@@ -9,6 +9,7 @@ class MediaApplication : BaseApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        MediaControllerHelper.init(this, MusicService::class.java)
         MediaControllerHelper.connectService()
     }
 }

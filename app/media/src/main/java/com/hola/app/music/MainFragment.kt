@@ -20,8 +20,6 @@ class MainFragment : BaseFragment(R.layout.fragment_main) {
     }
 
     override fun initWithData() {
-        val file = File(Environment.getExternalStorageDirectory(), "video.mp4")
-        Logcat.d("Main", "file path--->${file.absolutePath}")
         model.input(MainViewAction.SubscribeMediaData("abcdefg"))
         model.output(this) {
             when (it) {

@@ -1,8 +1,8 @@
 package com.hola.media.core
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.RatingCompat
@@ -12,16 +12,27 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.hola.common.utils.AppHelper
 import com.hola.common.utils.Logcat
-import kotlinx.coroutines.*
 
 object MediaControllerHelper {
     private const val TAG = "MediaBrowserHelper"
     private const val MAX_RETRY_NUM = 3
     private const val START_RETRY_NUM = 1
 
+    private var client: MediaBrowserClient? = null
     private var mRetryNum = START_RETRY_NUM
     private var mController: MediaControllerCompat? = null
-    private val mMediaBrowserClient = MediaBrowserClient(AppHelper.context)
+
+    private val mMediaBrowserClient
+        get() = client
+            ?: throw IllegalStateException("MediaControllerHelper should be initialized before get.")
+
+    fun <T : MediaBrowserServiceCompat> init(
+        context: Context,
+        clazz: Class<T>,
+        rootHints: Bundle? = null
+    ) {
+        client = MediaBrowserClient(context.applicationContext, clazz, rootHints)
+    }
 
     fun connectService() = realConnectService {}
 
@@ -75,13 +86,11 @@ object MediaControllerHelper {
     fun prepareFromMediaId(mediaId: String, extras: Bundle? = null) =
         realConnectService { mController?.transportControls?.prepareFromMediaId(mediaId, extras) }
 
-    fun prepareFromUri(url: String, extras: Bundle? = null) =
-        realConnectService {
-            mController?.transportControls?.prepareFromUri(
-                Uri.parse(url),
-                extras
-            )
-        }
+    fun prepareFromUri(url: String, extras: Bundle? = null) = realConnectService {
+        mController?.transportControls?.prepareFromUri(
+            Uri.parse(url), extras
+        )
+    }
 
     fun prepareFromSearch(query: String, extras: Bundle? = null) =
         realConnectService { mController?.transportControls?.prepareFromSearch(query, extras) }
