@@ -13,6 +13,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.RatingCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.media.MediaBrowserServiceCompat
 import com.hola.common.utils.Logcat
@@ -23,7 +24,6 @@ abstract class MediaBrowserService : MediaBrowserServiceCompat() {
         private const val MEDIA_ROOT_ID = "media_root_id"
     }
 
-    private lateinit var mMediaSession: MediaSessionCompat
     private lateinit var mMediaController: MediaControllerCompat
 
     abstract val channelId: String
@@ -31,17 +31,15 @@ abstract class MediaBrowserService : MediaBrowserServiceCompat() {
 
     override fun onCreate() {
         super.onCreate()
-        MediaNotificationHelper.init(this, startForeground, channelId)
         Logcat.d(TAG, "[method=onCreate] onCreate")
-        mMediaSession = MediaSessionHelper.create(this, TAG).apply {
-            isActive = true
-            // Set the session's token so that client activities can communicate with it.
-            setSessionToken(this.sessionToken)
-            // SessionCallback() has methods that handle callbacks from a media controller
-            setCallback(MediaSessionCallback(), Handler(Looper.getMainLooper()))
-        }
-        mMediaController = MediaControllerCompat(this, mMediaSession.sessionToken)
-        MediaNotificationHelper.showNotification(mMediaSession, false)
+        MediaSessionHelper.init(this, TAG)
+        MediaSessionHelper.mediaSession.setCallback(
+            MediaSessionCallback(),
+            Handler(Looper.getMainLooper())
+        )
+        mMediaController = MediaControllerCompat(this, MediaSessionHelper.sessionToken)
+        MediaNotificationHelper.init(this, startForeground, channelId)
+        MediaNotificationHelper.showNotification(MediaSessionHelper.mediaSession, false)
     }
 
     /**
@@ -92,7 +90,8 @@ abstract class MediaBrowserService : MediaBrowserServiceCompat() {
 
     override fun onDestroy() {
         Logcat.d(TAG, "[method=onDestroy] onDestroy")
-        mMediaSession.release()
+        MediaSessionHelper.uninit()
+        MediaNotificationHelper.uninit()
         super.onDestroy()
     }
 
@@ -123,6 +122,8 @@ abstract class MediaBrowserService : MediaBrowserServiceCompat() {
 
         override fun onPlay() {
             Logcat.d(TAG, "[method=onPlay] onPlay")
+            MediaSessionHelper.setPlaybackState(PlaybackStateCompat.STATE_PLAYING)
+            MediaNotificationHelper.showNotification(MediaSessionHelper.mediaSession, false)
         }
 
         override fun onPrepareFromUri(uri: Uri?, extras: Bundle?) {
@@ -143,10 +144,13 @@ abstract class MediaBrowserService : MediaBrowserServiceCompat() {
 
         override fun onPause() {
             Logcat.d(TAG, "[method=onPause] onPause")
+            MediaSessionHelper.setPlaybackState(PlaybackStateCompat.STATE_PAUSED)
+            MediaNotificationHelper.showNotification(MediaSessionHelper.mediaSession, false)
         }
 
         override fun onStop() {
             Logcat.d(TAG, "[method=onStop] onStop")
+            MediaSessionHelper.setPlaybackState(PlaybackStateCompat.STATE_STOPPED)
         }
 
         override fun onSkipToQueueItem(id: Long) {
@@ -175,10 +179,14 @@ abstract class MediaBrowserService : MediaBrowserServiceCompat() {
 
         override fun onSkipToNext() {
             Logcat.d(TAG, "[method=onSkipToNext] onSkipToNext")
+            MediaSessionHelper.setPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT)
+            MediaNotificationHelper.showNotification(MediaSessionHelper.mediaSession, false)
         }
 
         override fun onSkipToPrevious() {
             Logcat.d(TAG, "[method=onSkipToPrevious] onSkipToPrevious")
+            MediaSessionHelper.setPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS)
+            MediaNotificationHelper.showNotification(MediaSessionHelper.mediaSession, false)
         }
 
         override fun onFastForward() {

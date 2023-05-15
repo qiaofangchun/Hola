@@ -5,13 +5,10 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
-import androidx.media.MediaBrowserServiceCompat
 import com.hola.common.utils.Logcat
 
 class MediaBrowserClient(
-    context: Context,
-    clazz: Class<*>,
-    rootHints: Bundle? = null
+    context: Context, clazz: Class<*>, rootHints: Bundle? = null
 ) {
     companion object {
         private const val TAG = "MediaBrowserClient"
@@ -22,9 +19,7 @@ class MediaBrowserClient(
     }
 
     private val mMediaBrowser: MediaBrowserCompat = MediaBrowserCompat(
-        context,
-        ComponentName(context, clazz),
-        MediaConnectionCallback(), rootHints
+        context, ComponentName(context, clazz), MediaConnectionCallback(), rootHints
     )
 
     private var mConnectCallback: ConnectStatusCallback? = null
@@ -39,23 +34,16 @@ class MediaBrowserClient(
     fun disconnect() = mMediaBrowser.disconnect()
 
     fun subscribeMediaInfo(
-        mediaId: String,
-        options: Bundle? = null,
-        callback: MediaBrowserCompat.SubscriptionCallback
-    ) = if (options == null) {
-        mMediaBrowser.subscribe(mediaId, callback)
-    } else {
-        mMediaBrowser.subscribe(mediaId, options, callback)
-    }
+        mediaId: String, options: Bundle? = null, callback: MediaBrowserCompat.SubscriptionCallback
+    ) = options?.let {
+        mMediaBrowser.subscribe(mediaId, it, callback)
+    } ?: mMediaBrowser.subscribe(mediaId, callback)
 
     fun unsubscribeMediaInfo(
-        mediaId: String,
-        callback: MediaBrowserCompat.SubscriptionCallback? = null
-    ) = if (callback == null) {
-        mMediaBrowser.unsubscribe(mediaId)
-    } else {
+        mediaId: String, callback: MediaBrowserCompat.SubscriptionCallback? = null
+    ) = callback?.let {
         mMediaBrowser.unsubscribe(mediaId, callback)
-    }
+    } ?: mMediaBrowser.unsubscribe(mediaId)
 
     interface ConnectStatusCallback {
         fun onChanged(status: Int, token: MediaSessionCompat.Token? = null)

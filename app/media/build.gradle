@@ -26,6 +26,7 @@ dependencies {
     implementation project(path: ':lib_common')
 
     implementation deps.media2.session
+    implementation deps.media2.widget
     implementation deps.androidx.constraint
     implementation deps.androidx.viewpager
 
