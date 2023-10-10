@@ -5,17 +5,17 @@ def build = [:]
 build.minSdk = 23
 build.compileSdk = 33
 build.targetSdk = 33
-build.buildTools = "33.0.0"
+build.buildTools = "33.0.1"
 deps.build = build
 
-version.coroutines = "1.6.4"
+version.coroutines = "1.7.1"
 def coroutines = [:]
 coroutines.core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version.coroutines"
 coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version.coroutines"
 deps.coroutines = coroutines
 
 def androidx = [:]
-androidx.core = 'androidx.core:core-ktx:1.10.0'
+androidx.core = 'androidx.core:core-ktx:1.10.1'
 androidx.appcompat = 'androidx.appcompat:appcompat:1.6.1'
 androidx.activity = 'androidx.activity:activity-ktx:1.6.1'
 androidx.fragment = 'androidx.fragment:fragment-ktx:1.5.5'
@@ -23,6 +23,7 @@ androidx.recyclerview = 'androidx.recyclerview:recyclerview:1.2.1'
 androidx.constraint = 'androidx.constraintlayout:constraintlayout:2.1.4'
 androidx.annotation = 'androidx.annotation:annotation:1.5.0'
 androidx.viewpager = 'androidx.viewpager2:viewpager2:1.0.0'
+androidx.media = 'androidx.media:media:1.6.0'
 deps.androidx = androidx
 
 version.lifecycle = '2.5.1'
@@ -37,14 +38,6 @@ lifecycle.process = "androidx.lifecycle:lifecycle-process:$version.lifecycle"
 lifecycle.savedstate = "androidx.lifecycle:lifecycle-viewmodel-savedstate:$version.lifecycle"
 lifecycle.reactivestreams = "androidx.lifecycle:lifecycle-reactivestreams-ktx:$version.lifecycle"
 deps.lifecycle = lifecycle
-
-version.media2 = '1.2.1'
-def media2 = [:]
-media2.session = "androidx.media2:media2-session:$version.media2"
-media2.widget = "androidx.media2:media2-widget:$version.media2"
-media2.player = "androidx.media2:media2-player:$version.media2"
-deps.media2 = media2
-
 
 version.navigation = '2.5.3'
 def navigation = [:]

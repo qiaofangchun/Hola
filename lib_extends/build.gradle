@@ -1,7 +1,6 @@
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
-    id 'org.jetbrains.kotlin.android'
+    alias(libs.plugins.android.lib.plugin)
+    alias(libs.plugins.android.kotlin.plugin)
 }
 apply from: "${project.rootDir}/config_lib.gradle"
 android {
@@ -10,9 +9,9 @@ android {
 }
 
 dependencies {
-    implementation deps.androidx.annotation
-    implementation deps.androidx.activity
-    implementation deps.androidx.appcompat
-    implementation deps.androidx.annotation
-    implementation deps.androidx.recyclerview
+    implementation libs.androidx.annotation
+    implementation libs.androidx.activity
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.annotation
+    implementation libs.androidx.recyclerview
 }

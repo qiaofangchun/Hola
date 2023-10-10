@@ -1,16 +1,18 @@
 pluginManagement {
     repositories {
-        google()
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         mavenCentral()
         gradlePluginPortal()
+        google()
     }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
-        mavenCentral()
         maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        mavenCentral()
+        google()
     }
 }
 
@@ -26,3 +28,4 @@ include ':lib_location'
 
 include ':app:weather'
 include ':app:media'
+include ':lib_blur'

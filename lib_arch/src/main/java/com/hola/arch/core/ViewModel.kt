@@ -17,7 +17,7 @@ abstract class ViewModel<I : ViewIntent, S : ViewState> : ViewModel() {
 
     protected abstract fun initUiState()
 
-    protected open fun addUiState(uiState: S, state: State = State.STARTED) {
+    protected fun addUiState(uiState: S, state: State = State.STARTED) {
         stateFlowMap[uiState.javaClass] = StateFlowCreator(uiState, state)
     }
 

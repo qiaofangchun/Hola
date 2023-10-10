@@ -1,0 +1,22 @@
+plugins {
+    alias(libs.plugins.android.lib.plugin)
+    alias(libs.plugins.android.kotlin.plugin)
+}
+
+apply from: "${project.rootDir}/config_lib.gradle"
+android {
+    namespace 'com.hola.lib.blur'
+    defaultConfig {
+        externalNativeBuild {
+            cmake { cppFlags "-std=c++17" }
+            ndk { abiFilters "armeabi-v7a", "arm64-v8a" }
+        }
+    }
+    externalNativeBuild {
+        cmake { path file('src/main/cpp/CMakeLists.txt') }
+    }
+}
+
+dependencies {
+
+}

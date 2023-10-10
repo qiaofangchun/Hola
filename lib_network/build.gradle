@@ -1,7 +1,6 @@
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
-    id 'org.jetbrains.kotlin.android'
+    alias(libs.plugins.android.lib.plugin)
+    alias(libs.plugins.android.kotlin.plugin)
 }
 apply from: "${project.rootDir}/config_lib.gradle"
 android {
@@ -9,9 +8,9 @@ android {
 }
 
 dependencies {
-    api deps.google.gson
-    api deps.retrofit.api
-    api deps.retrofit.gson_converter
-    api deps.retrofit.scalars_converter
+    api libs.google.gson
+    api libs.retrofit.api
+    api libs.retrofit.gson
+    api libs.retrofit.scalars
     api deps.retrofit.logging_interceptor
 }
