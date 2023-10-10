@@ -49,15 +49,15 @@ dependencies {
     //implementation deps.navigation.fragment
 
     // work manager
-    implementation deps.work.api
-    implementation deps.work.ktx
+    implementation libs.jetpack.work.api
+    implementation libs.jetpack.work.ktx
 
     // 高德地图
-    implementation deps.amap.location
+    implementation libs.amap.location
 
     // room数据库
-    implementation deps.room.api
-    implementation deps.room.ktx
-    kapt deps.room.compiler
-    annotationProcessor deps.room.compiler
+    implementation libs.jetpack.room.api
+    implementation libs.jetpack.room.ktx
+    kapt libs.jetpack.room.compiler
+    annotationProcessor libs.jetpack.room.compiler
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.renderscript
+package com.hola.lib.blur
 
 import android.graphics.Bitmap
 import java.lang.IllegalArgumentException
@@ -47,7 +47,7 @@ private const val externalName = "RenderScript Toolkit"
  * Intrinsics allow more flexibility for the type of allocation supported. In particular, this
  * toolkit does not support allocations of floats.
  */
-object Toolkit {
+object BlurToolkit {
     /**
      * Blends a source buffer with the destination buffer.
      *

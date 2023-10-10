@@ -187,17 +187,17 @@ class RestrictionParameter {
 };
 
 extern "C" JNIEXPORT jlong JNICALL
-Java_com_google_android_renderscript_Toolkit_createNative(JNIEnv* /*env*/, jobject /*thiz*/) {
+Java_com_hola_lib_blur_BlurToolkit_createNative(JNIEnv* /*env*/, jobject /*thiz*/) {
     return reinterpret_cast<jlong>(new RenderScriptToolkit());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_destroyNative(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_destroyNative(
         JNIEnv* /*env*/, jobject /*thiz*/, jlong native_handle) {
     RenderScriptToolkit* toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
     delete toolkit;
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeBlend(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeBlend(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jint jmode, jbyteArray source_array,
         jbyteArray dest_array, jint size_x, jint size_y, jobject restriction) {
     auto toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
@@ -209,7 +209,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
     toolkit->blend(mode, source.get(), dest.get(), size_x, size_y, restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeBlendBitmap(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeBlendBitmap(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jint jmode, jobject source_bitmap,
         jobject dest_bitmap, jobject restriction) {
     auto toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
@@ -221,7 +221,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
     toolkit->blend(mode, source.get(), dest.get(), source.width(), source.height(), restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeBlur(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeBlur(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jbyteArray input_array, jint vectorSize,
         jint size_x, jint size_y, jint radius, jbyteArray output_array, jobject restriction) {
     RenderScriptToolkit* toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
@@ -232,7 +232,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
     toolkit->blur(input.get(), output.get(), size_x, size_y, vectorSize, radius, restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeBlurBitmap(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeBlurBitmap(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jobject input_bitmap,
         jobject output_bitmap, jint radius, jobject restriction) {
     RenderScriptToolkit* toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
@@ -244,7 +244,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
                   radius, restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeColorMatrix(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeColorMatrix(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jbyteArray input_array,
         jint input_vector_size, jint size_x, jint size_y, jbyteArray output_array,
         jint output_vector_size, jfloatArray jmatrix, jfloatArray add_vector, jobject restriction) {
@@ -259,7 +259,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
                          size_y, matrix.get(), add.get(), restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeColorMatrixBitmap(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeColorMatrixBitmap(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jobject input_bitmap,
         jobject output_bitmap, jfloatArray jmatrix, jfloatArray add_vector, jobject restriction) {
     RenderScriptToolkit* toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
@@ -273,7 +273,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
                          input.width(), input.height(), matrix.get(), add.get(), restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeConvolve(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeConvolve(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jbyteArray input_array, jint vectorSize,
         jint size_x, jint size_y, jbyteArray output_array, jfloatArray coefficients,
         jobject restriction) {
@@ -295,7 +295,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
     }
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeConvolveBitmap(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeConvolveBitmap(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jobject input_bitmap,
         jobject output_bitmap, jfloatArray coefficients, jobject restriction) {
     RenderScriptToolkit* toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
@@ -316,7 +316,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
     }
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeHistogram(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeHistogram(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jbyteArray input_array,
         jint vector_size, jint size_x, jint size_y, jintArray output_array, jobject restriction) {
     RenderScriptToolkit* toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
@@ -327,7 +327,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
     toolkit->histogram(input.get(), output.get(), size_x, size_y, vector_size, restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeHistogramBitmap(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeHistogramBitmap(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jobject input_bitmap,
         jintArray output_array, jobject restriction) {
     RenderScriptToolkit* toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
@@ -339,7 +339,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
                        restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeHistogramDot(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeHistogramDot(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jbyteArray input_array,
         jint vector_size, jint size_x, jint size_y, jintArray output_array,
         jfloatArray coefficients, jobject restriction) {
@@ -354,7 +354,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
 }
 
 extern "C" JNIEXPORT
-void JNICALL Java_com_google_android_renderscript_Toolkit_nativeHistogramDotBitmap(
+void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeHistogramDotBitmap(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jobject input_bitmap,
         jintArray output_array, jfloatArray coefficients, jobject restriction) {
     RenderScriptToolkit* toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
@@ -367,7 +367,7 @@ void JNICALL Java_com_google_android_renderscript_Toolkit_nativeHistogramDotBitm
                           input.vectorSize(), coeffs.get(), restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeLut(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeLut(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jbyteArray input_array,
         jbyteArray output_array, jint size_x, jint size_y, jbyteArray red_table,
         jbyteArray green_table, jbyteArray blue_table, jbyteArray alpha_table,
@@ -386,7 +386,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
                  alpha.get(), restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeLutBitmap(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeLutBitmap(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jobject input_bitmap,
         jobject output_bitmap, jbyteArray red_table, jbyteArray green_table, jbyteArray blue_table,
         jbyteArray alpha_table, jobject restriction) {
@@ -404,7 +404,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
                  blue.get(), alpha.get(), restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeLut3d(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeLut3d(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jbyteArray input_array,
         jbyteArray output_array, jint size_x, jint size_y, jbyteArray cube_values, jint cubeSizeX,
         jint cubeSizeY, jint cubeSizeZ, jobject restriction) {
@@ -418,7 +418,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
                    cubeSizeZ, restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeLut3dBitmap(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeLut3dBitmap(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jobject input_bitmap,
         jobject output_bitmap, jbyteArray cube_values, jint cubeSizeX, jint cubeSizeY,
         jint cubeSizeZ, jobject restriction) {
@@ -432,7 +432,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
                    cubeSizeY, cubeSizeZ, restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeResize(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeResize(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jbyteArray input_array,
         jint vector_size, jint input_size_x, jint input_size_y, jbyteArray output_array,
         jint output_size_x, jint output_size_y, jobject restriction) {
@@ -445,7 +445,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
                     output_size_x, output_size_y, restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeResizeBitmap(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeResizeBitmap(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jobject input_bitmap,
         jobject output_bitmap, jobject restriction) {
     RenderScriptToolkit* toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
@@ -457,7 +457,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
                     output.width(), output.height(), restrict.get());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeYuvToRgb(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeYuvToRgb(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jbyteArray input_array,
         jbyteArray output_array, jint size_x, jint size_y, jint format) {
     RenderScriptToolkit* toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);
@@ -468,7 +468,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_n
                       static_cast<RenderScriptToolkit::YuvFormat>(format));
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_google_android_renderscript_Toolkit_nativeYuvToRgbBitmap(
+extern "C" JNIEXPORT void JNICALL Java_com_hola_lib_blur_BlurToolkit_nativeYuvToRgbBitmap(
         JNIEnv* env, jobject /*thiz*/, jlong native_handle, jbyteArray input_array, jint size_x,
         jint size_y, jobject output_bitmap, jint format) {
     RenderScriptToolkit* toolkit = reinterpret_cast<RenderScriptToolkit*>(native_handle);

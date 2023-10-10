@@ -7,9 +7,6 @@ jetpack-room = "2.8.1"
 jetpack-work = "2.7.1"
 coroutines = "1.7.1"
 retrofit = "2.9.0"
-junit = "4.13.2"
-androidx-test-ext-junit = "1.1.5"
-espresso-core = "3.5.1"
 
 [libraries]
 androidx-core = { group = "androidx.core", name = "core-ktx", version = "1.12.0" }
@@ -51,9 +48,6 @@ amap-location = { group = "com.amap.api", name = "location", version = "6.4.0" }
 amap-search = { group = "com.amap.api", name = "search", version = "9.7.0" }
 
 logger = { group = "com.orhanobut", name = "logger", version = "2.2.0" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 
 [plugins]
 android-app-plugin = { id = "com.android.application", version.ref = "andorid-gradle-plugin" }

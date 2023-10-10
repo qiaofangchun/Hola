@@ -3,8 +3,8 @@ def version = [:]
 
 def build = [:]
 build.minSdk = 23
-build.compileSdk = 33
-build.targetSdk = 33
+build.compileSdk = 34
+build.targetSdk = 34
 build.buildTools = "33.0.1"
 deps.build = build
 

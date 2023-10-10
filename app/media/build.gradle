@@ -18,16 +18,18 @@ android {
 }
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(path: ':lib_base')
     implementation project(path: ':lib_viewbind')
     implementation project(path: ':lib_extends')
     implementation project(path: ':lib_arch')
     implementation project(path: ':lib_network')
     implementation project(path: ':lib_common')
+    implementation project(path: ':lib_blur')
 
-    implementation deps.androidx.media
-    implementation deps.androidx.constraint
-    implementation deps.androidx.viewpager
+    implementation libs.androidx.media
+    implementation libs.androidx.constraint
+    implementation libs.androidx.viewpager
 
     // optional - UI widgets for VideoView and MediaControlView
     //implementation "androidx.media2:media2-widget:$media2_version"
@@ -35,6 +37,6 @@ dependencies {
     //implementation "androidx.media2:media2-player:$media2_version"
     //implementation "androidx.media2:media2-session:1.2.1"
     implementation 'com.guolindev.permissionx:permissionx:1.7.1'
-    implementation 'jp.wasabeef:blurry:4.0.1'
+    //implementation 'jp.wasabeef:blurry:4.0.1'
     implementation 'io.github.scwang90:refresh-layout-kernel:2.0.6'
 }
